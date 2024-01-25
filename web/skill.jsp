@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>Home Page</title>
+        <title>List of requests</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -462,6 +462,116 @@
             .styles-module_sliding__3T6T6 > * {
                 pointer-events: none;
             }
+            .table-title {
+                padding-bottom: 15px;
+                background: #435d7d;
+                color: #fff;
+                padding: 16px 30px;
+                min-width: 100%;
+                margin: -20px -25px 10px;
+                border-radius: 3px 3px 0 0;
+            }
+            *, ::after, ::before {
+                box-sizing: border-box;
+            }
+            .table-responsive {
+                margin: 30px 0;
+            }
+
+            .table-responsive {
+                display: block;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table-wrapper {
+                background: #fff;
+                padding: 20px 25px;
+                border-radius: 3px;
+                min-width: 1000px;
+                box-shadow: 0 1px 1px rgba(0,0,0,.05);
+            }
+            .row {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+                margin-right: -15px;
+                margin-left: -15px;
+            }
+            th {
+                display: table-cell;
+                vertical-align: inherit;
+                font-weight: bold;
+                text-align: -internal-center;
+            }
+            .table {
+                width: 100%;
+                margin-bottom: 1rem;
+                color: #212529;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            user agent stylesheet
+            table {
+                border-collapse: separate;
+                text-indent: initial;
+                border-spacing: 2px;
+            }
+            .col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
+                position: relative;
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+            .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+                width: 100%;
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            .material-icons {
+                font-family: 'Material Icons';
+                font-weight: normal;
+                font-style: normal;
+                font-size: 24px;
+                line-height: 1;
+                letter-spacing: normal;
+                text-transform: none;
+                display: inline-block;
+                white-space: nowrap;
+                word-wrap: normal;
+                direction: ltr;
+                -webkit-font-feature-settings: 'liga';
+                -webkit-font-smoothing: antialiased;
+            }
+            table.table td:last-child i {
+                opacity: 0.9;
+                margin: 0 5px;
+            }
+            .hint-text {
+                float: left;
+                margin-top: 10px;
+                font-size: 13px;
+            }
+            .pagination {
+                float: right;
+                margin: 0 0 5px;
+            }
+
+            .pagination {
+                display: -ms-flexbox;
+                display: flex;
+                padding-left: 0;
+                list-style: none;
+                border-radius: 0.25rem;
+            }
+            table.table td a.delete {
+                color: #F44336;
+            }
+            table.table td a.edit {
+                color: #FFC107;
+            }
         </style>
 
         <!-- =======================================================
@@ -470,12 +580,15 @@
         * Author: BootstrapMade.com
         * License: https://bootstrapmade.com/license/
         ======================================================== -->
+
     </head>
 
-    <body style="padding-top: 66px; display:flex" >
+    <body style="padding-top: 100px; display:flex" >
         <!-- ======= Header ======= -->
-        <%  ArrayList<Mentor> Marr = (ArrayList<Mentor>)request.getAttribute("Mentors");
+        <%  
             User u = (User)session.getAttribute("User");
+            ArrayList<Skill> arr = (ArrayList)request.getAttribute("skills");
+            int p = (int) Math.ceil((double)arr.size() / 10);
             if(u == null) {%>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
@@ -504,7 +617,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-center">
                     <li class="item-icon">
-                        <a class="group-user active" style="display: block" href="index">
+                        <a class="group-user " style="display: block" href="index">
                             <i class="fal fa-home-alt"></i>
                         </a>
                     </li>
@@ -569,7 +682,7 @@
                             <a href="request">
                                 <li class="item-icon " style="display: block">
                                     <a class="group-user">
-                                        <i class="fal fa-list"></i> Stories </a>
+                                        <i class="fal fa-list"></i> Request </a>
                                 </li>
                             </a>
                             <li class="item-icon">
@@ -634,7 +747,350 @@
             role = session.getAttribute("Mentee");
         } 
         %>
-        <header class="menu__header fix-menu" id="header-menu"><div class="navbar-header"><a href="index" class="logo"><img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;"></a></div><div class="navbar"><ul class="nav navbar-nav navbar-left"><li class="item-search"><nav class="Navbar__Item"><div class="Navbar__Link"><div class="Group-search visible "><span class="search input-group"><input placeholder="Mentor/Skill ..." type="text" class="form-control" value=""><span class="input-group-addon"><button type="button" class="btn btn-default"><i class="fal fa-search" aria-hidden="true"></i></button></span></span></div></div></nav></li></ul><ul class="nav navbar-nav navbar-center"><li class="item-icon"><a class="group-user active" style="display: block" href="index"><i class="fal fa-home-alt"></i></a></li><li class="item-icon"><a class="group-user " style="display: block" href="request"><i class="fal fa-list"></i></a></li><li class="item-icon group-fb"><a class="group-user" style="display: block"><i class="fal fa-trophy-alt"></i></a></li></ul><ul class="nav navbar-nav navbar-right"><li class="item-icon balance"><a class="money-user"><i class="far fa-plus"></i> <%=u.getWallet()%> đ</a></li><li class="item-icon item-avatar dropdown"><a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#"><img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD"></a><ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown"><li role="presentation" class="page-user"><a role="menuitem" tabindex="-1" href="profile"><img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD"><div class="text-logo"><h5><%=u.getUsername()%></h5><p>ID : <span><%=u.getEmail()%></span></p><p class="label-user-page"><span>Xem trang cá nhân của bạn</span></p></div></a></li><li role="presentation" class="menu-item hidden-lg hidden-md"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-plus"></i> <span>Số dư</span> : <span class="money">0 đ</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-minus"></i> <span>Rút tiền</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-credit-card"></i> <span>Nạp Tiền</span></a></li><%if(u.getRole().equalsIgnoreCase("mentor")) {%><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="cv"><i class="fas fa-user-lock"></i> <span>Tạo/Sửa CV</span></a></li><% } %><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-clock"></i> <span>Lịch sử giao dịch</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-users"></i> <span>Schedule</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-cogs"></i> <span>Cài đặt tài khoản</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="logout"><i class="fas fa-power-off"></i> <span>Đăng xuất</span></a></li><div class="menu-item list-flag"><div class="box-item"><div class="flag-all active"><img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD"></div></div><div class="box-item"><a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer"><span>Group</span></a><a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer"><span>Fanpage</span></a></div></div></ul></li></ul></div><div class="navbar-mobile hidden"><ul class="navbar-nav"><li class="item-icon notificate dropdown"><a id="basic-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#"><div class="item-title"><i class="fal fa-bell"></i></div></a><ul role="menu" class="dropdown-menu" aria-labelledby="basic-nav-dropdown"><div class="content"><div class="tab-notif-common"><h5><span>Thông báo</span></h5><div class="tab-action"><p class="active"><span>Chính</span></p><p class=""><span>Khác</span></p><p class=""><span>Theo dõi</span></p><p class=""><span>Tương tác</span></p></div></div><div><div class="infinite-scroll-component " style="height: 400px; overflow: auto;"><div class="text-center" style="color: rgb(51, 51, 51);"><span>Đợi chút xíu ...</span></div></div></div></div></ul></li><li class="item-icon item-avatar dropdown"><a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#"><img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD"></a><ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown"><li role="presentation" class="page-user"><a role="menuitem" tabindex="-1" href="#"><img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD"><div class="text-logo"><h5><%=u.getUsername()%></h5><p>ID : <span><%=u.getEmail()%></span></p><p class="label-user-page"><span>Xem trang cá nhân của bạn</span></p></div></a></li><li role="presentation" class="menu-item hidden-lg hidden-md"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-plus"></i> <span>Số dư</span> : <span class="money">0 đ</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-minus"></i> <span>Rút tiền</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-credit-card"></i> <span>Nạp Tiền</span></a></li><%if(u.getRole().equalsIgnoreCase("mentor")) {%><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-user-lock"></i> <span>Tạo/Sửa CV</span></a></li><% } %><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-clock"></i> <span>Lịch sử giao dịch</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-users"></i> <span>Schedule</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="#"><i class="fas fa-cogs"></i> <span>Cài đặt tài khoản</span></a></li><li role="presentation" class="menu-item"><a role="menuitem" tabindex="-1" href="logout"><i class="fas fa-power-off"></i> <span>Đăng xuất</span></a></li><div class="menu-item list-flag"><div class="box-item"><div class="flag-all active"><img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD"></div></div><div class="box-item"><a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer"><span>Group</span></a><a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer"><span>Fanpage</span></a></div></div></ul></li></ul><a class="btn-bars"><i class="fal fa-bars"></i></a><div class="flex-side hidden"><div class="overlay"></div><div class="content"><div class="box-search"><nav class="Navbar__Item"><div class="Navbar__Link"><div class="Group-search visible "><span class="search input-group"><input placeholder="Mentor/Skill ..." type="text" class="form-control" value=""><span class="input-group-addon"><button type="button" class="btn btn-default"><i class="fal fa-search" aria-hidden="true"></i></button></span></span></div></div></nav><a class="btn-close"><i class="fal fa-times fa-2x"></i></a></div><ul class="list-page"><a href="/"><li class="item-icon active"><a class="group-user"><i class="fal fa-home-alt"></i> <span>Trang chủ</span></a></li></a><a href="request"><li class="item-icon "><a class="group-user"><i class="fal fa-list"></i> Stories</a></li></a><li class="item-icon"><a class="group-user"><i class="fal fa-trophy-alt"></i> <span>Bảng xếp hạng</span></a></li></ul><div class="list-mode"><div class="item"><p class="title"><span>Chế độ</span></p><a class="func mode"><i class="fas fa-moon op"></i><i class="fas fa-sun false"></i></a></div><div class="item"><p class="title"><span>Cộng đồng</span></p><div class="func group"><a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer"><i class="fal fa-globe"></i></a><a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer"><i class="fab fa-facebook-f"></i></a></div></div><div class="item"><p class="title"><span>Ngôn ngữ</span></p><a class="func lang"><img src="https://files.playerduo.net/production/static-files/flag/1.png" class="flag op" alt="PD"><img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag false" alt="PD"></a></div><div class="item"><p class="title"><span>Tải App</span></p><div class="func app"><a href="https://testflight.apple.com/join/r6H9YvY4" target="_blank" rel="noopener noreferrer" download="">PlayerChat</a></div></div></div></div></div></div></header><!-- End Header -->
+        <header class="menu__header fix-menu" id="header-menu">
+            <div class="navbar-header">
+                <a href="index" class="logo">
+                    <img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;">
+                </a>
+            </div>
+            <div class="navbar">
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="item-search">
+                        <nav class="Navbar__Item">
+                            <div class="Navbar__Link">
+                                <div class="Group-search visible ">
+                                    <span class="search input-group">
+                                        <input placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
+                                        <span class="input-group-addon">
+                                            <button type="button" class="btn btn-default">
+                                                <i class="fal fa-search" aria-hidden="true"></i>
+                                            </button>
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </nav>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-center">
+                    <li class="item-icon">
+                        <a class="group-user" style="display: block" href="index">
+                            <i class="fal fa-home-alt"></i>
+                        </a>
+                    </li>
+                    <li class="item-icon">
+                        <a class="group-user" style="display: block" href="request">
+                            <i class="fal fa-list"></i>
+                        </a>
+                    </li>
+                    <li class="item-icon group-fb">
+                        <a class="group-user" style="display: block">
+                            <i class="fal fa-trophy-alt"></i>
+                        </a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="item-icon balance">
+                        <a class="money-user">
+                            <i class="far fa-plus"></i><%=u.getWallet()%> đ </a>
+                    </li>
+                    <li class="item-icon item-avatar dropdown">
+                        <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
+                            <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                        </a>
+                        <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
+                            <li role="presentation" class="page-user">
+                                <a role="menuitem" tabindex="-1" href="profile">
+                                    <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                                    <div class="text-logo">
+                                        <h5><%=u.getUsername()%> </h5>
+                                        <p>ID : <span><%=u.getEmail()%> </span>
+                                        </p>
+                                        <p class="label-user-page">
+                                            <span>Xem trang cá nhân của bạn</span>
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item hidden-lg hidden-md">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Số dư</span> : <span class="money">0 đ</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-minus"></i>
+                                    <span>Rút tiền</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Nạp Tiền</span>
+                                </a>
+                            </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="cv">
+                                    <i class="fas fa-user-lock"></i>
+                                    <span>Tạo/Sửa CV</span>
+                                </a>
+                            </li><% } %> <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Lịch sử giao dịch</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-users"></i>
+                                    <span>Schedule</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Cài đặt tài khoản</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="logout">
+                                    <i class="fas fa-power-off"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </li>
+                            <div class="menu-item list-flag">
+                                <div class="box-item">
+                                    <div class="flag-all active">
+                                        <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD">
+                                    </div>
+                                </div>
+                                <div class="box-item">
+                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
+                                        <span>Group</span>
+                                    </a>
+                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
+                                        <span>Fanpage</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+            <div class="navbar-mobile hidden">
+                <ul class="navbar-nav">
+                    <li class="item-icon notificate dropdown">
+                        <a id="basic-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
+                            <div class="item-title">
+                                <i class="fal fa-bell"></i>
+                            </div>
+                        </a>
+                        <ul role="menu" class="dropdown-menu" aria-labelledby="basic-nav-dropdown">
+                            <div class="content">
+                                <div class="tab-notif-common">
+                                    <h5>
+                                        <span>Thông báo</span>
+                                    </h5>
+                                    <div class="tab-action">
+                                        <p class="active">
+                                            <span>Chính</span>
+                                        </p>
+                                        <p class="">
+                                            <span>Khác</span>
+                                        </p>
+                                        <p class="">
+                                            <span>Theo dõi</span>
+                                        </p>
+                                        <p class="">
+                                            <span>Tương tác</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="infinite-scroll-component " style="height: 400px; overflow: auto;">
+                                        <div class="text-center" style="color: rgb(51, 51, 51);">
+                                            <span>Đợi chút xíu ...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ul>
+                    </li>
+                    <li class="item-icon item-avatar dropdown">
+                        <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
+                            <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                        </a>
+                        <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
+                            <li role="presentation" class="page-user">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                                    <div class="text-logo">
+                                        <h5><%=u.getUsername()%> </h5>
+                                        <p>ID : <span><%=u.getEmail()%> </span>
+                                        </p>
+                                        <p class="label-user-page">
+                                            <span>Xem trang cá nhân của bạn</span>
+                                        </p>
+                                    </div>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item hidden-lg hidden-md">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Số dư</span> : <span class="money">0 đ</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-minus"></i>
+                                    <span>Rút tiền</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-credit-card"></i>
+                                    <span>Nạp Tiền</span>
+                                </a>
+                            </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-user-lock"></i>
+                                    <span>Tạo/Sửa CV</span>
+                                </a>
+                            </li><% } %> <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-clock"></i>
+                                    <span>Lịch sử giao dịch</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-users"></i>
+                                    <span>Schedule</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <i class="fas fa-cogs"></i>
+                                    <span>Cài đặt tài khoản</span>
+                                </a>
+                            </li>
+                            <li role="presentation" class="menu-item">
+                                <a role="menuitem" tabindex="-1" href="logout">
+                                    <i class="fas fa-power-off"></i>
+                                    <span>Đăng xuất</span>
+                                </a>
+                            </li>
+                            <div class="menu-item list-flag">
+                                <div class="box-item">
+                                    <div class="flag-all active">
+                                        <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD">
+                                    </div>
+                                </div>
+                                <div class="box-item">
+                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
+                                        <span>Group</span>
+                                    </a>
+                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
+                                        <span>Fanpage</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </ul>
+                    </li>
+                </ul>
+                <a class="btn-bars">
+                    <i class="fal fa-bars"></i>
+                </a>
+                <div class="flex-side hidden">
+                    <div class="overlay"></div>
+                    <div class="content">
+                        <div class="box-search">
+                            <nav class="Navbar__Item">
+                                <div class="Navbar__Link">
+                                    <div class="Group-search visible ">
+                                        <span class="search input-group">
+                                            <input placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
+                                            <span class="input-group-addon">
+                                                <button type="button" class="btn btn-default">
+                                                    <i class="fal fa-search" aria-hidden="true"></i>
+                                                </button>
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </nav>
+                            <a class="btn-close">
+                                <i class="fal fa-times fa-2x"></i>
+                            </a>
+                        </div>
+                        <ul class="list-page">
+                            <a href="/">
+                                <li class="item-icon">
+                                    <a class="group-user">
+                                        <i class="fal fa-home-alt"></i>
+                                        <span>Trang chủ</span>
+                                    </a>
+                                </li>
+                            </a>
+                            <a href="request">
+                                <li class="item-icon ">
+                                    <a class="group-user">
+                                        <i class="fal fa-list"></i> Stories </a>
+                                </li>
+                            </a>
+                            <li class="item-icon">
+                                <a class="group-user">
+                                    <i class="fal fa-trophy-alt"></i>
+                                    <span>Bảng xếp hạng</span>
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="list-mode">
+                            <div class="item">
+                                <p class="title">
+                                    <span>Chế độ</span>
+                                </p>
+                                <a class="func mode">
+                                    <i class="fas fa-moon op"></i>
+                                    <i class="fas fa-sun false"></i>
+                                </a>
+                            </div>
+                            <div class="item">
+                                <p class="title">
+                                    <span>Cộng đồng</span>
+                                </p>
+                                <div class="func group">
+                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
+                                        <i class="fal fa-globe"></i>
+                                    </a>
+                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <p class="title">
+                                    <span>Ngôn ngữ</span>
+                                </p>
+                                <a class="func lang">
+                                    <img src="https://files.playerduo.net/production/static-files/flag/1.png" class="flag op" alt="PD">
+                                    <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag false" alt="PD">
+                                </a>
+                            </div>
+                            <div class="item">
+                                <p class="title">
+                                    <span>Tải App</span>
+                                </p>
+                                <div class="func app">
+                                    <a href="https://testflight.apple.com/join/r6H9YvY4" target="_blank" rel="noopener noreferrer" download="">PlayerChat</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- End Header -->
         <script>
             let avt = document.getElementById('header-nav-dropdown');
             avt.onclick = function () {
@@ -644,315 +1100,180 @@
                     avt.parentNode.classList.add("open");
                 }
             };
+
         </script>
         <%}%>
-        <div class="wrapper">
-            <div class="home-flex">
-                <div class="home-flex-category">
-                    <div class="fixed-cate">
-                        <p>
-                            <span>Danh mục skill</span>
-                        </p>
-                        <ul class="list-group">
-                            <%ArrayList<Skill> arr = (ArrayList<Skill>)request.getAttribute("skills");%>
-                            <%for(int i = 0; i < arr.size(); i++) {%>
-                            <li class="list-item ">
-                                <div class="media">
-                                    <!--
-                                    <div class="media-left">
-                                        <img class="media-object" alt="715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg" src="https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg">
-                                    </div>
-                                    -->
-                                    <div class="media-body media-middle">
-                                        <p class="media-heading"><%=arr.get(i).getName()%></p>
-                                    </div>
-                                </div>
-                            </li>
-                            <%}%>
-                            <li class="list-item ">
-                                <div class="media">
-                                    <!--
-                                    <div class="media-left">
-                                        <img class="media-object" alt="715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg" src="https://playerduo.net/api/upload-service/game_avatars/715867c6-698f-411a-b4f9-1e9093130b60__f364f2e0-34ce-11ed-838c-b120e70abb59__game_avatars.jpg">
-                                    </div>
-                                    -->
-                                    <div class="media-body media-middle">
-                                        <p class="media-heading" href="skill">Khác</p>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                            <script>
-                                document.querySelector("p[href=skill]").onclick = function() {
-                                    window.location.href = "skill"
-                                }
-                            </script>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- ======= Hero Section ======= -->
+        <script>
+            var max = <%=p%>;
+            var p = 1;
+        </script>
         <div class="home-flex-content">
-            <div class="slide banner carousel slide">
-                <div class="carousel-inner">
-                    <div class="item">
-                        <a href="" target="_blank" rel="noopener noreferrer">
-                            <img src="assets/img/hero-bg.jpg" class="img-responsive" alt="banner">
-                        </a>
-                    </div>
-                    <div class="item active">
-                        <a href="" target="_blank" rel="noopener noreferrer">
-                            <img src="assets/img/hero-bg.jpg" class="img-responsive" alt="banner">
-                        </a>
-                    </div>
-                </div>
-                <a class="carousel-control left" role="button" href="#">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control right" role="button" href="#">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                </a>
-            </div><!-- End Hero -->
-
-            <main id="main">
-
-                <!-- ======= About Section ======= -->
-                <section id="about" class="about">
-                    <div class="filter-player  hidden">
-                        <select class="form-control gender ">
-                            <option value="">Giới tính</option>
-                            <option value="female">Nữ</option>
-                            <option value="male">Nam</option>
-                        </select>
-                        <select class="form-control type ">
-                            <option disable selected>Thể loại</option>
-                            <option value="new">Người mới</option>
-                            <option value="top">Top</option>
-                            <option value="other">Other</option>
-                        </select>
-                        <select class="form-control type ">
-                            <option disable selected>Skill</option><%for(int i = 0; i < arr.size(); i++) {%> <option value="<%=arr.get(i).getId()%>"><%=arr.get(i).getName()%> </option><%}%>
-                        </select>
-                        <div class="form-control ready false">Sẵn sàng</div>
-                        <input type="text" class="form-control city" placeholder="Sống tại" readonly="" value="">
-                        <input type="text" class="form-control name" placeholder="Tên Mentor" autocomplete="off" maxlength="32" value="">
-                        <button type="button" class="form-control btn-filter btn btn-default">
-                            <i class="fa fa-search"></i> Tìm kiếm
-                        </button>
-                    </div>
-                    <div class="list-player">
-                        <div class="box vip-player">
-                            <header class="title-header vip">
-                                <h5 class="title-header-left">TOP MENTORS</h5>
-                                <p class="title-header-right">
-                                    <span>Làm mới</span>
-                                    <i class="fas fa-sync false"></i>
-                                </p>
-                            </header>
-                            <div class="card-player row">
-                                <%for(int i = 0; i < Marr.size(); i++) {%>
-                                <div class="col-md-3">
-                                    <div class="player-information-card-wrap">
-                                        <div class="player-avatar">
-                                            <a target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>">
-                                                <img src="<%=Marr.get(i).getAvatar() != null ? Marr.get(i).getAvatar() : "https://files.playerduo.net/production/images/avatar31.png"%>" class="" alt="PD" id="avt-img-reponsiver">
-                                            </a>
-                                        </div>
-                                        <a target="_blank" class="player-information" href="mentor?id=<%=Marr.get(i).getId()%>">
-                                            <h3 class="player-name">
-                                                <span style="font-weight: 700;color: #000;" target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>"><%=Marr.get(i).getFullname() != null ? Marr.get(i).getFullname() : ""%> </span>
-                                                <i class="fas fa-check-circle kyc" aria-hidden="true"></i>
-                                                <div class="player-status ready"></div>
-                                            </h3>
-                                            <p class="player-title"><%=Marr.get(i).getDescription() != null ? Marr.get(i).getDescription() : ""%> </p>
-                                        </a>
-                                    </div>
+            <div class="container-xl">
+                <div class="table-responsive">
+                    <div class="table-wrapper">
+                        <div class="table-title">
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <h2>All <b>Skills</b></h2>
                                 </div>
+                                <div style="margin-top: 25px; color: black" class="col-sm-2">
+                                    <select name="sort">
+                                        <option disabled selected>Lọc theo tên</option>
+                                        <option value="A-Z">Từ A đến Z</option>
+                                        <option value="Z-A">Từ Z đến A</option>
+                                    </select>
+                                </div>
+                                <script>
+                                    document.querySelector("select[name=sort]").onchange = function() {
+                                        if (this.selectedIndex) {
+                                            if(this.value === 'A-Z') {
+                                                let str = "";
+                                                var t = 1;
+                                                <% ArrayList<Skill> az = (ArrayList)request.getAttribute("a-z");
+                                                for(int i = 0; i < az.size(); i++) {
+                                                %>
+                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
+                                                    str += '<tr id="<%=i+1%>"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
+                                                } else {
+                                                    str += '<tr id="<%=i+1%>" class="hidden"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
+                                                }
+                                                t++;
+                                                <%}%>
+                                                document.querySelector("tbody").innerHTML = str;
+                                            } else if(this.value === 'Z-A') {
+                                                let str = "";
+                                                var t = 1;
+                                                <% ArrayList<Skill> za = (ArrayList)request.getAttribute("z-a");
+                                                for(int i = 0; i < za.size(); i++) {
+                                                %>
+                                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
+                                                                    str += '<tr id=<%=i+1%>><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
+                                                                } else {
+                                                                    str += '<tr id=<%=i+1%> class="hidden"><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
+                                                                }
+                                                t++;
+                                                <%}%>
+                                                document.querySelector("tbody").innerHTML = str;
+                                            }
+                                        }
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                        <table class="table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="font-weight: bold; color: black">STT</th>
+                                    <th style="font-weight: bold; color: black">Skill</th>
+                                    <th style="font-weight: bold; color: black">Skill ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <%for(int i = 0; i < arr.size(); i++) {%>
+                                <tr id='<%=i+1%>' <%=(i >= 10) ? "class='hidden'" : ""%>>
+                                    <td><%=i+1%></td>
+                                    <td><%=arr.get(i).getName()%></td>
+                                    <td><%=arr.get(i).getId()%></td>
+                                </tr> 
                                 <%}%>
-                            </div>
-                        </div>
-                        <div class="box hot-player">
-                            <header class="title-header hot">
-                                <h5 class="title-header-left">OTHERS</h5>
-                                <p class="title-header-right">
-                                    <span>Làm mới</span>
-                                    <i class="fas fa-sync false"></i>
-                                </p>
-                            </header>
-                            <div class="card-player row">
-                                <%for(int i = 0; i < Marr.size(); i++) {%>
-                                <div class="col-md-3">
-                                    <div class="player-information-card-wrap">
-                                        <div class="player-avatar">
-                                            <a target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>">
-                                                <img src="<%=Marr.get(i).getAvatar() != null ? Marr.get(i).getAvatar() : "https://files.playerduo.net/production/images/avatar31.png"%>" class="" alt="PD" id="avt-img-reponsiver">
-                                            </a>
-                                        </div>
-                                        <a target="_blank" class="player-information" href="mentor?id=<%=Marr.get(i).getId()%>">
-                                            <h3 class="player-name">
-                                                <span style="font-weight: 700;color: #000;" target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>"><%=Marr.get(i).getFullname() != null ? Marr.get(i).getFullname() : ""%> </span>
-                                                <div class="player-status ready"></div>
-                                            </h3>
-                                            <p class="player-title"><%=Marr.get(i).getDescription() != null ? Marr.get(i).getDescription() : ""%> </p>
-                                        </a>
-                                    </div>
-                                </div>
+                            </tbody>
+                        </table>
+                        <div class="clearfix">
+                            <div class="hint-text">Showing <b id='from'>10</b> out of <b id='max'><%=arr.size()%></b> entries</div>
+                            <ul class="pagination">
+                                <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
+                                <%
+                                    for(int i = 0; i < p; i++) {
+                                %>
+                                <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
                                 <%}%>
-                            </div>
+                                <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
+                                <script>
+                                    function paging(input, event) {
+                                        event.preventDefault();
+                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
+                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                            if(parseInt(str) !== p) {
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                input.parentNode.classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                }
+                                                p = parseInt(str);
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            }
+                                        } else {
+                                            if(input.innerHTML === "Previous" && p !== 1) {
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                document.getElementsByClassName("pagination")[0].children[p-1].classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                }
+                                                p = p-1;
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            } else if(input.innerHTML === "Next" && p !== max) {
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                document.getElementsByClassName("pagination")[0].children[p+1].classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                }
+                                                p = p+1;
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            }
+                                        }
+                                    }
+                                </script>
+                            </ul>
                         </div>
                     </div>
-                </section><!-- End About Section -->
-
-                <!-- ======= Counts Section ======= -->
-                <section id="counts" class="counts section-bg">
-                    <div class="container">
-
-                        <div class="row counters">
-
-                            <div class="col-lg-4 col-6 text-center">
-                                <span data-purecounter-start="0" data-purecounter-end="${mentee == null ? "0" : mentee}" data-purecounter-duration="1" class="purecounter"></span>
-                                <p>Mentees</p>
-                            </div>
-
-                            <div class="col-lg-4 col-6 text-center">
-                                <span data-purecounter-start="0" data-purecounter-end="${skill == null ? "0" : skill}" data-purecounter-duration="1" class="purecounter"></span>
-                                <p>Skills</p>
-                            </div>
-
-                            <div class="col-lg-4 col-6 text-center">
-                                <span data-purecounter-start="0" data-purecounter-end="${mentor == null ? "0" : mentor}" data-purecounter-duration="1" class="purecounter"></span>
-                                <p>Mentors</p>
-                            </div>
-
-                        </div>
-
-                    </div>
-                </section><!-- End Counts Section -->
-
-                <!-- ======= Why Us Section ======= -->
-                <section id="why-us" class="why-us">
-                    <div class="container" data-aos="fade-up">
-
-                        <div class="row" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 0; display: flex; flex-wrap: wrap; margin-top: calc(-1 * var(--bs-gutter-y));">
-                            <div class="col-lg-4 d-flex align-items-stretch" style="display: flex!important; align-items: stretch!important;">
-                                <div class="content">
-                                    <h3>Why Choose Mentor?</h3>
-                                    <p>There are many people who have no direction and lose their roots in some subjects but don't know where to start over. With Happy programming you can find yourself the best mentors who are well trained and have clear certifications that are thoroughly vetted. Thereby they can guide you starting from the most basic steps and bring you absolute satisfaction
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-lg-8 d-flex align-items-stretch aos-init aos-animate" data-aos="zoom-in" data-aos-delay="100" style="display: flex!important; align-items: stretch!important; flex: 0 0 auto;">
-                                <div class="icon-boxes d-flex flex-column justify-content-center" style="display: flex!important; flex-direction: column!important; justify-content: center!important;">
-                                    <div class="row" style="--bs-gutter-x: 1.5rem; --bs-gutter-y: 0; display: flex; flex-wrap: wrap; margin-top: calc(-1 * var(--bs-gutter-y));">
-                                        <div style="display: flex!important; align-items: stretch!important; flex: 0 0 auto; width: 33.33333333%;" class="col-xl-4 d-flex align-items-stretch">
-                                            <div class="icon-box mt-4 mt-xl-0">
-                                                <i class="bx bx-receipt"></i>
-                                                <h4>Carefully selected study materials</h4>
-                                                <p>Study materials are carefully prepared by qualified mentors</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-4 d-flex align-items-stretch" style="display: flex!important; align-items: stretch!important; flex: 0 0 auto; width: 33.33333333%;">
-                                            <div class="icon-box mt-4 mt-xl-0">
-                                                <i class="bx bx-cube-alt"></i>
-                                                <h4>Modern teaching methods</h4>
-                                                <p>Advanced modern teaching methods make students interested in learning</p>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-4 d-flex align-items-stretch" style="display: flex!important; align-items: stretch!important; flex: 0 0 auto; width: 33.33333333%;">
-                                            <div class="icon-box mt-4 mt-xl-0">
-                                                <i class="bx bx-images"></i>
-                                                <h4> illustrating images</h4>
-                                                <p> The illustrations make learning closer and more accessible to students</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div><!-- End .content-->
-                            </div>
-                        </div>
-
-                    </div>
-                </section><!-- End Why Us Section -->
-
-                <!-- ======= Trainers Section ======= -->
-
-            </main><!-- End #main -->
-
-            <!-- ======= Footer ======= -->
-            <footer id="footer">
-
-                <div class="footer-top">
-                    <div class="container">
-                        <div class="row">
-
-                            <div class="col-lg-4 col-md-6 footer-contact">
-                                <h3>Contact</h3>
-                                <p>
-                                    Vu Manh Cuong <br>
-                                    FPT University<br>
-                                    Ha Noi, Viet Nam<br><br>
-                                    <strong>Phone: </strong>0363679196<br>
-                                    <strong>Email: </strong>manhcuong201012345@gmail.com<br>
-                                </p>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 footer-links">
-                                <h4>Useful Links</h4>
-                                <ul>
-                                    <li><i class="bx bx-chevron-right"></i> <a href="#">Home</a></li>
-                                    <li><i class="bx bx-chevron-right"></i> <a href="#">About us</a></li>
-                                    <li><i class="bx bx-chevron-right"></i> <a href="#">Services</a></li>
-                                    <li><i class="bx bx-chevron-right"></i> <a href="#">Terms of service</a></li>
-                                    <li><i class="bx bx-chevron-right"></i> <a href="#">Privacy policy</a></li>
-                                </ul>
-                            </div>
-
-                            <div class="col-lg-4 col-md-6 footer-newsletter">
-                                <h4>Join Our Newsletter</h4>
-                                <p>Tamen quem nulla quae legam multos aute sint culpa legam noster magna</p>
-                                <form action="" method="post">
-                                    <input type="email" name="email"><input type="submit" value="Subscribe">
-                                </form>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-                <div class="container d-md-flex py-4" style="
-                     display: flex!important;
-                     padding-top: 1.5rem!important;
-                     padding-bottom: 1.5rem!important;
-                     max-width: 960px;
-                     --bs-gutter-x: 1.5rem;
-                     --bs-gutter-y: 0;
-                     ">
-
-                    <div class="me-md-auto text-center text-md-start" style="
-                         text-align: left!important;
-                         margin-right: auto!important;
-                         ">
-                        <div class="copyright">
-                            &copy; Copyright <strong><span>Mentor</span></strong>. All Rights Reserved
-                        </div>
-                        <div class="credits">
-                            <!-- All the links in the footer should remain intact. -->
-                            <!-- You can delete the links only if you purchased the pro version. -->
-                            <!-- Licensing information: https://bootstrapmade.com/license/ -->
-                            <!-- Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/ -->
-                            Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>
-                        </div>
-                    </div>
-                    <div class="social-links text-center text-md-right pt-3 pt-md-0">
-                        <a href="#" class="twitter"><i class="bx bxl-twitter"></i></a>
-                        <a href="#" class="facebook"><i class="bx bxl-facebook"></i></a>
-                        <a href="#" class="instagram"><i class="bx bxl-instagram"></i></a>
-                        <a href="#" class="google-plus"><i class="bx bxl-skype"></i></a>
-                        <a href="#" class="linkedin"><i class="bx bxl-linkedin"></i></a>
-                    </div>
-                </div>
-            </footer><!-- End Footer -->
+                </div>        
+            </div>
         </div>
         <div id="preloader"></div>
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="

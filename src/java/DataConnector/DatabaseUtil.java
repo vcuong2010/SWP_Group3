@@ -24,7 +24,7 @@ public class DatabaseUtil {
                 String connectionString = "jdbc:sqlserver://localhost;databaseName="+dtbName+";encrypt=true;trustServerCertificate=true";
                 String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
                 String username = "sa";
-                String password = "12345678";
+                String password = "123";
                 try {
                     Class.forName(driverName);
                 } catch (ClassNotFoundException e) {

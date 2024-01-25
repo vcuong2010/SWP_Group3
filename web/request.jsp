@@ -1262,9 +1262,9 @@
                             </tbody>
                         </table>
                         <div class="clearfix">
-                            <div class="hint-text">Showing <b>0</b> out of <b>0</b> entries</div>
+                            <div class="hint-text">Showing <b>10</b> out of <b><%=arr.size()%></b> entries</div>
                             <ul class="pagination">
-                                <li class="page-item disabled"><a href="#">Previous</a></li>
+                                <li class="page-item disabled"><a >Previous</a></li>
                                 <li class="page-item active"><a href="#" class="page-link">1</a></li>
                                 <li class="page-item"><a href="#" class="page-link">2</a></li>
                                 <li class="page-item"><a href="#" class="page-link">3</a></li>
