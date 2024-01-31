@@ -736,7 +736,7 @@
                             <option disable selected>Skill</option><%for(int i = 0; i < arr.size(); i++) {%> <option value="<%=arr.get(i).getId()%>"><%=arr.get(i).getName()%> </option><%}%>
                         </select>
                         <div class="form-control ready false">Sẵn sàng</div>
-                        <input type="text" class="form-control city" placeholder="Sống tại" readonly="" value="">
+                        <input type="text" class="form-control city" placeholder="Sống tại" value="">
                         <input type="text" class="form-control name" placeholder="Tên Mentor" autocomplete="off" maxlength="32" value="">
                         <button type="button" class="form-control btn-filter btn btn-default">
                             <i class="fa fa-search"></i> Tìm kiếm
@@ -746,10 +746,6 @@
                         <div class="box vip-player">
                             <header class="title-header vip">
                                 <h5 class="title-header-left">TOP MENTORS</h5>
-                                <p class="title-header-right">
-                                    <span>Làm mới</span>
-                                    <i class="fas fa-sync false"></i>
-                                </p>
                             </header>
                             <div class="card-player row">
                                 <%for(int i = 0; i < Marr.size(); i++) {%>
@@ -776,10 +772,6 @@
                         <div class="box hot-player">
                             <header class="title-header hot">
                                 <h5 class="title-header-left">OTHERS</h5>
-                                <p class="title-header-right">
-                                    <span>Làm mới</span>
-                                    <i class="fas fa-sync false"></i>
-                                </p>
                             </header>
                             <div class="card-player row">
                                 <%for(int i = 0; i < Marr.size(); i++) {%>

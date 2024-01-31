@@ -1180,7 +1180,7 @@
                             </tbody>
                         </table>
                         <div class="clearfix">
-                            <div class="hint-text">Showing <b id='from'>10</b> out of <b id='max'><%=arr.size()%></b> entries</div>
+                            <div class="hint-text">Showing <b id='from'><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id='max'><%=arr.size()%></b> entries</div>
                             <ul class="pagination">
                                 <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
                                 <%
