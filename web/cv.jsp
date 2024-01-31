@@ -518,7 +518,7 @@
                                     </a>
                                 </li>
                                 <li role="presentation" class="menu-item">
-                                    <a role="menuitem" tabindex="-1" href="#">
+                                    <a role="menuitem" tabindex="-1" href="setting">
                                         <i class="fas fa-cogs"></i>
                                         <span>Cài đặt tài khoản</span>
                                     </a>

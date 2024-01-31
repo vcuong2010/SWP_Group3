@@ -30,6 +30,8 @@ public class LogoutController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         request.getSession().removeAttribute("User");
+        request.getSession().removeAttribute("Mentor");
+        request.getSession().removeAttribute("Mentee");
         response.sendRedirect("login");
     } 
 

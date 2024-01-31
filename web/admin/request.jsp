@@ -18,28 +18,28 @@
         <meta content="" name="keywords">
 
         <!-- Favicons -->
-        <link href="assets/img/favicon.png" rel="icon">
-        <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/favicon.png" rel="icon">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
         <!-- Vendor CSS Files -->
-        <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-        <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-        <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
         <!-- Template Main CSS File -->
-        <link href="css/0.cbdbec7b.chunk.css" rel="stylesheet">
-        <link href="css/4.2ddfb1d3.chunk.css" rel="stylesheet">
-        <link href="css/8.97b85fe3.chunk.css" rel="stylesheet">
-        <link href="css/15.7bac9b00.chunk.css" rel="stylesheet">
-        <link href="css/main.3e229f12.chunk.css" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
-        <link href="font-awesome/css/all.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/0.cbdbec7b.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/4.2ddfb1d3.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/8.97b85fe3.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/15.7bac9b00.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/main.3e229f12.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/css/style.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/font-awesome/css/all.css" rel="stylesheet">
 
         <style type="text/css">
             .react-skeleton-load {
@@ -573,7 +573,7 @@
                 color: #FFC107;
             }
         </style>
-
+        <link rel="stylesheet" type="text/css" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/9.cb7de3a7.chunk.css">
         <!-- =======================================================
         * Template Name: Mentor - v4.9.0
         * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
@@ -583,17 +583,17 @@
 
     </head>
 
-    <body style="padding-top: 100px; display:flex" >
+    <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
             User u = (User)session.getAttribute("User");
-            ArrayList<Skill> arr = (ArrayList)request.getAttribute("skills");
+            ArrayList<Request> arr = (ArrayList)request.getAttribute("requests");
             int p = (int) Math.ceil((double)arr.size() / 10);
             if(u == null) {%>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
                 <a href="index" class="logo">
-                    <img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;">
+                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
                 </a>
             </div>
             <div class="navbar">
@@ -617,12 +617,12 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-center">
                     <li class="item-icon">
-                        <a class="group-user " style="display: block" href="index">
+                        <a class="group-user " style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
                             <i class="fal fa-home-alt"></i>
                         </a>
                     </li>
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="request">
+                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                             <i class="fal fa-list"></i>
                         </a>
                     </li>
@@ -634,7 +634,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="item-icon authent">
-                        <a class="money-user" href="login">
+                        <a class="money-user" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/login">
                             <i class="fal fa-power-off"></i>
                             <span>Đăng nhập</span>
                         </a>
@@ -671,7 +671,7 @@
                             </a>
                         </div>
                         <ul class="list-page">
-                            <a href="/">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
                                 <li class="item-icon active">
                                     <a class="group-user">
                                         <i class="fal fa-home-alt"></i>
@@ -679,10 +679,10 @@
                                     </a>
                                 </li>
                             </a>
-                            <a href="request">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                                 <li class="item-icon " style="display: block">
                                     <a class="group-user">
-                                        <i class="fal fa-list"></i> Request </a>
+                                        <i class="fal fa-list"></i> Stories </a>
                                 </li>
                             </a>
                             <li class="item-icon">
@@ -749,8 +749,8 @@
         %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
-                <a href="index" class="logo">
-                    <img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;">
+                <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index" class="logo">
+                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
                 </a>
             </div>
             <div class="navbar">
@@ -774,12 +774,12 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-center">
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="index">
+                        <a class="group-user" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
                             <i class="fal fa-home-alt"></i>
                         </a>
                     </li>
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="request">
+                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                             <i class="fal fa-list"></i>
                         </a>
                     </li>
@@ -800,7 +800,7 @@
                         </a>
                         <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
                             <li role="presentation" class="page-user">
-                                <a role="menuitem" tabindex="-1" href="profile">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile">
                                     <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                                     <div class="text-logo">
                                         <h5><%=u.getUsername()%> </h5>
@@ -830,7 +830,7 @@
                                     <span>Nạp Tiền</span>
                                 </a>
                             </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="cv">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/cv">
                                     <i class="fas fa-user-lock"></i>
                                     <span>Tạo/Sửa CV</span>
                                 </a>
@@ -845,13 +845,13 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="setting">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting">
                                     <i class="fas fa-cogs"></i>
                                     <span>Cài đặt tài khoản</span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="logout">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
                                     <i class="fas fa-power-off"></i>
                                     <span>Đăng xuất</span>
                                 </a>
@@ -971,7 +971,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="logout">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
                                     <i class="fas fa-power-off"></i>
                                     <span>Đăng xuất</span>
                                 </a>
@@ -1020,15 +1020,15 @@
                             </a>
                         </div>
                         <ul class="list-page">
-                            <a href="/">
-                                <li class="item-icon">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
+                                <li class="item-icon active">
                                     <a class="group-user">
                                         <i class="fal fa-home-alt"></i>
                                         <span>Trang chủ</span>
                                     </a>
                                 </li>
                             </a>
-                            <a href="request">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                                 <li class="item-icon ">
                                     <a class="group-user">
                                         <i class="fal fa-list"></i> Stories </a>
@@ -1104,174 +1104,486 @@
             var max = <%=p%>;
             var p = 1;
         </script>
-        <div class="home-flex-content">
-            <div class="container-xl">
-                <div class="table-responsive">
-                    <div class="table-wrapper">
-                        <div class="table-title">
-                            <div class="row">
-                                <div class="col-sm-10">
-                                    <h2>All <b>Skills</b></h2>
+        <div class="wrapper">
+            <div class="setting__main row">
+                <div class="setting__main--menu col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <div class="menu">
+                        <div class="menu__setting  panel-group">
+                            <div class="menu__setting--main panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <a aria-expanded="true" class="" role="button" href="#">TÀI KHOẢN <i class="fas fa-chevron-down"></i>
+                                        </a>
+                                    </div>
                                 </div>
-                                <div style="margin-top: 25px; color: black" class="col-sm-2">
-                                    <select name="sort">
-                                        <option disabled selected>Lọc theo tên</option>
-                                        <option value="A-Z">Từ A đến Z</option>
-                                        <option value="Z-A">Từ Z đến A</option>
-                                    </select>
+                                <div class="panel-collapse collapse in" style="">
+                                    <div class="panel-body">
+                                        <div class="panel-group">
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="panel-title">
+                                                        <i class="fas fa-user-tie"></i> Thông tin cá nhân
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Email</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Tài khoản và mật khẩu</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-user-lock"></i> Thông Tin CV
+                                                    </div>
+                                                </div>
+                                            </div><%}%>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-history"></i> Lịch sử giao dịch 
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử donate</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử duo</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử tạo code</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Biến động số dư</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử mua thẻ</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="active title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-cog"></i> Cài đặt Admin <i class="fas fa-chevron-down"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse in">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Skills</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Mentors</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title active">Requests</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-credit-card"></i> Thanh toán 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-wallet"></i> Ví 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <script>
-                                    document.querySelector("select[name=sort]").onchange = function() {
-                                        if (this.selectedIndex) {
-                                            if(this.value === 'A-Z') {
-                                                let str = "";
-                                                var t = 1;
-                                                <% ArrayList<Skill> az = (ArrayList)request.getAttribute("a-z");
-                                                for(int i = 0; i < az.size(); i++) {
-                                                %>
-                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
-                                                    str += '<tr id="<%=i+1%>"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
-                                                } else {
-                                                    str += '<tr id="<%=i+1%>" class="hidden"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
-                                                }
-                                                t++;
-                                                <%}%>
-                                                document.querySelector("tbody").innerHTML = str;
-                                            } else if(this.value === 'Z-A') {
-                                                let str = "";
-                                                var t = 1;
-                                                <% ArrayList<Skill> za = (ArrayList)request.getAttribute("z-a");
-                                                for(int i = 0; i < za.size(); i++) {
-                                                %>
-                                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
-                                                                    str += '<tr id=<%=i+1%>><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
-                                                                } else {
-                                                                    str += '<tr id=<%=i+1%> class="hidden"><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
-                                                                }
-                                                t++;
-                                                <%}%>
-                                                document.querySelector("tbody").innerHTML = str;
-                                            }
-                                        }
-                                    }
-                                </script>
                             </div>
                         </div>
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th style="font-weight: bold; color: black">STT</th>
-                                    <th style="font-weight: bold; color: black">Skill</th>
-                                    <th style="font-weight: bold; color: black">Skill ID</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <%for(int i = 0; i < arr.size(); i++) {%>
-                                <tr id='<%=i+1%>' <%=(i >= 10) ? "class='hidden'" : ""%>>
-                                    <td><%=i+1%></td>
-                                    <td><%=arr.get(i).getName()%></td>
-                                    <td><%=arr.get(i).getId()%></td>
-                                </tr> 
-                                <%}%>
-                            </tbody>
-                        </table>
-                        <div class="clearfix">
-                            <div class="hint-text">Showing <b id='from'><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id='max'><%=arr.size()%></b> entries</div>
-                            <ul class="pagination">
-                                <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
-                                <%
-                                    for(int i = 0; i < p; i++) {
-                                %>
-                                <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
-                                <%}%>
-                                <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
-                                <script>
-                                    function paging(input, event) {
-                                        event.preventDefault();
-                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
-                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
-                                            if(parseInt(str) !== p) {
-                                                let f = document.getElementById("from");
-                                                let m = document.getElementById("max");
-                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                input.parentNode.classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.add("hidden");
-                                                }
-                                                p = parseInt(str);
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.remove("hidden");
-                                                }
-                                                if(p===max) {
-                                                    document.getElementById("Next").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
-                                                }
-                                                if(p===1) {
-                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
-                                                }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
-                                            }
-                                        } else {
-                                            if(input.innerHTML === "Previous" && p !== 1) {
-                                                let f = document.getElementById("from");
-                                                let m = document.getElementById("max");
-                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p-1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.add("hidden");
-                                                }
-                                                p = p-1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.remove("hidden");
-                                                }
-                                                if(p===max) {
-                                                    document.getElementById("Next").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
-                                                }
-                                                if(p===1) {
-                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
-                                                }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
-                                            } else if(input.innerHTML === "Next" && p !== max) {
-                                                let f = document.getElementById("from");
-                                                let m = document.getElementById("max");
-                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p+1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.add("hidden");
-                                                }
-                                                p = p+1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
-                                                    document.getElementById(i).classList.remove("hidden");
-                                                }
-                                                if(p===max) {
-                                                    document.getElementById("Next").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
-                                                }
-                                                if(p===1) {
-                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
-                                                } else {
-                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
-                                                }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
-                                            }
-                                        }
-                                    }
-                                </script>
-                            </ul>
+                        <div class="btn-drawer-setting visible-xs">
+                            <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
-                </div>        
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="aside">
+                        <form method="post">
+                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
+                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option><option value="open">Open</option><option value="processing">Processing</option><option value="closed">Closed</option></select><br>
+                            <label>Start Date: </label>
+                            <input id="start" type="datetime-local" name="start" style="width: 20%; min-height: 20px">
+                            <label style="margin-left: 10px">End Date: </label>
+                            <input id="end" type="datetime-local" name="end" style="width: 20%; min-height: 20px">
+                            <input id="filter"  type="submit" value="filter" style="margin-left: 10px; width: 10%; min-height: 20px;">
+                        </form>
+                        <script>
+                            document.getElementById("filter").onclick = function() {
+                                event.preventDefault();
+                                if(document.getElementById("start").value != null && document.getElementById("end").value != null) {
+                                    if(document.getElementById("start").value > document.getElementById("end").value) {
+                                        alert("start date must be before end date!");
+                                        return;
+                                    }
+                                };
+                                this.onclick = null;
+                                this.click();
+                            }
+                        </script>
+                        <h3>List of request</h3>
+                        <div class="transaction-table">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-condensed table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>ID</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Subject</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Sender</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%for(int i = 0; i < arr.size(); i++) {%>
+                                        <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
+                                            <td>
+                                                <%=i+1%>
+                                            </td>
+                                            <td><a href="" onclick="popup<%=i+1%>(event)"><%=arr.get(i).getId()%></a></td>
+                                            <td><%=arr.get(i).getSubject()%></td>
+                                            <td>
+                                                <%=arr.get(i).getSender()%>
+                                            </td>
+                                            <td><%=arr.get(i).getStatus()%></td>
+                                        </tr> 
+                                    <script>
+                                        function popup<%=i+1%>(event) {
+                                                event.preventDefault();
+                                                let title = document.title;
+                                                if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                            <%
+                                                try {
+                                            %>
+                                                    document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    let modal = document.createElement('div');
+                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><input type="hidden" name="id" value="<%=arr.get(i).getId()%>"><input type="hidden" name="type" value="update"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender</td><td><%=arr.get(i).getSender()%></td></tr><tr><td>Mentor:</td><td><%=arr.get(i).getMentor()%></td></tr><tr><td><span>Thời gian muốn thuê</span>:</td><td><%=arr.get(i).getDeadlineTime()%></td></tr><tr><td><span>Thời gian gửi request</span>:</td><td><%=arr.get(i).getRequestTime()%></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" disabled readonly required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px" readonly><%=arr.get(i).getReason()%></textarea></td></tr><tr><td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><tr><td><span>Kĩ năng muốn học</span>:</td><td><%for(int j = 0; j < arr.get(i).getSkills().size(); j++) {%><div class="col-sm-6 game-category row"><div class="choose-game" style="background: center center no-repeat;"><p class="overlay" style="text-shadow: 2px 0 0 #000;margin: 0;padding: 5px 2px;color: #fff;font-weight: 700;font-size: 13px;background: rgba(0,0,0,.75);border-radius: 10px;text-transform: capitalize;"><%=arr.get(i).getSkills().get(i).getName()%> </p></div></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                                                    document.body.appendChild(modal.firstChild);
+                                                    let btn = document.body.lastChild.getElementsByTagName('button');
+                                                    btn[0].onclick = function () {
+                                                        document.body.lastChild.firstChild.classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                        document.title = title;
+
+                                                    }
+                                                    btn[1].onclick = function () {
+                                                        document.body.lastChild.firstChild.classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                        document.title = title;
+
+                                                    }
+                                                    setTimeout(function () {
+                                                        document.body.lastChild.children[1].classList.add("in");
+                                                        document.body.lastChild.firstChild.classList.add("in");
+                                                        window.onclick = function (e) {
+                                                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                                document.body.lastChild.firstChild.classList.remove("in");
+                                                                document.body.lastChild.children[1].classList.remove("in");
+                                                                setTimeout(function () {
+                                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                                    document.body.removeChild(document.body.lastChild);
+                                                                    window.onclick = null;
+                                                                }, 100);
+                                                                document.title = title;
+                                                            }
+                                                        };
+                                                        document.title = "Update Request";
+                                                    }, 1);
+                                            <%} catch(Exception e) {}%>
+                                                } else {
+                                                    //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    document.body.lastChild.firstChild.classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                    document.title = title;
+                                                }
+                                            
+                                        }
+                                    </script>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                <div class="clearfix">
+                                    <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
+                                            <%
+                                                for(int i = 0; i < p; i++) {
+                                            %>
+                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
+                                            <%}%>
+                                        <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
+                                        <script>
+                                            function paging(input, event) {
+                                                event.preventDefault();
+                                                let str = JSON.stringify(input.href).replace("<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")+request.getContextPath()+"/admin/"%>", "").replaceAll('"', '');
+                                                if (input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                                    if (parseInt(str) !== p) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        input.parentNode.classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = parseInt(str);
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    }
+                                                } else {
+                                                    if (input.innerHTML === "Previous" && p !== 1) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        document.getElementsByClassName("pagination")[0].children[p - 1].classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = p - 1;
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    } else if (input.innerHTML === "Next" && p !== max) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        document.getElementsByClassName("pagination")[0].children[p + 1].classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = p + 1;
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    }
+                                                }
+                                            }
+                                        </script>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
+                    </div></div>
+
             </div>
         </div>
+        <script>
+
+            let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
+            let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
+            document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
+                if (cog.classList.contains("fa-chevron-right")) {
+                    cog.classList.add("fa-chevron-down");
+                    cog.classList.remove("fa-chevron-right");
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse.style = "height: 72px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "";
+                        collapse.classList.add("in");
+                    }, 300);
+                } else {
+                    cog.classList.remove("fa-chevron-down");
+                    cog.classList.add("fa-chevron-right");
+                    collapse.style = "height: 72px;";
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse.style = "height: 0px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "height: 0px;";
+                        collapse.classList.remove("in");
+                    }, 300);
+                }
+            }
+            let cog2 = document.getElementsByClassName('fas fa-cog')[1].parentNode.children[1];
+            let collapse2 = cog2.parentNode.parentNode.parentNode.parentNode.children[1];
+            document.getElementsByClassName('fas fa-cog')[1].parentNode.onclick = function () {
+                if (cog2.classList.contains("fa-chevron-right")) {
+                    cog2.classList.add("fa-chevron-down");
+                    cog2.classList.remove("fa-chevron-right");
+                    collapse2.classList.remove("collapse");
+                    collapse2.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse2.style = "height: 108px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse2.classList.remove("collapsing");
+                        collapse2.classList.add("collapse");
+                        collapse2.style = "";
+                        collapse2.classList.add("in");
+                    }, 300);
+                } else {
+                    cog2.classList.remove("fa-chevron-down");
+                    cog2.classList.add("fa-chevron-right");
+                    collapse2.style = "height: 108px;";
+                    collapse2.classList.remove("collapse");
+                    collapse2.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse2.style = "height: 0px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse2.classList.remove("collapsing");
+                        collapse2.classList.add("collapse");
+                        collapse2.style = "height: 0px;";
+                        collapse2.classList.remove("in");
+                    }, 300);
+                }
+            }
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (err) {
+                    return false;
+                }
+            }
+            console.log(document.getElementsByClassName('menu__setting--last panel panel-default'));
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/email";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+                window.location.href = "skill";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[8].onclick = function () {
+                window.location.href = "mentor";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[9].onclick = function () {
+                window.location.href = "request";
+            };
+        </script>
         <div id="preloader"></div>
+
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
            display: flex!important;
            justify-content: center!important;
@@ -1283,14 +1595,14 @@
            "><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
-        <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-        <script src="assets/vendor/aos/aos.js"></script>
-        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="assets/vendor/php-email-form/validate.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
         <!-- Template Main JS File -->
-        <script src="assets/js/main.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
 
     </body>
 
