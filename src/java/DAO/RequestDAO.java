@@ -83,7 +83,7 @@ public class RequestDAO {
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
-                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName")));
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
                 }
                 dbo.close();
                 return r;
@@ -114,7 +114,41 @@ public class RequestDAO {
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
-                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName")));
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
+                }
+                arr.add(r);
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbo.close();
+        }
+        return arr;
+    }
+    
+    public static ArrayList<Request> getRequests() throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        ArrayList<Request> arr = new ArrayList();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request]");
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Request r = new Request(rs.getInt("RequestID"), rs.getInt("SenderID"), rs.getInt("UserID"), rs.getString("RequestReason"), rs.getString("RequestStatus"), rs.getString("RequestSubject"), rs.getTimestamp("RequestTime"), rs.getTimestamp("DeadlineTime"));
+                ps = dbo.prepareStatement("SELECT [fullname] FROM [Mentor] WHERE [UserID] = ?");
+                ps.setInt(1, r.getUserID());
+                ResultSet rs2 = ps.executeQuery();
+                rs2.next();
+                r.setMentor(rs2.getString("fullname"));
+                ps = dbo.prepareStatement("SELECT [username] FROM [User] WHERE [UserID] = ?");
+                ps.setInt(1, r.getSenderID());
+                rs2 = ps.executeQuery();
+                rs2.next();
+                r.setSender(rs2.getString("username"));
+                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
+                ps.setInt(1, rs.getInt("RequestID"));
+                rs2 = ps.executeQuery();
+                while(rs2.next()) {
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
                 }
                 arr.add(r);
             }

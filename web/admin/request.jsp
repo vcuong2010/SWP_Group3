@@ -5,45 +5,41 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.CV" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
 <!DOCTYPE html>
 <html lang="en">
 
-    <%
-            Mentor currMentor = (Mentor)request.getAttribute("CurrMentor");
-            CV currCV = (CV)request.getAttribute("CurrCV");
-    %>
     <head>
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title><%=currMentor.getFullname()%></title>
+        <title>List of requests</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
         <!-- Favicons -->
-        <link href="assets/img/favicon.png" rel="icon">
-        <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/favicon.png" rel="icon">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 
         <!-- Vendor CSS Files -->
-        <link href="assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-        <link href="assets/vendor/aos/aos.css" rel="stylesheet">
-        <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-        <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 
         <!-- Template Main CSS File -->
-        <link href="css/0.cbdbec7b.chunk.css" rel="stylesheet">
-        <link href="css/4.2ddfb1d3.chunk.css" rel="stylesheet">
-        <link href="css/8.97b85fe3.chunk.css" rel="stylesheet">
-        <link href="css/15.7bac9b00.chunk.css" rel="stylesheet">
-        <link href="css/main.3e229f12.chunk.css" rel="stylesheet">
-        <link href="assets/css/style.css" rel="stylesheet">
-        <link href="font-awesome/css/all.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/0.cbdbec7b.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/4.2ddfb1d3.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/8.97b85fe3.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/15.7bac9b00.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/main.3e229f12.chunk.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/css/style.css" rel="stylesheet">
+        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/font-awesome/css/all.css" rel="stylesheet">
 
         <style type="text/css">
             .react-skeleton-load {
@@ -466,27 +462,138 @@
             .styles-module_sliding__3T6T6 > * {
                 pointer-events: none;
             }
-        </style>
+            .table-title {
+                padding-bottom: 15px;
+                background: #435d7d;
+                color: #fff;
+                padding: 16px 30px;
+                min-width: 100%;
+                margin: -20px -25px 10px;
+                border-radius: 3px 3px 0 0;
+            }
+            *, ::after, ::before {
+                box-sizing: border-box;
+            }
+            .table-responsive {
+                margin: 30px 0;
+            }
 
+            .table-responsive {
+                display: block;
+                width: 100%;
+                -webkit-overflow-scrolling: touch;
+            }
+            .table-wrapper {
+                background: #fff;
+                padding: 20px 25px;
+                border-radius: 3px;
+                min-width: 1000px;
+                box-shadow: 0 1px 1px rgba(0,0,0,.05);
+            }
+            .row {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+                margin-right: -15px;
+                margin-left: -15px;
+            }
+            th {
+                display: table-cell;
+                vertical-align: inherit;
+                font-weight: bold;
+                text-align: -internal-center;
+            }
+            .table {
+                width: 100%;
+                margin-bottom: 1rem;
+                color: #212529;
+            }
+            table {
+                border-collapse: collapse;
+            }
+            user agent stylesheet
+            table {
+                border-collapse: separate;
+                text-indent: initial;
+                border-spacing: 2px;
+            }
+            .col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
+                position: relative;
+                padding-right: 15px;
+                padding-left: 15px;
+            }
+            .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
+                width: 100%;
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            .material-icons {
+                font-family: 'Material Icons';
+                font-weight: normal;
+                font-style: normal;
+                font-size: 24px;
+                line-height: 1;
+                letter-spacing: normal;
+                text-transform: none;
+                display: inline-block;
+                white-space: nowrap;
+                word-wrap: normal;
+                direction: ltr;
+                -webkit-font-feature-settings: 'liga';
+                -webkit-font-smoothing: antialiased;
+            }
+            table.table td:last-child i {
+                opacity: 0.9;
+                margin: 0 5px;
+            }
+            .hint-text {
+                float: left;
+                margin-top: 10px;
+                font-size: 13px;
+            }
+            .pagination {
+                float: right;
+                margin: 0 0 5px;
+            }
+
+            .pagination {
+                display: -ms-flexbox;
+                display: flex;
+                padding-left: 0;
+                list-style: none;
+                border-radius: 0.25rem;
+            }
+            table.table td a.delete {
+                color: #F44336;
+            }
+            table.table td a.edit {
+                color: #FFC107;
+            }
+        </style>
+        <link rel="stylesheet" type="text/css" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/9.cb7de3a7.chunk.css">
         <!-- =======================================================
         * Template Name: Mentor - v4.9.0
         * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
         * Author: BootstrapMade.com
         * License: https://bootstrapmade.com/license/
         ======================================================== -->
-        <link rel="stylesheet" type="text/css" href="css/3.fe7e74cf.chunk.css">
-        <link rel="stylesheet" type="text/css" href="css/10.697bc269.chunk.css">
+
     </head>
 
-    <body style="padding-top: 66px;" >
+    <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
-        <%
+        <%  
             User u = (User)session.getAttribute("User");
+            ArrayList<Request> arr = (ArrayList)request.getAttribute("requests");
+            int p = (int) Math.ceil((double)arr.size() / 10);
             if(u == null) {%>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
                 <a href="index" class="logo">
-                    <img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;">
+                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
                 </a>
             </div>
             <div class="navbar">
@@ -510,12 +617,12 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-center">
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="index">
+                        <a class="group-user " style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
                             <i class="fal fa-home-alt"></i>
                         </a>
                     </li>
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="request">
+                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                             <i class="fal fa-list"></i>
                         </a>
                     </li>
@@ -527,7 +634,7 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="item-icon authent">
-                        <a class="money-user" href="login">
+                        <a class="money-user" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/login">
                             <i class="fal fa-power-off"></i>
                             <span>Đăng nhập</span>
                         </a>
@@ -564,7 +671,7 @@
                             </a>
                         </div>
                         <ul class="list-page">
-                            <a href="/">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
                                 <li class="item-icon active">
                                     <a class="group-user">
                                         <i class="fal fa-home-alt"></i>
@@ -572,7 +679,7 @@
                                     </a>
                                 </li>
                             </a>
-                            <a href="request">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                                 <li class="item-icon " style="display: block">
                                     <a class="group-user">
                                         <i class="fal fa-list"></i> Stories </a>
@@ -642,8 +749,8 @@
         %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
-                <a href="index" class="logo">
-                    <img alt="logo playerduo" src="images/logo.png" style="border-radius: 50%;">
+                <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index" class="logo">
+                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
                 </a>
             </div>
             <div class="navbar">
@@ -667,12 +774,12 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-center">
                     <li class="item-icon">
-                        <a class="group-user" style="display: block" href="index">
+                        <a class="group-user" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
                             <i class="fal fa-home-alt"></i>
                         </a>
                     </li>
                     <li class="item-icon">
-                        <a class="group-user " style="display: block" href="request">
+                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                             <i class="fal fa-list"></i>
                         </a>
                     </li>
@@ -693,7 +800,7 @@
                         </a>
                         <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
                             <li role="presentation" class="page-user">
-                                <a role="menuitem" tabindex="-1" href="profile">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile">
                                     <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                                     <div class="text-logo">
                                         <h5><%=u.getUsername()%> </h5>
@@ -723,7 +830,7 @@
                                     <span>Nạp Tiền</span>
                                 </a>
                             </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="cv">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/cv">
                                     <i class="fas fa-user-lock"></i>
                                     <span>Tạo/Sửa CV</span>
                                 </a>
@@ -738,13 +845,13 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting">
                                     <i class="fas fa-cogs"></i>
                                     <span>Cài đặt tài khoản</span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="logout">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
                                     <i class="fas fa-power-off"></i>
                                     <span>Đăng xuất</span>
                                 </a>
@@ -858,13 +965,13 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="setting">
+                                <a role="menuitem" tabindex="-1" href="#">
                                     <i class="fas fa-cogs"></i>
                                     <span>Cài đặt tài khoản</span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="logout">
+                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
                                     <i class="fas fa-power-off"></i>
                                     <span>Đăng xuất</span>
                                 </a>
@@ -913,7 +1020,7 @@
                             </a>
                         </div>
                         <ul class="list-page">
-                            <a href="/">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
                                 <li class="item-icon active">
                                     <a class="group-user">
                                         <i class="fal fa-home-alt"></i>
@@ -921,7 +1028,7 @@
                                     </a>
                                 </li>
                             </a>
-                            <a href="request">
+                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
                                 <li class="item-icon ">
                                     <a class="group-user">
                                         <i class="fal fa-list"></i> Stories </a>
@@ -989,249 +1096,494 @@
                     avt.parentNode.classList.add("open");
                 }
             };
+
         </script>
-        <%}
-        %>
-        <div id="root">
-            <div class="wrapper">
-                <div class="container player-infomation">
-                    <div class="player-profile-left-wrap col-md-3">
-                        <div class="avt-player false">
-                            <div>
-                                <div class="avt avt-lg">
-                                    <img src="<%=currMentor.getAvatar() != null ? currMentor.getAvatar() : "https://files.playerduo.net/production/images/avatar31.png"%>" class="avt-img" alt="PD">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="rent-time-wrap">
-                            <p class="ready">Đang sẵn sàng</p>
-                        </div>
-                        <div class="ui-category">
-                            <div class="border-category"></div>
-                            <div class="title-category">
-                                <span class="member-since-septem">Thành tích</span>
-                            </div>
-                        </div>
-                        <table class="table-achievement table">
-                            <tbody>
-                                <tr style="display: flex; flex-direction: column;">
-                                    <td><%=currMentor.getAchivement() != null ? currMentor.getAchivement() : ""%> </td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="player-profile-right-wrap col-md-3 col-md-push-6">
-                        <div class="right-player-profile">
-                            <div class="rateting-style">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>&nbsp; <span>378 <span>Đánh giá</span>
-                                </span>
-                            </div>
-                            <div class="text-center">
-                                <button class="btn-my-style red">Thuê</button>
-                                <button class="btn-my-style white">
-                                    <i class="fas fa-comment-alt"></i>Chat </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="player-profile-main-wrap col-md-6 col-md-pull-3">
-                        <div>
-                            <div class="row">
-                                <div class="center-item col-md-12">
-                                    <span class="name-player-profile hidden-over-name"><%=currMentor.getFullname() != null ? currMentor.getFullname() : ""%> </span>
-                                </div>
-                            </div>
-                            <div class="nav-player-profile row">
-                                <div class="col-md-3 col-xs-6">
-                                    <div class="item-nav-name">
-                                        <span>Đã được thuê</span>
-                                    </div>
-                                    <div class="item-nav-value">0&nbsp; <span>giờ</span>
+        <%}%>
+        <!-- ======= Hero Section ======= -->
+        <script>
+            var max = <%=p%>;
+            var p = 1;
+        </script>
+        <div class="wrapper">
+            <div class="setting__main row">
+                <div class="setting__main--menu col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <div class="menu">
+                        <div class="menu__setting  panel-group">
+                            <div class="menu__setting--main panel panel-default">
+                                <div class="panel-heading">
+                                    <div class="panel-title">
+                                        <a aria-expanded="true" class="" role="button" href="#">TÀI KHOẢN <i class="fas fa-chevron-down"></i>
+                                        </a>
                                     </div>
                                 </div>
-                                <div class="col-md-3 col-xs-6">
-                                    <div class="item-nav-name">
-                                        <span>Tỷ lệ hoàn thành</span>
-                                    </div>
-                                    <div class="item-nav-value">100&nbsp;%</div>
-                                </div>
-                                <div class="col-md-3 col-xs-6">
-                                    <div class="item-nav-name">
-                                        <span>Tình trạng thiết bị</span>
-                                    </div>
-                                    <div class="item-nav-value">
-                                        <i class="fas fa-microphone"></i>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="game-category row">
-                                <%for(int i = 0; i < currCV.getSkills().size(); i++) {%>
-                                <div class="choose-game" style="background: center center no-repeat;">
-                                    <p class="overlay"><%=currCV.getSkills().get(i).getName()%> </p>
-                                </div>
-                                <%}%>
-                            </div>
-                            <hr>
-                            <div class="title-player-profile row">
-                                <div class="col-xs-6">
-                                    <span>Thông tin</span>
-                                </div>
-                            </div>
-                            <div class="content-player-profile">
-                                <p><%=currMentor.getDescription() != null ? currMentor.getDescription() : ""%> </p>
-                                <p><%=currCV.getServiceDescription() != null ? currCV.getServiceDescription() : ""%> </p>
-                                <br>
-                                <p style="font-weight: bold; font-size: 20px">Profession Introduction</p>
-                                <p><%=currCV.getProfessionIntroduction() != null ? currCV.getProfessionIntroduction() : ""%> </p>
-                                <p></p>
-                            </div>
-                            <hr>
-                            <div class="title-player-profile row">
-                                <div class="col-xs-6">
-                                    <span>Đánh giá</span>
-                                </div>
-                            </div>
-                            <div class="text-center review-duo-player row">
-                                <div class="col-md-12">
-                                    <div class="full-size">
-                                        <div class="review-image-small">
-                                            <div class="avt-rank avt-md">
-                                                <img src="https://files.playerduo.net/production/images/avatar10.png" class="avt-1-15 avt-img" alt="PD">
-                                                <img src="https://playerduo.net/rank/1.png" class="rank-1-15 rank-img" alt="PlayerDuo">
-                                            </div>
-                                        </div>
-                                        <div class="wrapper-content-rating">
-                                            <div class="review-content">
-                                                <a target="_blank" href="/page646f17c2dc54d85e76a24220">
-                                                    <p class="name-player-review color-vip-1">giau2k2</p>
-                                                </a>
-                                                <p class="time-player-review">
-                                                    <span>12:31:57 28/10/2023</span>
-                                                </p>
-                                            </div>
-                                            <div class="review-rating">
-                                                <div class="rateting-style">
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>&nbsp;
+                                <div class="panel-collapse collapse in" style="">
+                                    <div class="panel-body">
+                                        <div class="panel-group">
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="panel-title">
+                                                        <i class="fas fa-user-tie"></i> Thông tin cá nhân
+                                                    </div>
                                                 </div>
-                                                <span class="time-rent-review">( <span>Thuê</span>&nbsp;2h) </span>
                                             </div>
-                                            <p class="content-player-review">test </p>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Email</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Tài khoản và mật khẩu</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-user-lock"></i> Thông Tin CV
+                                                    </div>
+                                                </div>
+                                            </div><%}%>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-history"></i> Lịch sử giao dịch 
+                                                            <i class="fas fa-chevron-right"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử donate</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử duo</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử tạo code</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Biến động số dư</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Lịch sử mua thẻ</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="active title-sub  panel-title">
+                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                            <i class="fas fa-cog"></i> Cài đặt Admin <i class="fas fa-chevron-down"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <div class="panel-collapse collapse in">
+                                                    <div class="panel-body">
+                                                        <div class="panel-group">
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Skills</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Mentors</div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title active">Requests</div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-credit-card"></i> Thanh toán 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="menu__setting--sub panel panel-default">
+                                                <div class="panel-heading">
+                                                    <div class="  panel-title">
+                                                        <i class="fas fa-wallet"></i> Ví 
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-12">
-                                    <div class="page_account">
-                                        <p class="active">1</p>
-                                        <p class="">2</p>
-                                        <p class="">3</p>
-                                        <p class="">4</p>
-                                        <p class="">5</p>
-                                        <p class="active" style="cursor: auto;">1/38</p>
-                                    </div>
-                                </div>
                             </div>
+                        </div>
+                        <div class="btn-drawer-setting visible-xs">
+                            <i class="fas fa-chevron-right"></i>
                         </div>
                     </div>
                 </div>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                    <div class="aside">
+                        <form method="post">
+                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
+                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option><option value="open">Open</option><option value="processing">Processing</option><option value="closed">Closed</option></select><br>
+                            <label>Start Date: </label>
+                            <input id="start" type="datetime-local" name="start" style="width: 20%; min-height: 20px">
+                            <label style="margin-left: 10px">End Date: </label>
+                            <input id="end" type="datetime-local" name="end" style="width: 20%; min-height: 20px">
+                            <input id="filter"  type="submit" value="filter" style="margin-left: 10px; width: 10%; min-height: 20px;">
+                        </form>
+                        <script>
+                            document.getElementById("filter").onclick = function() {
+                                event.preventDefault();
+                                if(document.getElementById("start").value != null && document.getElementById("end").value != null) {
+                                    if(document.getElementById("start").value > document.getElementById("end").value) {
+                                        alert("start date must be before end date!");
+                                        return;
+                                    }
+                                };
+                                this.onclick = null;
+                                this.click();
+                            }
+                        </script>
+                        <h3>List of request</h3>
+                        <div class="transaction-table">
+                            <div class="table-responsive">
+                                <table class="table table-striped table-bordered table-condensed table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>ID</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Subject</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Sender</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%for(int i = 0; i < arr.size(); i++) {%>
+                                        <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
+                                            <td>
+                                                <%=i+1%>
+                                            </td>
+                                            <td><a href="" onclick="popup<%=i+1%>(event)"><%=arr.get(i).getId()%></a></td>
+                                            <td><%=arr.get(i).getSubject()%></td>
+                                            <td>
+                                                <%=arr.get(i).getSender()%>
+                                            </td>
+                                            <td><%=arr.get(i).getStatus()%></td>
+                                        </tr> 
+                                    <script>
+                                        function popup<%=i+1%>(event) {
+                                                event.preventDefault();
+                                                let title = document.title;
+                                                if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                            <%
+                                                try {
+                                            %>
+                                                    document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    let modal = document.createElement('div');
+                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><input type="hidden" name="id" value="<%=arr.get(i).getId()%>"><input type="hidden" name="type" value="update"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender</td><td><%=arr.get(i).getSender()%></td></tr><tr><td>Mentor:</td><td><%=arr.get(i).getMentor()%></td></tr><tr><td><span>Thời gian muốn thuê</span>:</td><td><%=arr.get(i).getDeadlineTime()%></td></tr><tr><td><span>Thời gian gửi request</span>:</td><td><%=arr.get(i).getRequestTime()%></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" disabled readonly required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px" readonly><%=arr.get(i).getReason()%></textarea></td></tr><tr><td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><tr><td><span>Kĩ năng muốn học</span>:</td><td><%for(int j = 0; j < arr.get(i).getSkills().size(); j++) {%><div class="col-sm-6 game-category row"><div class="choose-game" style="background: center center no-repeat;"><p class="overlay" style="text-shadow: 2px 0 0 #000;margin: 0;padding: 5px 2px;color: #fff;font-weight: 700;font-size: 13px;background: rgba(0,0,0,.75);border-radius: 10px;text-transform: capitalize;"><%=arr.get(i).getSkills().get(i).getName()%> </p></div></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                                                    document.body.appendChild(modal.firstChild);
+                                                    let btn = document.body.lastChild.getElementsByTagName('button');
+                                                    btn[0].onclick = function () {
+                                                        document.body.lastChild.firstChild.classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                        document.title = title;
+
+                                                    }
+                                                    btn[1].onclick = function () {
+                                                        document.body.lastChild.firstChild.classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                        document.title = title;
+
+                                                    }
+                                                    setTimeout(function () {
+                                                        document.body.lastChild.children[1].classList.add("in");
+                                                        document.body.lastChild.firstChild.classList.add("in");
+                                                        window.onclick = function (e) {
+                                                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                                document.body.lastChild.firstChild.classList.remove("in");
+                                                                document.body.lastChild.children[1].classList.remove("in");
+                                                                setTimeout(function () {
+                                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                                    document.body.removeChild(document.body.lastChild);
+                                                                    window.onclick = null;
+                                                                }, 100);
+                                                                document.title = title;
+                                                            }
+                                                        };
+                                                        document.title = "Update Request";
+                                                    }, 1);
+                                            <%} catch(Exception e) {}%>
+                                                } else {
+                                                    //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    document.body.lastChild.firstChild.classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px; ';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                    document.title = title;
+                                                }
+                                            
+                                        }
+                                    </script>
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                <div class="clearfix">
+                                    <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
+                                    <ul class="pagination">
+                                        <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
+                                            <%
+                                                for(int i = 0; i < p; i++) {
+                                            %>
+                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
+                                            <%}%>
+                                        <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
+                                        <script>
+                                            function paging(input, event) {
+                                                event.preventDefault();
+                                                let str = JSON.stringify(input.href).replace("<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")+request.getContextPath()+"/admin/"%>", "").replaceAll('"', '');
+                                                if (input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                                    if (parseInt(str) !== p) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        input.parentNode.classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = parseInt(str);
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    }
+                                                } else {
+                                                    if (input.innerHTML === "Previous" && p !== 1) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        document.getElementsByClassName("pagination")[0].children[p - 1].classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = p - 1;
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    } else if (input.innerHTML === "Next" && p !== max) {
+                                                        let checks = document.querySelectorAll("input[type=checkbox]");
+                                                        for (var i = 0; i < checks.length; i++) {
+                                                            checks[i].checked = false;
+                                                        }
+                                                        let f = document.getElementById("from");
+                                                        let m = document.getElementById("max");
+                                                        document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                        document.getElementsByClassName("pagination")[0].children[p + 1].classList.add("active");
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.add("hidden");
+                                                        }
+                                                        p = p + 1;
+                                                        for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
+                                                            document.getElementById(i).classList.remove("hidden");
+                                                        }
+                                                        if (p === max) {
+                                                            document.getElementById("Next").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                        }
+                                                        if (p === 1) {
+                                                            document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                        } else {
+                                                            document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                        }
+                                                        f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                                    }
+                                                }
+                                            }
+                                        </script>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
+                    </div></div>
+
             </div>
-            <div id="preloader"></div></div>
+        </div>
         <script>
-            <%if(request.getAttribute("status") != null) {%>
-            alert("Gửi Request thành công");
-            <%}%>
-            let title = document.title;
-            document.getElementsByClassName('btn-my-style red')[0].onclick = function () {
-                if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
-                    document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                    //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                    let modal = document.createElement('div');
-                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Request</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Thời gian muốn thuê</span>:</td><td><input type="datetime-local" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea></td></tr><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int i = 0; i < currCV.getSkills().size(); i++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
-                    modal.querySelector("input[type=datetime-local]").min = new Date().toISOString().split(":")[0] + ":" + new Date().toISOString().split(":")[1];
-                    document.body.appendChild(modal.firstChild);
-                    let skills = document.body.lastChild.querySelectorAll("input[type=checkbox]");
-                    for (var i = 0; i < skills.length; i++) {
-                        skills[i].onclick = function (e) {
-                            if (this.checked) {
-                                let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
-                                if (checkeds.length > 3) {
-                                    this.checked = false;
-                                    alert("Bạn chỉ được chọn tối đa 3 skills!");
-                                }
-                            }
-                        }
-                    }
-                    let btn = document.body.lastChild.getElementsByTagName('button');
-                    btn[1].onclick = function (e) {
-                        e.preventDefault();
-                        let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
-                        if (checkeds.length < 1) {
-                            alert('Vui lòng chọn ít nhất 1 skill!');
-                        } else {
-                            this.onclick = null;
-                            this.click();
-                        }
-                    }
-                    btn[0].onclick = function () {
-                        document.body.lastChild.firstChild.classList.remove("in");
-                        document.body.lastChild.children[1].classList.remove("in");
-                        setTimeout(function () {
-                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                            document.body.removeChild(document.body.lastChild);
-                            window.onclick = null;
-                        }, 100);
-                        document.title = title;
 
-                    }
-                    btn[2].onclick = function () {
-                        document.body.lastChild.firstChild.classList.remove("in");
-                        document.body.lastChild.children[1].classList.remove("in");
-                        setTimeout(function () {
-                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                            document.body.removeChild(document.body.lastChild);
-                            window.onclick = null;
-                        }, 100);
-                        document.title = title;
-
-                    }
+            let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
+            let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
+            document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
+                if (cog.classList.contains("fa-chevron-right")) {
+                    cog.classList.add("fa-chevron-down");
+                    cog.classList.remove("fa-chevron-right");
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
                     setTimeout(function () {
-                        document.body.lastChild.children[1].classList.add("in");
-                        document.body.lastChild.firstChild.classList.add("in");
-                        window.onclick = function (e) {
-                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                            }
-                        };
-                        document.title = "Create Request";
+                        collapse.style = "height: 72px;";
                     }, 1);
-                } else {
-                    //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                    document.body.lastChild.children[1].classList.remove("in");
-                    document.body.lastChild.firstChild.classList.remove("in");
                     setTimeout(function () {
-                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                        document.body.removeChild(document.body.lastChild);
-                        window.onclick = null;
-                    }, 100);
-                    document.title = title;
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "";
+                        collapse.classList.add("in");
+                    }, 300);
+                } else {
+                    cog.classList.remove("fa-chevron-down");
+                    cog.classList.add("fa-chevron-right");
+                    collapse.style = "height: 72px;";
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse.style = "height: 0px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "height: 0px;";
+                        collapse.classList.remove("in");
+                    }, 300);
                 }
             }
+            let cog2 = document.getElementsByClassName('fas fa-cog')[1].parentNode.children[1];
+            let collapse2 = cog2.parentNode.parentNode.parentNode.parentNode.children[1];
+            document.getElementsByClassName('fas fa-cog')[1].parentNode.onclick = function () {
+                if (cog2.classList.contains("fa-chevron-right")) {
+                    cog2.classList.add("fa-chevron-down");
+                    cog2.classList.remove("fa-chevron-right");
+                    collapse2.classList.remove("collapse");
+                    collapse2.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse2.style = "height: 108px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse2.classList.remove("collapsing");
+                        collapse2.classList.add("collapse");
+                        collapse2.style = "";
+                        collapse2.classList.add("in");
+                    }, 300);
+                } else {
+                    cog2.classList.remove("fa-chevron-down");
+                    cog2.classList.add("fa-chevron-right");
+                    collapse2.style = "height: 108px;";
+                    collapse2.classList.remove("collapse");
+                    collapse2.classList.add("collapsing");
+                    setTimeout(function () {
+                        collapse2.style = "height: 0px;";
+                    }, 1);
+                    setTimeout(function () {
+                        collapse2.classList.remove("collapsing");
+                        collapse2.classList.add("collapse");
+                        collapse2.style = "height: 0px;";
+                        collapse2.classList.remove("in");
+                    }, 300);
+                }
+            }
+            function isValidUrl(string) {
+                try {
+                    new URL(string);
+                    return true;
+                } catch (err) {
+                    return false;
+                }
+            }
+            console.log(document.getElementsByClassName('menu__setting--last panel panel-default'));
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/email";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+                window.location.href = "skill";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[8].onclick = function () {
+                window.location.href = "mentor";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[9].onclick = function () {
+                window.location.href = "request";
+            };
         </script>
+        <div id="preloader"></div>
+
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
            display: flex!important;
            justify-content: center!important;
@@ -1243,14 +1595,14 @@
            "><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
-        <script src="assets/vendor/purecounter/purecounter_vanilla.js"></script>
-        <script src="assets/vendor/aos/aos.js"></script>
-        <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="assets/vendor/php-email-form/validate.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
 
         <!-- Template Main JS File -->
-        <script src="assets/js/main.js"></script>
+        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
 
     </body>
 

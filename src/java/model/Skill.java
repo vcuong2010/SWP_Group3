@@ -11,10 +11,20 @@ package model;
 public class Skill {
     int id;
     String name;
+    boolean isEnable;
 
-    public Skill(int id, String name) {
+    public Skill(int id, String name, boolean enable) {
         this.id = id;
         this.name = name;
+        this.isEnable = enable;
+    }
+
+    public boolean isEnable() {
+        return isEnable;
+    }
+
+    public void setEnable(boolean isEnable) {
+        this.isEnable = isEnable;
     }
 
     public int getId() {

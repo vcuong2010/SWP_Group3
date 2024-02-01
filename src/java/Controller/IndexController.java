@@ -39,7 +39,7 @@ public class IndexController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            ArrayList<Skill> a = SkillDAO.getAll();
+            ArrayList<Skill> a = SkillDAO.getAll(true);
             for (int i = 0; i < a.size(); i++) {
                 for (int j = i; j < a.size(); j++) {
                     if(a.get(i).getName().compareToIgnoreCase(a.get(j).getName()) > 0) {

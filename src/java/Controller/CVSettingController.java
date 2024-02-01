@@ -44,7 +44,7 @@ public class CVSettingController extends HttpServlet {
             return;
         }
         try {
-            ArrayList<Skill> a = SkillDAO.getAll();
+            ArrayList<Skill> a = SkillDAO.getAll(true);
             request.setAttribute("skills", a); //All skill
         } catch (Exception e) {
         }

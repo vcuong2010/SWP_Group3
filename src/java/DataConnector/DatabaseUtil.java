@@ -15,6 +15,8 @@ import java.sql.SQLException;
 public class DatabaseUtil {
 
     static String dtbName = "SWP_Project";
+    static String username = "sa";
+    static String password = "12345678";
     
     public static Connection getConn() {
         Connection conn = null;
@@ -23,8 +25,6 @@ public class DatabaseUtil {
             if (conn == null || conn.isClosed()) {
                 String connectionString = "jdbc:sqlserver://localhost;databaseName="+dtbName+";encrypt=true;trustServerCertificate=true";
                 String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-                String username = "sa";
-                String password = "12345678";
                 try {
                     Class.forName(driverName);
                 } catch (ClassNotFoundException e) {

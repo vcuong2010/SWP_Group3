@@ -3,22 +3,24 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package Controller;
+package Controller.admin;
 
+import DAO.SkillDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import model.Skill;
+import model.User;
 
 /**
  *
  * @author TGDD
  */
-@WebServlet(name="LogoutController", urlPatterns={"/logout"})
-public class LogoutController extends HttpServlet {
+public class AdminSkillController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -29,10 +31,31 @@ public class LogoutController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        request.getSession().removeAttribute("User");
-        request.getSession().removeAttribute("Mentor");
-        request.getSession().removeAttribute("Mentee");
-        response.sendRedirect("login");
+        if(request.getSession().getAttribute("User") == null) {
+            request.getRequestDispatcher("/404.jsp").forward(request, response);
+            return;
+        } else {
+            User u = (User)request.getSession().getAttribute("User");
+            if(!u.getRole().equalsIgnoreCase("admin")) {
+                request.getRequestDispatcher("/404.jsp").forward(request, response);
+                return;
+            }
+        }
+        if(request.getParameter("toggleid") != null && request.getParameter("toggle") != null) {
+            try {
+                int id = Integer.parseInt(request.getParameter("toggleid"));
+                boolean type = request.getParameter("toggle").equalsIgnoreCase("on");
+                SkillDAO.toggle(type, id);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            ArrayList<Skill> skills = (ArrayList)SkillDAO.getAll();
+            request.setAttribute("skills", skills);
+        } catch(Exception e) {
+        }
+        request.getRequestDispatcher("skill.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

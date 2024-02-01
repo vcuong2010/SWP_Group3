@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Request {
     int id, senderID, userID;
     String mentor;
+    String sender;
     String reason, status, subject;
     Timestamp DeadlineTime;
     Timestamp requestTime;
@@ -29,6 +30,14 @@ public class Request {
         this.subject = subject;
         this.requestTime = requestTime;
         this.DeadlineTime = DeadlineTime;
+    }
+
+    public String getSender() {
+        return sender;
+    }
+
+    public void setSender(String sender) {
+        this.sender = sender;
     }
     
     public String getSkillsName() {

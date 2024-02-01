@@ -588,6 +588,7 @@
         <%  
             User u = (User)session.getAttribute("User");
             ArrayList<Request> arr = (ArrayList)request.getAttribute("requests");
+            int p = (int) Math.ceil((double)arr.size() / 10);
             if(u == null) {%>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
@@ -840,9 +841,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-users"></i>
-                                    <span>Schedule</span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -962,9 +961,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-users"></i>
-                                    <span>Schedule</span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -1103,6 +1100,10 @@
         </script>
         <%}%>
         <!-- ======= Hero Section ======= -->
+        <script>
+            var max = <%=p%>;
+            var p = 1;
+        </script>
         <div class="home-flex-content">
             <div class="container-xl">
                 <div class="table-responsive">
@@ -1140,10 +1141,10 @@
                             </thead>
                             <tbody>
                                 <%for(int i = 0; i < arr.size(); i++) {%>
-                                <tr>
+                                <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                     <td>
                                         <span class="custom-checkbox">
-                                            <input type="checkbox" id="checkbox1" name="options[]" value="<%=arr.get(i).getId()%>">
+                                            <input type="<%=(i >= 10 ? "hidden" : "checkbox")%>" id="checkbox1" name="options[]" value="<%=arr.get(i).getId()%>">
                                             <label for="checkbox1"></label>
                                         </span>
                                     </td>
@@ -1262,15 +1263,113 @@
                             </tbody>
                         </table>
                         <div class="clearfix">
-                            <div class="hint-text">Showing <b>0</b> out of <b>0</b> entries</div>
+                            <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
                             <ul class="pagination">
-                                <li class="page-item disabled"><a href="#">Previous</a></li>
-                                <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                                <li class="page-item"><a href="#" class="page-link">3</a></li>
-                                <li class="page-item"><a href="#" class="page-link">4</a></li>
-                                <li class="page-item"><a href="#" class="page-link">5</a></li>
-                                <li class="page-item"><a href="#" class="page-link">Next</a></li>
+                                <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
+                                <%
+                                    for(int i = 0; i < p; i++) {
+                                %>
+                                <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
+                                <%}%>
+                                <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
+                                <script>
+                                    function paging(input, event) {
+                                        event.preventDefault();
+                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
+                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                            if(parseInt(str) !== p) {
+                                                let checks = document.querySelectorAll("input[type=checkbox]");
+                                                for (var i = 0; i < checks.length; i++) {
+                                                    checks[i].checked = false;
+                                                }
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                input.parentNode.classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
+                                                }
+                                                p = parseInt(str);
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            }
+                                        } else {
+                                            if(input.innerHTML === "Previous" && p !== 1) {
+                                                let checks = document.querySelectorAll("input[type=checkbox]");
+                                                for (var i = 0; i < checks.length; i++) {
+                                                    checks[i].checked = false;
+                                                }
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                document.getElementsByClassName("pagination")[0].children[p-1].classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
+                                                }
+                                                p = p-1;
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            } else if(input.innerHTML === "Next" && p !== max) {
+                                                let checks = document.querySelectorAll("input[type=checkbox]");
+                                                for (var i = 0; i < checks.length; i++) {
+                                                    checks[i].checked = false;
+                                                }
+                                                let f = document.getElementById("from");
+                                                let m = document.getElementById("max");
+                                                document.getElementsByClassName("page-item active")[0].classList.remove("active");
+                                                document.getElementsByClassName("pagination")[0].children[p+1].classList.add("active");
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
+                                                }
+                                                p = p+1;
+                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                    document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
+                                                }
+                                                if(p===max) {
+                                                    document.getElementById("Next").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Next").parentNode.classList.remove("disabled");
+                                                }
+                                                if(p===1) {
+                                                    document.getElementById("Previous").parentNode.classList.add("disabled");
+                                                } else {
+                                                    document.getElementById("Previous").parentNode.classList.remove("disabled");
+                                                }
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                            }
+                                        }
+                                    }
+                                </script>
                             </ul>
                         </div>
                     </div>
@@ -1281,13 +1380,13 @@
         <script>
 
             document.getElementsByClassName('custom-checkbox')[0].onclick = function (e) {
-                let checkbox = document.getElementsByClassName('custom-checkbox');
+                let checkbox = document.querySelectorAll("input[type=checkbox]");
                 for (let i = 1; i < checkbox.length; i++) {
-                    if (!checkbox[0].children[0].checked) {
-                        checkbox[i].children[0].checked = false;
+                    if (!checkbox[0].checked) {
+                        checkbox[i].checked = false;
                         document.getElementById('deletebtn').href = "request?type=delete";
                     } else {
-                        checkbox[i].children[0].checked = true;
+                        checkbox[i].checked = true;
                         document.getElementById('deletebtn').href = "request?type=delete&id=all";
                     }
                 }
