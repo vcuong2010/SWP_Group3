@@ -1255,7 +1255,53 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
                         <h3 class="col-sm-8">List of request</h3>
-                        <button class="btn-update" style="line-height: 0px; margin: 15px 0; height: 40px; width: 20%;">Tạo Skill</button>
+                        <button class="btn-update" style="font-family: inherit; line-height: 0px; margin: 15px 0; height: 40px; width: 20%;">Tạo Skill</button>
+                        <script>
+                        document.getElementsByClassName('btn-update')[0].onclick = function() {
+                            let title = document.title;
+                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                            let modal = document.createElement('div');
+                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Skill</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Tên Skill:</td><td><input placeholder="Nhập tên skill..." required name="name"></td></tr><tr><td><span>Trạng Thái</span>:</td><td><select required name="status"><option selected value="active">Active</option><option value="inactive">Inactive</option></select></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Tạo</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                            document.body.appendChild(modal.firstChild);
+                    setTimeout(function () {
+                        document.body.lastChild.children[1].classList.add("in");
+                        document.body.lastChild.firstChild.classList.add("in");
+                        document.getElementsByClassName('close')[0].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        window.onclick = function (e) {
+                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                            }
+                        };
+                        document.title = "Create Skill";
+                    }, 1);
+                        }
+                        </script>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
@@ -1279,6 +1325,53 @@
                                                 <a href="" id="" onclick="update<%=i+1%>(event)" class="edit" data-toggle="modal">
                                             <i class="fas fa-edit" data-toggle="tooltip" title="update"></i>
                                         </a>
+                                            <script>
+                                                function update<%=i+1%>(event) {
+                                                    event.preventDefault();
+                            let title = document.title;
+                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                            let modal = document.createElement('div');
+                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Update Skill</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Tên Skill:</td><td><input placeholder="Nhập tên skill..." required name="name" value="<%=arr.get(i).getName()%>"></td></tr><tr><td><span>Trạng Thái</span>:</td><td><select required name="status"><option <%=arr.get(i).isEnable() ? "selected" : ""%> value="active">Active</option><option <%=arr.get(i).isEnable() ? "" : "selected"%> value="Inactive">Inactive</option></select><input type="hidden" name="id" value="<%=arr.get(i).getId()%>"></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Tạo</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                            document.body.appendChild(modal.firstChild);
+                    setTimeout(function () {
+                        document.body.lastChild.children[1].classList.add("in");
+                        document.body.lastChild.firstChild.classList.add("in");
+                        document.getElementsByClassName('close')[0].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        window.onclick = function (e) {
+                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                            }
+                        };
+                        document.title = "Update Skill";
+                    }, 1);
+                        }
+                                            </script>
                                             <a href="skill?toggleid=<%=arr.get(i).getId()%>&toggle=<%=arr.get(i).isEnable() ? "off" : "on"%>" class="delete" data-toggle="modal">
                                             <i class="fas fa-toggle-<%=arr.get(i).isEnable() ? "on" : "off"%>" data-toggle="tooltip" title="<%=arr.get(i).isEnable() ? "disable" : "enable"%>"></i>
                                         </a>
@@ -1476,7 +1569,6 @@
                     return false;
                 }
             }
-            console.log(document.getElementsByClassName('menu__setting--last panel panel-default'));
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/email";
             };

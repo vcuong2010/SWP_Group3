@@ -17,6 +17,35 @@ import model.Skill;
  */
 public class SkillDAO {
     
+    public static boolean createSkill(String name, boolean active) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement("INSERT INTO Skills (SkillName, enable) VALUES (?, ?)");
+        ps.setString(1, name);
+        ps.setInt(2, active ? 1 : 0);
+        int k = ps.executeUpdate();
+        dbo.commit();
+        dbo.close();
+        if(k > 0)
+            return true;
+        return false;
+        
+    }
+    
+    public static boolean UpdateSkill(int id, String name, boolean active) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement("UPDATE Skills SET SkillName = ?, enable = ? WHERE SkillID = ?");
+        ps.setString(1, name);
+        ps.setInt(2, active ? 1 : 0);
+        ps.setInt(3, id);
+        int k = ps.executeUpdate();
+        dbo.commit();
+        dbo.close();
+        if(k > 0)
+            return true;
+        return false;
+        
+    }
+    
     public static boolean contains(ArrayList<Skill> arr, Skill i) {
         for (int j = 0; j < arr.size(); j++) {
             if(arr.get(j).getId() == i.getId()) {
