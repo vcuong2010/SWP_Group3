@@ -110,7 +110,7 @@ public class RequestDAO {
                 ResultSet rs2 = ps.executeQuery();
                 rs2.next();
                 r.setMentor(rs2.getString("fullname"));
-                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
+                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID], [enable] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
@@ -144,7 +144,7 @@ public class RequestDAO {
                 rs2 = ps.executeQuery();
                 rs2.next();
                 r.setSender(rs2.getString("username"));
-                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
+                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID], [enable] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
