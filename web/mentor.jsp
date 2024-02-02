@@ -1251,7 +1251,13 @@
 
         <!-- Template Main JS File -->
         <script src="assets/js/main.js"></script>
-
+        <%if(request.getParameter("invite") != null) {%>
+        <script>
+            setTimeout(function () {
+                document.getElementsByClassName('btn-my-style red')[0].click();
+            }, 1);
+        </script>
+        <% } %>
     </body>
 
 </html>

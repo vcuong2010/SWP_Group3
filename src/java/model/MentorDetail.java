@@ -13,6 +13,7 @@ public class MentorDetail {
     int rating;
     int acceptedRequest;
     int percentComplete;
+    int requests;
     String account;
     String profession;
     boolean status;
@@ -25,6 +26,14 @@ public class MentorDetail {
         this.account = account;
         this.profession = profession;
         this.status = status;
+    }
+
+    public int getRequests() {
+        return requests;
+    }
+
+    public void setRequests(int requests) {
+        this.requests = requests;
     }
 
     public boolean isStatus() {

@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.MentorDetail, java.util.HashMap" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1121,35 +1121,35 @@
                                     </select>
                                 </div>
                                 <script>
-                                    document.querySelector("select[name=sort]").onchange = function() {
+                                    document.querySelector("select[name=sort]").onchange = function () {
                                         if (this.selectedIndex) {
-                                            if(this.value === 'A-Z') {
+                                            if (this.value === 'A-Z') {
                                                 let str = "";
                                                 var t = 1;
-                                                <% ArrayList<Skill> az = (ArrayList)request.getAttribute("a-z");
+                                    <% ArrayList<Skill> az = (ArrayList)request.getAttribute("a-z");
                                                 for(int i = 0; i < az.size(); i++) {
-                                                %>
-                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
+                                    %>
+                                                if ((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10) + 1) === p) {
                                                     str += '<tr id="<%=i+1%>"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
                                                 } else {
                                                     str += '<tr id="<%=i+1%>" class="hidden"><td><%=i+1%></td><td><%=az.get(i).getName()%></td><td><%=az.get(i).getId()%></td></tr>'
                                                 }
                                                 t++;
-                                                <%}%>
+                                    <%}%>
                                                 document.querySelector("tbody").innerHTML = str;
-                                            } else if(this.value === 'Z-A') {
+                                            } else if (this.value === 'Z-A') {
                                                 let str = "";
                                                 var t = 1;
-                                                <% ArrayList<Skill> za = (ArrayList)request.getAttribute("z-a");
+                                    <% ArrayList<Skill> za = (ArrayList)request.getAttribute("z-a");
                                                 for(int i = 0; i < za.size(); i++) {
-                                                %>
-                                                                if((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10)+1) === p) {                
-                                                                    str += '<tr id=<%=i+1%>><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
-                                                                } else {
-                                                                    str += '<tr id=<%=i+1%> class="hidden"><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
-                                                                }
+                                    %>
+                                                if ((parseInt(t / 10) === (t / 10) && (t / 10) === p) || (parseInt(t / 10) !== (t / 10) && parseInt(t / 10) + 1) === p) {
+                                                    str += '<tr id=<%=i+1%>><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
+                                                } else {
+                                                    str += '<tr id=<%=i+1%> class="hidden"><td><%=i+1%></td><td><%=za.get(i).getName()%></td><td><%=za.get(i).getId()%></td></tr>'
+                                                }
                                                 t++;
-                                                <%}%>
+                                    <%}%>
                                                 document.querySelector("tbody").innerHTML = str;
                                             }
                                         }
@@ -1169,8 +1169,8 @@
                                 <%for(int i = 0; i < arr.size(); i++) {%>
                                 <tr id='<%=i+1%>' <%=(i >= 10) ? "class='hidden'" : ""%>>
                                     <td><%=i+1%></td>
-                                    <td><%=arr.get(i).getName()%></td>
-                                    <td><%=arr.get(i).getId()%></td>
+                                    <td><a href="skill?id=<%=arr.get(i).getId()%>"><%=arr.get(i).getName()%></a></td>
+                                    <td><a href="skill?id=<%=arr.get(i).getId()%>"><%=arr.get(i).getId()%></a></td>
                                 </tr> 
                                 <%}%>
                             </tbody>
@@ -1179,88 +1179,88 @@
                             <div class="hint-text">Showing <b id='from'><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id='max'><%=arr.size()%></b> entries</div>
                             <ul class="pagination">
                                 <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
-                                <%
-                                    for(int i = 0; i < p; i++) {
-                                %>
+                                    <%
+                                        for(int i = 0; i < p; i++) {
+                                    %>
                                 <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
-                                <%}%>
+                                    <%}%>
                                 <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                 <script>
                                     function paging(input, event) {
                                         event.preventDefault();
-                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
-                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
-                                            if(parseInt(str) !== p) {
+                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/", "").replaceAll('"', '');
+                                        if (input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                            if (parseInt(str) !== p) {
                                                 let f = document.getElementById("from");
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
                                                 input.parentNode.classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                 }
                                                 p = parseInt(str);
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
                                             }
                                         } else {
-                                            if(input.innerHTML === "Previous" && p !== 1) {
+                                            if (input.innerHTML === "Previous" && p !== 1) {
                                                 let f = document.getElementById("from");
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p-1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                document.getElementsByClassName("pagination")[0].children[p - 1].classList.add("active");
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                 }
-                                                p = p-1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                p = p - 1;
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
-                                            } else if(input.innerHTML === "Next" && p !== max) {
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                            } else if (input.innerHTML === "Next" && p !== max) {
                                                 let f = document.getElementById("from");
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p+1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                document.getElementsByClassName("pagination")[0].children[p + 1].classList.add("active");
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                 }
-                                                p = p+1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                p = p + 1;
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
                                             }
                                         }
                                     }
@@ -1291,7 +1291,90 @@
 
         <!-- Template Main JS File -->
         <script src="assets/js/main.js"></script>
-
+        <% if(request.getAttribute("mentors") != null) {
+            HashMap<Mentor, MentorDetail> mentors = (HashMap)request.getAttribute("mentors");
+        %>
+        <div role="dialog">
+            <div class="fade modal-backdrop"></div>
+            <div role="dialog" tabindex="-1" class="fade modal" style="display: block;">
+                <div class="modal-dialog">
+                    <div class="modal-content" role="document">
+                        <div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Mentor Suggest</span></h4></div>
+                        <div class="modal-body">
+                            <div class="content-main">
+                                <table class="table table-striped table-bordered table-condensed table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Account</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rating</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Requests</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Accepted</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <%for(Mentor m : mentors.keySet()) {%>
+                                        <tr>
+                                            <td><%=m.getFullname()%></td>
+                                            <td><%=mentors.get(m).getAccount()%></td>
+                                            <td><%=mentors.get(m).getRating()%></td>
+                                            <td><%=mentors.get(m).getRequests()%></td>
+                                            <td><%=mentors.get(m).getAcceptedRequest()%></td>
+                                            <td>
+                                                <a href="mentor?id=<%=m.getId()%>&invite=true" class="delete" data-toggle="modal">
+                                            <i class="fas fa-user-plus" data-toggle="tooltip" title="Thuê"></i>
+                                        </a>
+                                            </td>
+                                        </tr> 
+                                        <%}%>
+                                    </tbody>
+                                </table>
+                                    <%if(mentors.size() == 0) {%>
+                                    <div class="text-center mt-20"><span>Không có dữ liệu</span></div>
+                                    <% } %>
+                            </div>
+                        </div>
+                            <div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+                                    document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px;';
+                                    setTimeout(function () {
+                                        let index = document.body.children.length - 2;
+                                        document.body.children[index].children[1].classList.add("in");
+                                        document.body.children[index].children[0].classList.add("in");
+                                        window.onclick = function (e) {
+                                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.children[index].children[1].classList.remove("in");
+                                                    document.body.children[index].children[0].classList.remove("in");
+                                                    document.body.style = 'padding-top: 100px; display:flex';
+                                                    setTimeout(function () {
+                                                        document.body.removeChild(document.body.children[index]);
+                                                    }, 200);
+                                            }
+                                        }
+                                        document.getElementsByClassName('btn btn-default')[3].onclick = function (e) {
+                                                    document.body.children[index].children[1].classList.remove("in");
+                                                    document.body.children[index].children[0].classList.remove("in");
+                                                    document.body.style = 'padding-top: 100px; display:flex';
+                                                    setTimeout(function () {
+                                                        document.body.removeChild(document.body.children[index]);
+                                                    }, 200);
+                                        }
+                                        document.getElementsByClassName('close')[0].onclick = function (e) {
+                                                    document.body.children[index].children[1].classList.remove("in");
+                                                    document.body.children[index].children[0].classList.remove("in");
+                                                    document.body.style = 'padding-top: 100px; display:flex';
+                                                    setTimeout(function () {
+                                                        document.body.removeChild(document.body.children[index]);
+                                                    }, 200);
+                                        }
+                                    }, 1)
+        </script>
+        <% } %>
     </body>
 
 </html>
