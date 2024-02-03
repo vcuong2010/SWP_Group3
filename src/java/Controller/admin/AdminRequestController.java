@@ -5,6 +5,7 @@
 
 package Controller.admin;
 
+import Controller.AuthorizationController;
 import DAO.RequestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,16 +35,11 @@ public class AdminRequestController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if(request.getSession().getAttribute("User") == null) {
-            request.getRequestDispatcher("/404.jsp").forward(request, response);
-            return;
-        } else {
-            User u = (User)request.getSession().getAttribute("User");
-            if(!u.getRole().equalsIgnoreCase("admin") && !u.getRole().equalsIgnoreCase("manager")) {
-                request.getRequestDispatcher("/404.jsp").forward(request, response);
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
                 return;
             }
-        }
+        } catch(Exception e) {}
         try {
             ArrayList<Request> requests = (ArrayList)RequestDAO.getRequests();
             request.setAttribute("requests", requests);
@@ -76,16 +72,11 @@ public class AdminRequestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if(request.getSession().getAttribute("User") == null) {
-            request.getRequestDispatcher("/404.jsp").forward(request, response);
-            return;
-        } else {
-            User u = (User)request.getSession().getAttribute("User");
-            if(!u.getRole().equalsIgnoreCase("admin") && !u.getRole().equalsIgnoreCase("manager")) {
-                request.getRequestDispatcher("/404.jsp").forward(request, response);
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
                 return;
             }
-        }
+        } catch(Exception e) {}
         try {
             ArrayList<Request> requests = (ArrayList)RequestDAO.getRequests();
             if(request.getParameter("search") != null && !request.getParameter("search").isEmpty()) {

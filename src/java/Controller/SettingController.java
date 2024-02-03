@@ -31,10 +31,11 @@ public class SettingController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if(request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         request.getRequestDispatcher("setting.jsp").forward(request, response);
     } 
 
@@ -62,6 +63,11 @@ public class SettingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         String confirm = request.getParameter("confirmNewPassword");
         String password = request.getParameter("newPassword");
         String OldPassword = request.getParameter("oldPassword");

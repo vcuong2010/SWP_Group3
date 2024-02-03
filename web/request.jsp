@@ -841,7 +841,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -961,7 +961,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">

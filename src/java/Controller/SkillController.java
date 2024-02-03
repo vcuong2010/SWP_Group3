@@ -35,6 +35,11 @@ public class SkillController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
+        try {
             ArrayList<Skill> arr = SkillDAO.getAll(true);
             request.setAttribute("skills", arr);
             ArrayList<Skill> az = (ArrayList)arr.clone();

@@ -38,10 +38,11 @@ public class RequestController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if (request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         User u = (User)request.getSession().getAttribute("User");
         String type = request.getParameter("type");
         if(type != null && type.equalsIgnoreCase("delete")) {
@@ -106,6 +107,11 @@ public class RequestController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         String sid = request.getParameter("id");
         if(sid == null) {
             response.sendRedirect("request");

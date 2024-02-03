@@ -37,6 +37,11 @@ public class RegisterController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         request.getRequestDispatcher("SignUp.jsp").forward(request, response);
     }
 
@@ -66,6 +71,11 @@ public class RegisterController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");

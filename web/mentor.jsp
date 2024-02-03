@@ -734,7 +734,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -854,7 +854,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -1146,7 +1146,7 @@
             <div id="preloader"></div></div>
         <script>
             <%if(request.getAttribute("status") != null) {%>
-            alert("Gửi Request thành công");
+            alert("<%=request.getAttribute("status")%>");
             <%}%>
             let title = document.title;
             document.getElementsByClassName('btn-my-style red')[0].onclick = function () {

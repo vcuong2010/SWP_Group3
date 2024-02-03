@@ -39,6 +39,11 @@ public class MentorController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         String sid = request.getParameter("id");
         if(sid == null) {
             response.sendRedirect("index");
@@ -81,6 +86,11 @@ public class MentorController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         String sid = request.getParameter("id");
         if(sid == null) {
             response.sendRedirect("index");
@@ -88,7 +98,8 @@ public class MentorController extends HttpServlet {
         }
         User u = (User)request.getSession().getAttribute("User");
         if(u == null || !u.getRole().equalsIgnoreCase("mentee")) {
-            response.sendRedirect("index");
+            request.setAttribute("status", "Bạn chưa đăng nhập hoặc không phải mentee!");
+            request.getRequestDispatcher("mentor.jsp").forward(request, response);
             return;
         }
         String[] skills = request.getParameterValues("skill");
@@ -105,11 +116,10 @@ public class MentorController extends HttpServlet {
             Timestamp tm = Timestamp.from(formatter.parse(deadline).toInstant());
             boolean check = RequestDAO.createRequest(skills, tm, subject, reason, u.getId(), id);
             if(check) {
-                request.setAttribute("status", "Success");
+                request.setAttribute("status", "Gửi request thành công!");
             }
         } catch(Exception e) {
-            response.sendRedirect("index");
-            return;
+            request.setAttribute("status", "Gửi request thất bại!");
         } 
         request.getRequestDispatcher("mentor.jsp").forward(request, response);
     }

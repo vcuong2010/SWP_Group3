@@ -841,7 +841,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -961,7 +961,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -1209,6 +1209,7 @@
                                                 <div class="panel-collapse collapse in">
                                                     <div class="panel-body">
                                                         <div class="panel-group">
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Skills</div>
@@ -1219,6 +1220,7 @@
                                                                     <div class="panel-title">Mentors</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title active">Requests</div>
@@ -1529,7 +1531,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 108px;";
+                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "108" : "36"%>px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1540,7 +1542,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 108px;";
+                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "108" : "36"%>px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1572,6 +1574,7 @@
             document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
                 window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile";
             };
+            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
                 window.location.href = "skill";
             };
@@ -1581,18 +1584,15 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[9].onclick = function () {
                 window.location.href = "request";
             };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+                window.location.href = "request";
+            };
+            <%}%>
         </script>
         <div id="preloader"></div>
 
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
-           display: flex!important;
-           justify-content: center!important;
-           align-items: center!important;
-           box-sizing: border-box;
-           text-align: var(--bs-body-text-align);
-           -webkit-text-size-adjust: 100%;
-           -webkit-tap-highlight-color: transparent;
-           "><i class="bi bi-arrow-up-short"></i></a>
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="display: flex!important;justify-content: center!important;align-items: center!important;box-sizing: border-box;text-align: var(--bs-body-text-align);-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: transparent;"><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>

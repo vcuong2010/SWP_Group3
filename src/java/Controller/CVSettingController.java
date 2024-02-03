@@ -39,10 +39,11 @@ public class CVSettingController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         try {
             ArrayList<Skill> a = SkillDAO.getAll(true);
             request.setAttribute("skills", a); //All skill
@@ -77,10 +78,11 @@ public class CVSettingController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         User u = (User) request.getSession().getAttribute("User");
         Mentor m = (Mentor) UserDAO.getRole(u.getId(), u.getRole());
         String type = request.getParameter("type");

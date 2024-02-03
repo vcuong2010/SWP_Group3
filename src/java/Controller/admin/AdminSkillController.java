@@ -4,6 +4,7 @@
  */
 package Controller.admin;
 
+import Controller.AuthorizationController;
 import DAO.SkillDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,16 +33,11 @@ public class AdminSkillController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getSession().getAttribute("User") == null) {
-            request.getRequestDispatcher("/404.jsp").forward(request, response);
-            return;
-        } else {
-            User u = (User) request.getSession().getAttribute("User");
-            if (!u.getRole().equalsIgnoreCase("admin")) {
-                request.getRequestDispatcher("/404.jsp").forward(request, response);
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
                 return;
             }
-        }
+        } catch(Exception e) {}
         if (request.getParameter("toggleid") != null && request.getParameter("toggle") != null) {
             try {
                 int id = Integer.parseInt(request.getParameter("toggleid"));
@@ -85,6 +81,11 @@ public class AdminSkillController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         if (request.getParameter("id") == null) {
             if (request.getParameter("name") != null && !request.getParameter("name").isEmpty()) {
                 String name = request.getParameter("name");
@@ -104,16 +105,6 @@ public class AdminSkillController extends HttpServlet {
                     SkillDAO.UpdateSkill(id, name, status.equalsIgnoreCase("active"));
                 } catch (Exception e) {
                 }
-            }
-        }
-        if (request.getSession().getAttribute("User") == null) {
-            request.getRequestDispatcher("/404.jsp").forward(request, response);
-            return;
-        } else {
-            User u = (User) request.getSession().getAttribute("User");
-            if (!u.getRole().equalsIgnoreCase("admin")) {
-                request.getRequestDispatcher("/404.jsp").forward(request, response);
-                return;
             }
         }
         try {

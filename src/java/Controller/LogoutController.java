@@ -29,6 +29,11 @@ public class LogoutController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         request.getSession().removeAttribute("User");
         request.getSession().removeAttribute("Mentor");
         request.getSession().removeAttribute("Mentee");

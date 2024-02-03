@@ -34,10 +34,11 @@ public class ProfileController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        if (request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         User u = (User) request.getSession().getAttribute("User");
         if (!UserDAO.isMentor(u)) {
             Mentee r = (Mentee) UserDAO.getRole(u.getId(), u.getRole());
@@ -94,6 +95,11 @@ public class ProfileController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         User u = (User) request.getSession().getAttribute("User");
         //Update fullname
         String fullname = request.getParameter("fullname");

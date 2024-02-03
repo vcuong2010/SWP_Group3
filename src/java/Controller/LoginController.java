@@ -33,6 +33,11 @@ public class LoginController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         Cookie[] cs = request.getCookies();
         for (int i = 0; i < cs.length; i++) {
             if(cs[i].getName().equals("user")) {
@@ -69,6 +74,11 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
             Cookie[] cs = request.getCookies();
             String username = request.getParameter("username");
             String password = request.getParameter("password");

@@ -35,10 +35,11 @@ public class EmailController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if(request.getSession().getAttribute("User") == null) {
-            response.sendRedirect("index");
-            return;
-        }
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
         User u = (User)request.getSession().getAttribute("User");
         String verify = request.getParameter("verify");
         if(verify != null) {
@@ -87,6 +88,11 @@ public class EmailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        try {
+            if (!AuthorizationController.gI().Authorization(request, response)) {
+                return;
+            }
+        } catch(Exception e) {}
                     String generatedString = RandomStringService.random(20);
                     String email = request.getParameter("emailValue");
                     User u = (User)request.getSession().getAttribute("User");
