@@ -1385,6 +1385,7 @@
                                         <%}%>
                                     </tbody>
                                 </table>
+                                <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
                                 <div class="clearfix">
                                     <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
                                     <ul class="pagination">
@@ -1491,7 +1492,6 @@
                                 </div>
                             </div>
                         </div>
-                        <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
                     </div></div>
 
             </div>

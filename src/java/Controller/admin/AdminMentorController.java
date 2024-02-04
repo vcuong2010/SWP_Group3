@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.HashMap;
 import model.Mentor;
 import model.MentorDetail;
@@ -92,12 +93,16 @@ public class AdminMentorController extends HttpServlet {
         try {
             HashMap<Mentor, MentorDetail> mentors = (HashMap) MentorDAO.getAllWithDetail();
             if (request.getParameter("search") != null && !request.getParameter("search").isEmpty()) {
+                ArrayList<Mentor> temp = new ArrayList();
                 for (Mentor m : mentors.keySet()) {
                     if (!m.getFullname().contains(request.getParameter("search"))) {
                         if (!mentors.get(m).getAccount().contains(request.getParameter("search"))) {
-                            mentors.remove(m);
+                            temp.add(m);
                         }
                     }
+                }
+                for (int i = 0; i < temp.size(); i++) {
+                    mentors.remove(temp.get(i));
                 }
             }
             request.setAttribute("mentors", mentors);
