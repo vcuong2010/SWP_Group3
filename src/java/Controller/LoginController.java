@@ -5,6 +5,7 @@
 
 package Controller;
 
+import Service.AuthorizationService;
 import DAO.SkillDAO;
 import DAO.UserDAO;
 import model.User;
@@ -34,7 +35,7 @@ public class LoginController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}
@@ -75,7 +76,7 @@ public class LoginController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}

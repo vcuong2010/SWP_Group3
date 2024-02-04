@@ -5,6 +5,7 @@
 
 package Controller;
 
+import Service.AuthorizationService;
 import DAO.CvDAO;
 import DAO.MentorDAO;
 import DAO.RequestDAO;
@@ -39,7 +40,7 @@ public class RequestController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}
@@ -108,7 +109,7 @@ public class RequestController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}

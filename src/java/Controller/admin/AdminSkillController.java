@@ -4,7 +4,7 @@
  */
 package Controller.admin;
 
-import Controller.AuthorizationController;
+import Service.AuthorizationService;
 import DAO.SkillDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,7 +34,7 @@ public class AdminSkillController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}
@@ -82,7 +82,7 @@ public class AdminSkillController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}

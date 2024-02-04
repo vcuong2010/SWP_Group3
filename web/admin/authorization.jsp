@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.User, model.Mentor, model.Mentee, java.util.HashMap, model.MentorDetail" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of requests</title>
+        <title>List of authorization</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -587,7 +587,8 @@
         <!-- ======= Header ======= -->
         <%  
             User u = (User)session.getAttribute("User");
-            HashMap<Mentor, MentorDetail> arr = (HashMap)request.getAttribute("mentors");
+            HashMap<String, String> arr = (HashMap)request.getAttribute("maps");
+            ArrayList<Role> roles = (ArrayList)request.getAttribute("roles");
             int p = (int) Math.ceil((double)arr.size() / 10);
             if(u == null) {%>
         <header class="menu__header fix-menu" id="header-menu">
@@ -1216,7 +1217,7 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Mentors</div>
+                                                                    <div class="panel-title">Mentors</div>
                                                                 </div>
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
@@ -1226,7 +1227,7 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">Authorization</div>
+                                                                    <div class="panel-title active">Authorization</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1259,54 +1260,83 @@
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
-                        <form method="post">
-                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
-                            <input id="filter"  type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
-                        </form>
-                        <h3>List of mentor</h3>
+                        <h3 class="col-sm-8">List of authorization</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>ID</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Account</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Profession</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Accepted</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Completed(%)</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rate</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Path</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Authorite Role</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%  try {
-                                            int j = 0;
-                                            for(Mentor m : arr.keySet()) {%>
-                                        <tr id='<%=j+1%>' <%=(j >= 10 ? "class=\"hidden\"" : "")%>>
+                                        <%  int i = 0;
+                                            for(String path : arr.keySet()) {%>
+                                        <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
-                                                <%=j+1%>
+                                                <%=i+1%>
                                             </td>
-                                            <td><a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/mentor?id=<%=m.getId()%>"><%=m.getId()%></a></td>
-                                            <td><%=m.getFullname()%></td>
+                                            <td><%=path%></td>
+                                            <td><%=arr.get(path)%></td>
                                             <td>
-                                                <%=arr.get(m).getAccount()%>
-                                            </td>
-                                            <td><%=arr.get(m).getProfession()%></td>
-                                            <td><%=arr.get(m).getAcceptedRequest()%></td>
-                                            <td><%=arr.get(m).getPercentComplete()%></td>
-                                            <td><%=arr.get(m).getRating()%></td>
-                                            <td>
-                                            <a href="mentor?toggleid=<%=m.getId()%>&toggle=<%=arr.get(m).isStatus() ? "off" : "on"%>" class="delete" data-toggle="modal">
-                                            <i class="fas fa-toggle-<%=arr.get(m).isStatus() ? "on" : "off"%>" data-toggle="tooltip" title="<%=arr.get(m).isStatus() ? "disable" : "enable"%>"></i>
+                                                <a href="" id="" onclick="update<%=i+1%>(event)" class="edit" data-toggle="modal">
+                                            <i class="fas fa-edit" data-toggle="tooltip" title="update"></i>
+                                        </a>
+                                            <script>
+                                                function update<%=i+1%>(event) {
+                                                    event.preventDefault();
+                            let title = document.title;
+                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                            let modal = document.createElement('div');
+                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Update Authorization</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Path:</td><td><%=path%></td></tr><tr><td><span>Authorite Role</span>:</td><td><%for(int j = 0; j < roles.size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="role" value="<%=roles.get(j).getName()%>" id="<%=roles.get(j).getId()%>" <%=arr.get(path.toLowerCase()).contains(roles.get(j).getName().toLowerCase()) ? "checked" : ""%>><label for="<%=roles.get(j).getId()%>" style="margin-left: 5px"><%=roles.get(j).getName()%></label></div><%}%><div class="col-sm-6"><input type="checkbox" name="role" value="all user" id="all" <%=arr.get(path.toLowerCase()).contains("all user") ? "checked" : ""%>><label for="all" style="margin-left: 5px">All User</label></div><div class="col-sm-6"><input type="checkbox" name="role" value="guest" id="guest" <%=arr.get(path.toLowerCase()).contains("guest") ? "checked" : ""%>><label for="guest" style="margin-left: 5px">Guest</label></div><input type="hidden" name="id" value="<%=path%>"></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Update</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                            document.body.appendChild(modal.firstChild);
+                    setTimeout(function () {
+                        document.body.lastChild.children[1].classList.add("in");
+                        document.body.lastChild.firstChild.classList.add("in");
+                        document.getElementsByClassName('close')[0].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                        };
+                        window.onclick = function (e) {
+                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                document.body.lastChild.firstChild.classList.remove("in");
+                                document.body.lastChild.children[1].classList.remove("in");
+                                setTimeout(function () {
+                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.removeChild(document.body.lastChild);
+                                    window.onclick = null;
+                                }, 100);
+                                document.title = title;
+                            }
+                        };
+                        document.title = "Update Skill";
+                    }, 1);
+                        }
+                                            </script>
                                             </td>
                                         </tr> 
-                                        <%  j++;
+                                        <%i++;
                                             }
-                                            } catch(Exception e) {
-                                                e.printStackTrace();
-                                            }%>
+                                        %>
                                     </tbody>
                                 </table>
                                 <div class="clearfix">
@@ -1314,9 +1344,9 @@
                                     <ul class="pagination">
                                         <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
                                             <%
-                                                for(int i = 0; i < p; i++) {
+                                                for(int j = 0; j < p; j++) {
                                             %>
-                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
+                                        <li class="page-item <%=(j==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=j+1%>' class="page-link"><%=j+1%></a></li>
                                             <%}%>
                                         <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                         <script>
@@ -1498,7 +1528,6 @@
                     return false;
                 }
             }
-            console.log(document.getElementsByClassName('menu__setting--last panel panel-default'));
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/email";
             };

@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import Service.AuthorizationService;
 import DAO.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +36,7 @@ public class ProfileController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}
@@ -96,7 +97,7 @@ public class ProfileController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}

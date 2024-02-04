@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import Service.AuthorizationService;
 import DAO.MentorDAO;
 import DAO.SkillDAO;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class SkillController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            if (!AuthorizationController.gI().Authorization(request, response)) {
+            if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
         } catch(Exception e) {}

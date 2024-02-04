@@ -3,10 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package Controller;
+package Controller.admin;
 
+import DAO.RoleDAO;
 import Service.AuthorizationService;
-import DAO.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +14,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.User;
+import java.util.ArrayList;
+import java.util.HashMap;
+import model.Role;
 
 /**
  *
  * @author TGDD
  */
-@WebServlet(name="SettingController", urlPatterns={"/setting"})
-public class SettingController extends HttpServlet {
+@WebServlet(name="AuthorizationController", urlPatterns={"/admin/authorization"})
+public class AuthorizationController extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,7 +39,14 @@ public class SettingController extends HttpServlet {
                 return;
             }
         } catch(Exception e) {}
-        request.getRequestDispatcher("setting.jsp").forward(request, response);
+        try {
+            HashMap<String, String> maps = AuthorizationService.gI().getMap();
+            request.setAttribute("maps", maps);
+            ArrayList<Role> roles = RoleDAO.getRoles();
+            request.setAttribute("roles", roles);
+        } catch (Exception e) {
+        }
+        request.getRequestDispatcher("authorization.jsp").forward(request, response);
     } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -69,33 +78,21 @@ public class SettingController extends HttpServlet {
                 return;
             }
         } catch(Exception e) {}
-        String confirm = request.getParameter("confirmNewPassword");
-        String password = request.getParameter("newPassword");
-        String OldPassword = request.getParameter("oldPassword");
-        if(!password.equals(confirm)) {
-            request.setAttribute("error", "Confirm password not match!");
-        } else {
-            if(OldPassword.equals(password)) {
-                request.setAttribute("error", "New password cannot be the same as old password!");
-                request.getRequestDispatcher("setting.jsp").forward(request, response);
-                return;
-            }
-            User u = (User)request.getSession().getAttribute("User");
-            try {
-                boolean check = UserDAO.changePass(u.getId(), OldPassword, password);
-                if(check) {
-                    request.setAttribute("error", "Change password successfully!");
-                    request.getRequestDispatcher("setting.jsp").forward(request, response);
-                    return;
-                }
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
-            request.setAttribute("error", "Old password not match!");
-            request.getRequestDispatcher("setting.jsp").forward(request, response);
-            return;
+        String[] role = request.getParameterValues("role");
+        String all = "";
+        for (int i = 0; i < role.length - 1; i++) {
+            all += role[i].toLowerCase()+", ";
         }
-        request.getRequestDispatcher("setting.jsp").forward(request, response);
+        all += role[role.length - 1].toLowerCase();
+        AuthorizationService.gI().setAuthorite(request.getParameter("id"), all);
+        try {
+            HashMap<String, String> maps = AuthorizationService.gI().getMap();
+            request.setAttribute("maps", maps);
+            ArrayList<Role> roles = RoleDAO.getRoles();
+            request.setAttribute("roles", roles);
+        } catch (Exception e) {
+        }
+        request.getRequestDispatcher("authorization.jsp").forward(request, response);
     }
 
     /** 

@@ -1224,6 +1224,11 @@
                                                                     <div class="panel-title">Requests</div>
                                                                 </div>
                                                             </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Authorization</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1536,7 +1541,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 108px;";
+                        collapse2.style = "height: 144px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1547,7 +1552,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 108px;";
+                    collapse2.style = "height: 144px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1586,6 +1591,9 @@
             };
             document.getElementsByClassName('menu__setting--last panel panel-default')[9].onclick = function () {
                 window.location.href = "request";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[10].onclick = function () {
+                window.location.href = "authorization";
             };
         </script>
         <div id="preloader"></div>
