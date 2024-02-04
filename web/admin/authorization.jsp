@@ -1328,7 +1328,7 @@
                                 document.title = title;
                             }
                         };
-                        document.title = "Update Skill";
+                        document.title = "Update Authorization";
                     }, 1);
                         }
                                             </script>
@@ -1571,7 +1571,13 @@
 
         <!-- Template Main JS File -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
-
+        <%if(request.getAttribute("message") != null) {%>
+        <script>
+            setTimeout(function() {
+                alert("<%=(String)request.getAttribute("message")%>");
+            }, 100);
+        </script>
+        <%}%>
     </body>
 
 </html>

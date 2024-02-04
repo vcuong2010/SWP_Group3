@@ -84,7 +84,11 @@ public class AuthorizationController extends HttpServlet {
             all += role[i].toLowerCase()+", ";
         }
         all += role[role.length - 1].toLowerCase();
-        AuthorizationService.gI().setAuthorite(request.getParameter("id"), all);
+        if(request.getParameter("id") != null && !request.getParameter("id").equalsIgnoreCase("/admin/authorization")) {
+            AuthorizationService.gI().setAuthorite(request.getParameter("id"), all);
+        } else {
+            request.setAttribute("message", "You cannot change authorite role of authorization page!");
+        }
         try {
             HashMap<String, String> maps = AuthorizationService.gI().getMap();
             request.setAttribute("maps", maps);
