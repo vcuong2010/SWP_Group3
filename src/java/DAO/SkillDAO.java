@@ -31,6 +31,16 @@ public class SkillDAO {
         
     }
     
+    public static int skillCount() throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement("SELECT Count(SkillID) as count FROM Skills");
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        int rel = rs.getInt("count");
+        dbo.close();
+        return rel;
+    }
+    
     public static boolean UpdateSkill(int id, String name, boolean active) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         PreparedStatement ps = dbo.prepareStatement("UPDATE Skills SET SkillName = ?, enable = ? WHERE SkillID = ?");
@@ -61,7 +71,19 @@ public class SkillDAO {
         PreparedStatement ps = dbo.prepareStatement("SELECT * FROM Skills WHERE enable = "+(enable ? 1 : 0));
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
-            arr.add(new Skill(rs.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1));
+            arr.add(new Skill(rs.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1, rs.getString("Imageskill"), rs.getString("Skilldescription")));
+        }
+        dbo.close();
+        return arr;
+    }
+    
+    public static ArrayList<Skill> getLimit(int limit, boolean enable) throws Exception {
+        ArrayList<Skill> arr = new ArrayList();
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement("SELECT TOP ("+limit+") * FROM Skills WHERE enable = "+(enable ? 1 : 0));
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            arr.add(new Skill(rs.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1, rs.getString("Imageskill"), rs.getString("Skilldescription")));
         }
         dbo.close();
         return arr;
@@ -87,7 +109,7 @@ public class SkillDAO {
         PreparedStatement ps = dbo.prepareStatement("SELECT * FROM Skills");
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
-            arr.add(new Skill(rs.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1));
+            arr.add(new Skill(rs.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1, rs.getString("Imageskill"), rs.getString("Skilldescription")));
         }
         dbo.close();
         return arr;

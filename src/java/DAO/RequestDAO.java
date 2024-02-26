@@ -79,11 +79,11 @@ public class RequestDAO {
                 ResultSet rs2 = ps.executeQuery();
                 rs2.next();
                 r.setMentor(rs2.getString("fullname"));
-                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?");
+                ps = dbo.prepareStatement("SELECT * FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?");
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
-                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1, rs2.getString("Imageskill"), rs2.getString("Skilldescription")));
                 }
                 dbo.close();
                 return r;
@@ -110,11 +110,11 @@ public class RequestDAO {
                 ResultSet rs2 = ps.executeQuery();
                 rs2.next();
                 r.setMentor(rs2.getString("fullname"));
-                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID], [enable] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
+                ps = dbo.prepareStatement("SELECT * FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
-                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1, rs2.getString("Imageskill"), rs2.getString("Skilldescription")));
                 }
                 arr.add(r);
             }
@@ -144,11 +144,11 @@ public class RequestDAO {
                 rs2 = ps.executeQuery();
                 rs2.next();
                 r.setSender(rs2.getString("username"));
-                ps = dbo.prepareStatement("SELECT [SkillName], [SkillID], [enable] FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
+                ps = dbo.prepareStatement("SELECT * FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [RequestSkill] WHERE [RequestID] = ?)");
                 ps.setInt(1, rs.getInt("RequestID"));
                 rs2 = ps.executeQuery();
                 while(rs2.next()) {
-                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1));
+                    r.getSkills().add(new Skill(rs2.getInt("SkillID"), rs2.getString("SkillName"), rs2.getInt("enable") == 1, rs2.getString("Imageskill"), rs2.getString("Skilldescription")));
                 }
                 arr.add(r);
             }

@@ -26,15 +26,17 @@ public class MentorDAO {
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()) {
-                Mentor m = new Mentor(rs.getString("Avatar"), rs.getString("fullname"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"));
+                ps = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] = ?");
+                ps.setInt(1, id);
+                ResultSet rs2 = ps.executeQuery();   
+                rs2.next();
+                Mentor m = new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), rs2.getString("fullname"), rs2.getString("Avatar"));
                 dbo.close();
                 return m;
             }
         } catch(Exception e) {}
         return null;
     }
-    
-    
     
     public static HashMap<Mentor, MentorDetail> getAllBySkillId(int id) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
@@ -71,14 +73,18 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT [username], [activeStatus]  FROM [User] WHERE [UserID] = ?");
+                ps2 = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] = ?");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 boolean active = false;
                 String account = "";
+                String fullname = "";
+                String avatar = "";
                 if(rs2.next()) {
                     account = rs2.getString("username");
                     active = rs2.getInt("activeStatus") == 1;
+                    fullname = rs2.getString("fullname");
+                    avatar = rs2.getString("Avatar");
                 }
                 rs2.close();
                 ps2.close();
@@ -102,7 +108,7 @@ public class MentorDAO {
                 ps2.close();
                 MentorDetail md = new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (done / (accept / 100)) : 0), account, profession, active);
                 md.setRequests(request);
-                arr.put(new Mentor(rs.getString("Avatar"), rs.getString("fullname"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID")), md);
+                arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), md);
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -119,7 +125,11 @@ public class MentorDAO {
             PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor]");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                arr.add(new Mentor(rs.getString("Avatar"), rs.getString("fullname"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID")));
+                ps = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] = ?");
+                ps.setInt(1, rs.getInt("UserID"));
+                ResultSet rs2 = ps.executeQuery();
+                rs2.next();
+                arr.add(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), rs2.getString("fullname"), rs2.getString("Avatar")));
             }
         } catch(Exception e) {} finally {
             dbo.close();
@@ -161,14 +171,18 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT [username], [activeStatus]  FROM [User] WHERE [UserID] = ?");
+                ps2 = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] = ?");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 boolean active = false;
                 String account = "";
+                String fullname = "";
+                String avatar = "";
                 if(rs2.next()) {
                     account = rs2.getString("username");
                     active = rs2.getInt("activeStatus") == 1;
+                    fullname = rs2.getString("fullname");
+                    avatar = rs2.getString("Avatar");
                 }
                 rs2.close();
                 ps2.close();
@@ -179,7 +193,7 @@ public class MentorDAO {
                 if(rs2.next()) {
                     profession = rs2.getString("ProfessionIntroduction");
                 }
-                arr.put(new Mentor(rs.getString("Avatar"), rs.getString("fullname"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID")), new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (done / (accept / 100)) : 0), account, profession, active));
+                arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (done / (accept / 100)) : 0), account, profession, active));
             }
         } catch(Exception e) {
             e.printStackTrace();

@@ -9,12 +9,13 @@ package model;
  * @author TGDD
  */
 public class Mentor {
-    String avatar, fullname, Achivement, Description;
+    String Achivement, Description, status, fullname, Avatar;
     int id, CvID;
 
-    public Mentor(String avatar, String fullname, String Achivement, String Description, int id, int CvID) {
-        this.avatar = avatar;
+    public Mentor(String status, String Achivement, String Description, int id, int CvID, String fullname, String Avatar) {
+        this.Avatar = Avatar;
         this.fullname = fullname;
+        this.status = status;
         this.Achivement = Achivement;
         this.Description = Description;
         this.id = id;
@@ -22,19 +23,23 @@ public class Mentor {
     }
 
     public String getAvatar() {
-        return avatar;
+        return Avatar;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setAvatar(String Avatar) {
+        this.Avatar = Avatar;
     }
-
+    
     public String getFullname() {
         return fullname;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getAchivement() {

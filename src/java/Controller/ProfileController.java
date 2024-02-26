@@ -51,17 +51,7 @@ public class ProfileController extends HttpServlet {
         //Update avatar
         if (request.getParameter("avt") != null) {
             try {
-                if (request.getSession().getAttribute("Mentee") != null) {
-                    UserDAO.updateAvatar(u.getId(), request.getParameter("avt"), false, false);
-                } else if (request.getSession().getAttribute("Mentor") != null) {
-                    UserDAO.updateAvatar(u.getId(), request.getParameter("avt"), true, false);
-                } else {
-                    if (UserDAO.isMentor(u)) {
-                        UserDAO.updateAvatar(u.getId(), request.getParameter("avt"), true, true);
-                    } else {
-                        UserDAO.updateAvatar(u.getId(), request.getParameter("avt"), false, true);
-                    }
-                }
+                UserDAO.updateAvatar(u.getId(), request.getParameter("avt"));
             } catch (Exception e) {
             }
             response.sendRedirect("profile");
@@ -106,13 +96,7 @@ public class ProfileController extends HttpServlet {
         String fullname = request.getParameter("fullname");
         if (fullname != null && !fullname.isEmpty()) {
             try {
-                if (request.getSession().getAttribute("Mentor") != null) {
-                    UserDAO.updateFullname(u.getId(), fullname, true, false);
-                } else if (request.getSession().getAttribute("Mentee") != null) {
-                    UserDAO.updateFullname(u.getId(), fullname, false, false);
-                } else {
-                    UserDAO.updateFullname(u.getId(), fullname, UserDAO.isMentor(u), true);
-                }
+                UserDAO.updateFullname(u.getId(), fullname);
             } catch (Exception e) {
                 e.printStackTrace();
             }

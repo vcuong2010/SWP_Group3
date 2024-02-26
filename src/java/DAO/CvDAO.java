@@ -72,7 +72,7 @@ public class CvDAO {
                     ps.setInt(1, rs2.getInt("SkillID"));
                     rs = ps.executeQuery();
                     rs.next();
-                    cv.getSkills().add(new Skill(rs2.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1));
+                    cv.getSkills().add(new Skill(rs2.getInt("SkillID"), rs.getString("SkillName"), rs.getInt("enable") == 1, rs.getString("Imageskill"), rs.getString("Skilldescription")));
                 }
                 dbo.close();
                 return cv;

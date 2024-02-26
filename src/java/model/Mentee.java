@@ -9,31 +9,22 @@ package model;
  * @author TGDD
  */
 public class Mentee {
-    String avatar, fullname;
+    String Status;
     int id;
 
-    public Mentee(String avatar, String fullname, int id) {
-        this.avatar = avatar;
-        this.fullname = fullname;
+    public Mentee(String status, int id) {
+        this.Status = status;
         this.id = id;
     }
 
-    public String getAvatar() {
-        return avatar;
+    public String getStatus() {
+        return Status;
     }
 
-    public void setAvatar(String avatar) {
-        this.avatar = avatar;
+    public void setStatus(String Status) {
+        this.Status = Status;
     }
-
-    public String getFullname() {
-        return fullname;
-    }
-
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
-    }
-
+    
     public int getId() {
         return id;
     }

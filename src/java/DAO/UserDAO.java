@@ -165,34 +165,13 @@ public class UserDAO {
         }
     }
     
-    public static void updateAvatar(int id, String avatar, boolean isMentor, boolean create) throws Exception {
+    public static void updateAvatar(int id, String avatar) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
-            if(create) {
-                if(isMentor) {
-                    PreparedStatement ps = dbo.prepareStatement("INSERT INTO [Mentor] ([UserID], [Avatar]) VALUES (?, ?)");
-                    ps.setInt(1, id);
-                    ps.setString(2, avatar);
-                    ps.executeUpdate();
-                } else {
-                    PreparedStatement ps = dbo.prepareStatement("INSERT INTO [Mentee] ([UserID], [Avatar]) VALUES (?, ?)");
-                    ps.setInt(1, id);
-                    ps.setString(2, avatar);
-                    ps.executeUpdate();
-                }
-            } else {
-                if(isMentor) {
-                    PreparedStatement ps = dbo.prepareStatement("UPDATE [Mentor] SET [Avatar] = ? WHERE [UserID] = ?");
-                    ps.setInt(2, id);
-                    ps.setString(1, avatar);
-                    ps.executeUpdate();
-                } else {
-                    PreparedStatement ps = dbo.prepareStatement("UPDATE [Mentee] SET [Avatar] = ? WHERE [UserID] = ?");
-                    ps.setInt(2, id);
-                    ps.setString(1, avatar);
-                    ps.executeUpdate();
-                }
-            }
+            PreparedStatement ps = dbo.prepareStatement("UPDATE [User] SET [Avatar] = ? WHERE [UserID] = ?");
+            ps.setString(1, avatar);
+            ps.setInt(2, id);
+            ps.executeUpdate();
             dbo.commit();
         } catch(Exception e) {
             e.printStackTrace();
@@ -201,34 +180,13 @@ public class UserDAO {
         }
     }
     
-    public static void updateFullname(int id, String fullname, boolean isMentor, boolean create) throws Exception {
+    public static void updateFullname(int id, String fullname) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
-            if(create) {
-                if(isMentor) {
-                    PreparedStatement ps = dbo.prepareStatement("INSERT INTO [Mentor] ([UserID], [fullname]) VALUES (?, ?)");
-                    ps.setInt(1, id);
-                    ps.setString(2, fullname);
-                    ps.executeUpdate();
-                } else {
-                    PreparedStatement ps = dbo.prepareStatement("INSERT INTO [Mentee] ([UserID], [fullname]) VALUES (?, ?)");
-                    ps.setInt(1, id);
-                    ps.setString(2, fullname);
-                    ps.executeUpdate();
-                }
-            } else {
-                if(isMentor) {
-                    PreparedStatement ps = dbo.prepareStatement("UPDATE [Mentor] SET [fullname] = ? WHERE [UserID] = ?");
-                    ps.setInt(2, id);
-                    ps.setString(1, fullname);
-                    ps.executeUpdate();
-                } else {
-                    PreparedStatement ps = dbo.prepareStatement("UPDATE [Mentee] SET [fullname] = ? WHERE [UserID] = ?");
-                    ps.setInt(2, id);
-                    ps.setString(1, fullname);
-                    ps.executeUpdate();
-                }
-            }
+            PreparedStatement ps = dbo.prepareStatement("UPDATE [User] SET [fullname] = ? WHERE [UserID] = ?");
+            ps.setString(1, fullname);
+            ps.setInt(2, id);
+            ps.executeUpdate();
             dbo.commit();
         } catch(Exception e) {
             e.printStackTrace();
@@ -321,6 +279,8 @@ public class UserDAO {
                 ResultSet rs2 = ps2.executeQuery();
                 rs2.next();
                 User u = new User(username, password, rs.getString("email"), rs.getString("phoneNumber"), rs.getString("address"), rs2.getString("roleName"), rs.getDate("dob"), rs.getInt("wallet"), rs.getInt("UserID"), rs.getInt("activeStatus") == 1 ? true : false, rs.getInt("sex") == 1 ? true : false);
+                u.setFullname(rs.getString("fullname"));
+                u.setAvatar(rs.getString("Avatar"));
                 if(rs.getInt("isValidate") != 0) {
                     u.setValidate(true);
                 }
@@ -344,17 +304,23 @@ public class UserDAO {
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
                 if(rs.next()) {
-                    return new Mentee(rs.getString("Avatar"), rs.getString("fullname"), id);
+                    return new Mentee(rs.getString("MenteeStatus"), id);
                 }
             } else if(role.equalsIgnoreCase("mentor")) {
                 PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [UserID] = ?");
                 ps.setInt(1, id);
                 ResultSet rs = ps.executeQuery();
                 if(rs.next()) {
-                    return new Mentor(rs.getString("Avatar"), rs.getString("fullname"), rs.getString("Achivement"), rs.getString("Description"), id, rs.getInt("CvID"));
+                    ps = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] = ?");
+                    ps.setInt(1, id);
+                    ResultSet rs2 = ps.executeQuery();
+                    rs2.next();
+                    return new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), id, rs.getInt("CvID"), rs2.getString("fullname"), rs2.getString("Avatar"));
                 }
             }
-        } catch(Exception e) {}
+        } catch(Exception e) {
+        e.printStackTrace();
+        }
         return null;
     }
     

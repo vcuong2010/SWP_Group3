@@ -43,7 +43,7 @@ public class IndexController extends HttpServlet {
             if(!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
-            ArrayList<Skill> a = SkillDAO.getAll(true);
+            ArrayList<Skill> a = SkillDAO.getLimit(14, true);
             for (int i = 0; i < a.size(); i++) {
                 for (int j = i; j < a.size(); j++) {
                     if(a.get(i).getName().compareToIgnoreCase(a.get(j).getName()) > 0) {
@@ -55,7 +55,7 @@ public class IndexController extends HttpServlet {
             }
             request.setAttribute("skills", a); //All skill
             //General Statistic
-            request.setAttribute("skill", a.size());
+            request.setAttribute("skill", SkillDAO.skillCount());
             request.setAttribute("mentee", UserDAO.menteeCount());
             request.setAttribute("mentor", UserDAO.mentorCount());
         } catch (Exception e) {

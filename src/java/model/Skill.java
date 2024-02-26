@@ -12,11 +12,30 @@ public class Skill {
     int id;
     String name;
     boolean isEnable;
+    String Avatar, Description;
 
-    public Skill(int id, String name, boolean enable) {
+    public Skill(int id, String name, boolean enable, String Avatar, String Description) {
         this.id = id;
         this.name = name;
         this.isEnable = enable;
+        this.Avatar = Avatar;
+        this.Description = Description;
+    }
+
+    public String getAvatar() {
+        return Avatar;
+    }
+
+    public void setAvatar(String Avatar) {
+        this.Avatar = Avatar;
+    }
+
+    public String getDescription() {
+        return Description;
+    }
+
+    public void setDescription(String Description) {
+        this.Description = Description;
     }
 
     public boolean isEnable() {

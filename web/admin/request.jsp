@@ -1264,7 +1264,7 @@
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
                         <form method="post">
-                            <input type="text" placeholder="Search (Subject Name)" name="search" style="width: 44%; min-height: 20px">
+                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
                             <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option><option value="open">Open</option><option value="processing">Processing</option><option value="closed">Closed</option></select><br>
                             <label>Start Date: </label>
                             <input id="start" type="datetime-local" name="start" style="width: 20%; min-height: 20px">
@@ -1382,6 +1382,7 @@
                                         <%}%>
                                     </tbody>
                                 </table>
+                                <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
                                 <div class="clearfix">
                                     <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
                                     <ul class="pagination">
@@ -1488,7 +1489,6 @@
                                 </div>
                             </div>
                         </div>
-                        <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
                     </div></div>
 
             </div>
