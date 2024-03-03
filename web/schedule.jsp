@@ -800,7 +800,7 @@
                                 }
                             </script>
                             <% } %>
-                            <table style="font-size: 13px;">
+                            <table style="font-size: 13px;  border: 2px solid white;">
                                 <tbody>
                                     <tr style="border-bottom: 0 none">
                                         <td>
