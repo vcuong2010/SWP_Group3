@@ -591,18 +591,18 @@
                 <div class="row">
                     <div class="col-md-12" style="display: flex; justify-content: center;">
                         <form method='post'>
-                            <h2 style="font-family: inherit;font-weight: 500;line-height: 1.1;color: inherit;">
+                            <h2 style="font-family: inherit;font-weight: 500;line-height: 1.1;color: inherit;"> Activities for
                                 <span id="ctl00_mainContent_lblStudent"><%=u.getUsername()%>'s (<%=u.getFullname()%>)</span> schedule <%=u.getRole().equalsIgnoreCase("mentor") ? "<button class=\"btn btn-success\" onclick=\"newSlot()\" style=\"margin-left: 1.25vw\">New Slot</button>" : ""%></h2>
                                 <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
                             <script>
                                 function changeType(input) {
                                     let modal = input.parentNode.parentNode.parentNode;
-                                    if(input.options[input.selectedIndex].value === 'byWeek') {
+                                    if (input.options[input.selectedIndex].value === 'byWeek') {
                                         let hidden = modal.querySelectorAll("tr[class=hidden]");
                                         let datetime = modal.querySelector("input[type=datetime-local]");
                                         datetime.setAttribute("type", "time");
                                         document.getElementsByName("weekTime")[0].setAttribute("required", "true");
-                                        for(let i = 0; i < hidden.length; i++) {
+                                        for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "unhidden";
                                         }
                                     } else {
@@ -610,7 +610,7 @@
                                         let datetime = modal.querySelector("input[type=time]");
                                         datetime.setAttribute("type", "datetime-local");
                                         document.getElementsByName("weekTime")[0].removeAttribute("required");
-                                        for(let i = 0; i < hidden.length; i++) {
+                                        for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "hidden";
                                         }
                                     }
@@ -619,7 +619,7 @@
                                     try {
                                         new URL(url);
                                         return true;
-                                    } catch(e) {
+                                    } catch (e) {
                                         return false;
                                     }
                                 }
@@ -627,25 +627,25 @@
                                     event.preventDefault();
                                     let link = document.querySelector("input[name=link]");
                                     let type = document.getElementById("schedule");
-                                    if(type.options[type.selectedIndex].value === "byWeek") {
-                                    let checkbox = document.querySelectorAll("input[type=checkbox]");
-                                    let count = 0;
-                                    for(let i = 0; i < checkbox.length; i++) {
-                                        if(checkbox[i].checked) {
-                                            count++;
+                                    if (type.options[type.selectedIndex].value === "byWeek") {
+                                        let checkbox = document.querySelectorAll("input[type=checkbox]");
+                                        let count = 0;
+                                        for (let i = 0; i < checkbox.length; i++) {
+                                            if (checkbox[i].checked) {
+                                                count++;
+                                            }
                                         }
-                                    }
-                                    if(count < 1) {
-                                        alert("Bạn phải chọn ít nhất 1 ngày trong tuần!");
-                                    } else {
-                                        if(URLValidate(link.value)) {
-                                            input.form.submit();
+                                        if (count < 1) {
+                                            alert("Bạn phải chọn ít nhất 1 ngày trong tuần!");
                                         } else {
-                                            alert("Vui lòng nhập link chính xác!");
+                                            if (URLValidate(link.value)) {
+                                                input.form.submit();
+                                            } else {
+                                                alert("Vui lòng nhập link chính xác!");
+                                            }
                                         }
-                                    }
                                     } else {
-                                        if(URLValidate(link.value)) {
+                                        if (URLValidate(link.value)) {
                                             input.form.submit();
                                         } else {
                                             alert("Vui lòng nhập link chính xác!");
@@ -747,9 +747,9 @@
 </div>\n\
 </div>\n\
 </div>';
-                                    let date = new Date();
-                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
-    modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
+                                        let date = new Date();
+                                        let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
                                         let btn = document.body.lastChild.getElementsByTagName('button');
                                         btn[0].onclick = function () {
@@ -800,7 +800,7 @@
                                 }
                             </script>
                             <% } %>
-                            <table style="font-size: 13px;">
+                            <table style="font-size: 13px; border: 2px solid white;">
                                 <tbody>
                                     <tr style="border-bottom: 0 none">
                                         <td>
@@ -941,11 +941,11 @@
                                                                     }
                                                                     function confirmation(input, event) {
                                                                         event.preventDefault();
-                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
-                                        document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
-                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                        let modal = document.createElement('div');
-                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+                                                                        if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                                                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                                            //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                                            let modal = document.createElement('div');
+                                                                            modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
 <div class="fade modal-backdrop"></div>\n\
 <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
 <div class="modal-dialog">\n\
@@ -974,56 +974,56 @@ Xác nhận đã hoàn thành Slot học này?\n\
 </div>\n\
 </div>\n\
 </div>';
-                                        document.body.appendChild(modal.firstChild);
-                                        let btn = document.body.lastChild.getElementsByTagName('button');
-                                        btn[0].onclick = function () {
-                                            document.body.lastChild.children[0].classList.remove("in");
-                                            document.body.lastChild.children[1].classList.remove("in");
-                                            setTimeout(function () {
-                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
-                                                document.body.removeChild(document.body.lastChild);
-                                                window.onclick = null;
-                                            }, 100);
+                                                                            document.body.appendChild(modal.firstChild);
+                                                                            let btn = document.body.lastChild.getElementsByTagName('button');
+                                                                            btn[0].onclick = function () {
+                                                                                document.body.lastChild.children[0].classList.remove("in");
+                                                                                document.body.lastChild.children[1].classList.remove("in");
+                                                                                setTimeout(function () {
+                                                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                                                    document.body.removeChild(document.body.lastChild);
+                                                                                    window.onclick = null;
+                                                                                }, 100);
 
-                                        }
-                                        btn[1].onclick = function () {
-                                            window.location.href = input.href;
-                                        }
-                                        btn[2].onclick = function () {
-                                            document.body.lastChild.children[0].classList.remove("in");
-                                            document.body.lastChild.children[1].classList.remove("in");
-                                            setTimeout(function () {
-                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
-                                                document.body.removeChild(document.body.lastChild);
-                                                window.onclick = null;
-                                            }, 100);
+                                                                            }
+                                                                            btn[1].onclick = function () {
+                                                                                window.location.href = input.href;
+                                                                            }
+                                                                            btn[2].onclick = function () {
+                                                                                document.body.lastChild.children[0].classList.remove("in");
+                                                                                document.body.lastChild.children[1].classList.remove("in");
+                                                                                setTimeout(function () {
+                                                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                                                    document.body.removeChild(document.body.lastChild);
+                                                                                    window.onclick = null;
+                                                                                }, 100);
 
-                                        }
-                                        setTimeout(function () {
-                                            document.body.lastChild.children[1].classList.add("in");
-                                            document.body.lastChild.children[0].classList.add("in");
-                                            window.onclick = function (e) {
-                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                                    document.body.lastChild.children[0].classList.remove("in");
-                                                    document.body.lastChild.children[1].classList.remove("in");
-                                                    setTimeout(function () {
-                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
-                                                        document.body.removeChild(document.body.lastChild);
-                                                        window.onclick = null;
-                                                    }, 100);
-                                                }
-                                            };
-                                        }, 1);
-                                    } else {
-                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                        document.body.lastChild.children[1].classList.remove("in");
-                                        document.body.lastChild.children[0].classList.remove("in");
-                                        setTimeout(function () {
-                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
-                                            document.body.removeChild(document.body.lastChild);
-                                            window.onclick = null;
-                                        }, 100);
-                                    }
+                                                                            }
+                                                                            setTimeout(function () {
+                                                                                document.body.lastChild.children[1].classList.add("in");
+                                                                                document.body.lastChild.children[0].classList.add("in");
+                                                                                window.onclick = function (e) {
+                                                                                    if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                                                        document.body.lastChild.children[0].classList.remove("in");
+                                                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                                                        setTimeout(function () {
+                                                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                                                            document.body.removeChild(document.body.lastChild);
+                                                                                            window.onclick = null;
+                                                                                        }, 100);
+                                                                                    }
+                                                                                };
+                                                                            }, 1);
+                                                                        } else {
+                                                                            //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                                                            document.body.lastChild.children[1].classList.remove("in");
+                                                                            document.body.lastChild.children[0].classList.remove("in");
+                                                                            setTimeout(function () {
+                                                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                                                document.body.removeChild(document.body.lastChild);
+                                                                                window.onclick = null;
+                                                                            }, 100);
+                                                                        }
                                                                     }
                                                                 </script>
                                                                 <select name="year" onchange="changeYear()" id="ctl00_mainContent_drpYear">
@@ -1075,15 +1075,15 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1102,16 +1102,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1130,16 +1130,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1158,16 +1158,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1186,16 +1186,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1214,16 +1214,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1242,16 +1242,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                             if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
-                                                                        </span><br>
-                                                                        <%
-                                                                            Calendar c = Calendar.getInstance();
-                                                                            c.setTime(s.getSlotTime());
-                                                                            Calendar to = Calendar.getInstance();
-                                                                            to.setTime(s.getSlotTime());
-                                                                            to.add(Calendar.MINUTE, (int)(60*s.getHour()));
-                                                                        %>
-                                                                        <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
-                                                                        <br>
+                                                                    </span><br>
+                                                                    <%
+                                                                        Calendar c = Calendar.getInstance();
+                                                                        c.setTime(s.getSlotTime());
+                                                                        Calendar to = Calendar.getInstance();
+                                                                        to.setTime(s.getSlotTime());
+                                                                        to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+                                                                    %>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <br>
                                                                 </p>
                                                                 <%} else {%>
                                                                 -
@@ -1262,16 +1262,23 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                     </tbody>
                                                 </table>
                                                 <p>
-                                                    <b>More note / Chú thích thêm</b>:
+                                                    <b style="font-size: 20px; color: red">More note / Chú thích thêm:</b>
                                                 </p>
                                                 <div id="ctl00_mainContent_divfoot">
                                                     <ul>
+                                                        <li>Note: Only show class schedules when you have registered and been confirmed by a mentor</li>
                                                         <li>( <font color="green">Done</font>): <%=u.getUsername()%> had confirm this activity / <%=u.getFullname()%> đã xác nhận hoạt động này </li>
                                                         <li>( <font color="red">Not Yet</font>): <%=u.getUsername()%> had NOT confirm this activity / <%=u.getFullname()%> chưa xác nhận buổi này </li>
                                                         <li>(-): no data was given / chưa có dữ liệu</li>
                                                     </ul>
                                                 </div>
                                                 <p>
+                                                <div id="ctl00_divSupport">
+                                                    <br>
+                                                    <b>Mọi góp ý, thắc mắc xin liên hệ: <br></b><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 13.333333969116211px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">Class: SE1756-Group3</span><br> Email: <a href="##">HappyProgamming@email.com</a>.
+                                                    <br>Điện thoại: <span style="color: rgb(34, 34, 34); font-weight: bold; font-family: arial, sans-serif; font-size: 13.333333969116211px; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">0987654321 </span>
+                                                    <br>
+                                                </div>
                                                 </p>
                                             </div>
                                         </td>
