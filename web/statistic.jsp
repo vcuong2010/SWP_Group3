@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, DAO.FollowDAO" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic" %>
 <!doctype html>
 <html lang="en" translate="no">
     <head>
@@ -25,7 +25,7 @@
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="keywords" content="Playerduo, player duo, play dua, thuê gái chơi game">
         <meta name="description" content="PlayerDuo Cộng đồng game thủ lớn nhất Việt Nam, Cùng chơi với những game thủ chuyên nghiệp, hot streamer, hot girl và những người nổi tiếng.">
-        <title>Profile</title>
+        <title>Statistic of requests</title>
         <meta content="index,follow" name="googlebot">
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="robots" content="INDEX,FOLLOW">
@@ -438,16 +438,16 @@
                                             <div class="panel-group">
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class=" active panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-user-tie"></i> Thông tin cá nhân
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="title-sub  panel-title">
+                                                        <div class=" title-sub  panel-title">
                                                             <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
+                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-down"></i>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -475,7 +475,7 @@
                                                     </div>
                                                 </div><%} else {%><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="active  panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
@@ -548,85 +548,41 @@
                     </div>
                     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                         <div class="aside">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12 col-xs-12 personalinfo">
-                                    <h3>Thông tin cá nhân</h3>
-                                    <div class="d-flex img-avatar">
-                                        <img src="<%=u.getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : u.getAvatar() %>" class="" alt="avatar" sizes="sm"> <div class="cropimg-avatar">
-                                            <button type="button">
-                                                <span> Thay Đổi <p>JPG, GIF or PNG, &lt;5 MB. </p>
-                                                </span>
-                                            </button>
-                                        </div>
+                            <h3>Thống Kê Request</h3>
+                            <%MenteeStatistic ms = (MenteeStatistic)request.getAttribute("mstatistic");%>
+                            <form class="changepass-form row" action="setting" method="post">
+                                <div class="col-md-6">
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalRequest()%> requests</span></p>
                                     </div>
-                                    <%if(u.getRole().equalsIgnoreCase("mentee")) {%>
-                                    <p class="control-label">Following: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.following(u.getId())%> Mentors</span></p>
                                     <hr>
-                                    <% } else if(u.getRole().equalsIgnoreCase("mentor")) {%>
-                                    <p class="control-label">Follower: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.follower(u.getId())%> Mentees</span></p>
-                                    <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request bị từ chối: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRejectedRequest()%> requests</span></p>
+                                    </div>
                                     <hr>
-                                    <% } %>
-                                    <form class="from-userinfo" action="profile" method="POST">
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Họ và tên</p>
-                                            <input type="text" name="fullname" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getFullname()%>">
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Số Điện Thoại</p>
-                                            <input type="text" name="sdt" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getPhone()%>">
-                                        </div>
-                                        <p class="control-label">Ngày sinh</p>
-                                        <div class="datefield">
-                                            <div class="react-datepicker-wrapper">
-                                                <div class="react-datepicker__input-container">
-                                                    <input type="date" class="example-custom-input" name="dob" value="<%=u.getDob()%>" />
-                                                </div>
-                                            </div>
-                                            <div></div>
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Địa Chỉ</p>
-                                            <input type="text" name="address" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getAddress()%>">
-                                        </div>
-                                        <p class="control-label">Giới tính</p>
-                                        <div class="d-flex">
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="male" <%=!u.isGender() ? "checked" : ""%>>Nam <span></span>
-                                            </label>
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="female" <%=u.isGender() ? "checked" : ""%>>Nữ <span></span>
-                                            </label>
-                                        </div>
-                                        <hr>
-                                        <button type="submit" class="btn-update">Cập nhật</button>
-                                    </form>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request được chấp thuận: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getAcceptedRequest()%> requests</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng thời gian học: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalHours()%> giờ</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Mentor yêu cầu: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalMentor()%> mentors</span></p>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                            <%if(request.getAttribute("error") != null) {%>
+                            <span class="err-message"><%=(String)request.getAttribute("error")%></span>
+                            <% } %>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
-            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "cv";
-            };
-            <%} else {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "statistic";
-            };
-                <%}%>
-            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
-                window.location.href = "email";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
-                window.location.href = "setting";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
-                window.location.href = "profile";
-            };
+
             let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
             let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
             document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
@@ -669,35 +625,25 @@
                     return false;
                 }
             }
-            document.getElementsByClassName('cropimg-avatar')[0].onclick = function () {
-                let n = document.createElement("div");
-                n.innerHTML = '<div class="editor-avatar-section"><div><img width="387.5" height="387.5" class="editor-canvas" style="width: 310px; height: 310px;" src="https://files.playerduo.net/production/images/avatar31.png"></div><br><div class="box"><input name="newImage" type="text" placeholder="Enter Avatar Url"></div><br><button value="Save">Lưu</button><button value="Cancel">Huỷ bỏ</button></div>';
-                let img = n.getElementsByTagName('img')[0];
-                let inp = n.getElementsByTagName('input')[0];
-                inp.onkeydown = function () {
-                    setTimeout(function () {
-                        if (isValidUrl(inp.value)) {
-                            img.src = inp.value;
-                        } else {
-                            img.src = "https://files.playerduo.net/production/images/avatar31.png";
-                        }
-                    }, 1);
-                }
-                let cancel = n.getElementsByTagName('button')[1];
-                let save = n.getElementsByTagName('button')[0];
-                cancel.onclick = function () {
-                    cancel.parentNode.parentNode.removeChild(cancel.parentNode);
-                }
-                save.onclick = function () {
-                    if (isValidUrl(inp.value)) {
-                        window.location.href = "profile?avt=" + inp.value;
-                    } else {
-                        window.location.href = "profile";
-                    }
-                }
-                document.getElementsByClassName('d-flex img-avatar')[0].appendChild(n.firstChild);
-            }
 
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "email";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "setting";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "profile";
+            };
+            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "cv";
+            };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "statistic";
+            };
+                <%}%>
         </script>
     </body>
 </html>

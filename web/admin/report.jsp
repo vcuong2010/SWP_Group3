@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.User, model.Mentor, model.Mentee, java.util.HashMap, model.MentorDetail" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Report, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of mentors</title>
+        <title>List of requests</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -586,10 +586,10 @@
     <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
-            User u = (User)session.getAttribute("User");
-            HashMap<Mentor, MentorDetail> arr = (HashMap)request.getAttribute("mentors");
+            ArrayList<Report> arr = (ArrayList)request.getAttribute("reports");
             int p = (int) Math.ceil((double)arr.size() / 10);
-            %>
+            User u = (User)session.getAttribute("User");
+        %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
                 <a href="#" class="logo">
@@ -612,7 +612,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Manager Setting"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -678,7 +678,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Manager Setting"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -825,6 +825,7 @@
                                                 <div class="panel-collapse collapse in">
                                                     <div class="panel-body">
                                                         <div class="panel-group">
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Skills</div>
@@ -832,14 +833,16 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Mentors</div>
+                                                                    <div class="panel-title">Mentors</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Requests</div>
                                                                 </div>
                                                             </div>
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Authorization</div>
@@ -850,9 +853,10 @@
                                                                     <div class="panel-title">Mentee Statistic</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">Report</div>
+                                                                    <div class="panel-title active">Report</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -873,52 +877,54 @@
                     <div class="aside">
                         <form method="post">
                             <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
-                            <input id="filter"  type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
+                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option>
+                                    <option value="Solved">Solved</option>
+                                    <option value="Pending">Pending</option>
+                            </select>
+                            <input id="filter"  type="submit" value="filter" style="margin-left: 10px; width: 10%; min-height: 20px;">
                         </form>
-                        <h3>List of mentor</h3>
+                        <script>
+                            document.getElementById("filter").onclick = function() {
+                                event.preventDefault();
+                                if(document.getElementById("start").value != null && document.getElementById("end").value != null) {
+                                    if(document.getElementById("start").value > document.getElementById("end").value) {
+                                        alert("start date must be before end date!");
+                                        return;
+                                    }
+                                };
+                                this.onclick = null;
+                                this.click();
+                            }
+                        </script>
+                        <h3>List of request</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>ID</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Account</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Profession</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Accepted</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Completed(%)</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rate</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Người report</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Thời gian report</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Nội dung</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Status</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%  try {
-                                            int j = 0;
-                                            for(Mentor m : arr.keySet()) {%>
-                                        <tr id='<%=j+1%>' <%=(j >= 10 ? "class=\"hidden\"" : "")%>>
+                                        <%for(int i = 0; i < arr.size(); i++) {%>
+                                        <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
-                                                <%=j+1%>
+                                                <%=i+1%>
                                             </td>
-                                            <td><a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/mentor?id=<%=m.getId()%>"><%=m.getId()%></a></td>
-                                            <td><%=m.getFullname()%></td>
+                                            <td><%=arr.get(i).getFullname()%></td>
+                                            <td><%=arr.get(i).getSendTime()%></td>
                                             <td>
-                                                <%=arr.get(m).getAccount()%>
+                                                <%=arr.get(i).getContent()%>
                                             </td>
-                                            <td><%=arr.get(m).getProfession()%></td>
-                                            <td><%=arr.get(m).getAcceptedRequest()%></td>
-                                            <td><%=arr.get(m).getPercentComplete()%></td>
-                                            <td><%=arr.get(m).getRating()%></td>
-                                            <td>
-                                            <a href="mentor?toggleid=<%=m.getId()%>&toggle=<%=arr.get(m).isStatus() ? "off" : "on"%>" class="delete" data-toggle="modal">
-                                            <i class="fas fa-toggle-<%=arr.get(m).isStatus() ? "on" : "off"%>" data-toggle="tooltip" title="<%=arr.get(m).isStatus() ? "disable" : "enable"%>"></i>
-                                            </td>
+                                            <td><%=arr.get(i).getStatus()%></td>
+                                            <td><%if(!arr.get(i).getStatus().equalsIgnoreCase("Solved")) {%><a href="report?type=solved&id=<%=arr.get(i).getId()%>"><i class="fas fa-check" data-toggle="tooltip" title="Solved"></i><%}%></a></td>
                                         </tr> 
-                                        <%  j++;
-                                            }
-                                            } catch(Exception e) {
-                                                e.printStackTrace();
-                                            }%>
+                                        <%}%>
                                     </tbody>
                                 </table>
                                 <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
@@ -1042,7 +1048,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 216px;";
+                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "216" : "72"%>px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1053,7 +1059,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 216px;";
+                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "216" : "72"%>px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1075,6 +1081,7 @@
                     return false;
                 }
             }
+            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "skill";
             };
@@ -1093,18 +1100,18 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
                 window.location.href = "report";
             };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "request";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "report";
+            };
+            <%}%>
         </script>
         <div id="preloader"></div>
 
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
-           display: flex!important;
-           justify-content: center!important;
-           align-items: center!important;
-           box-sizing: border-box;
-           text-align: var(--bs-body-text-align);
-           -webkit-text-size-adjust: 100%;
-           -webkit-tap-highlight-color: transparent;
-           "><i class="bi bi-arrow-up-short"></i></a>
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="display: flex!important;justify-content: center!important;align-items: center!important;box-sizing: border-box;text-align: var(--bs-body-text-align);-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: transparent;"><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>

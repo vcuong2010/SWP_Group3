@@ -742,6 +742,10 @@
                                                 }
                                             }
                                         </script>
+                                        <%} else if(arr.get(i).getStatus().equalsIgnoreCase("done") && !arr.get(i).isRated()) {%> 
+                                        <a href="" onclick="rate(event, <%=arr.get(i).getId()%>)" class="edit" data-toggle="modal">
+                                            <i class="fas fa-comment" data-toggle="tooltip" title="Rate"></i>
+                                        </a>
                                         <%}%>
                                         <a href="request?type=delete&id=<%=arr.get(i).getId()%>" class="delete" data-toggle="modal">
                                             <i class="fas fa-trash" data-toggle="tooltip" title="Delete"></i>
@@ -751,6 +755,137 @@
                                 <%}%>
                             </tbody>
                         </table>
+                            <script>
+                                function ratingStar(input) {
+                                    let star = parseInt(input.value);
+                                    for (var i = 1; i <= star; i++) {
+                                        document.getElementById("label-"+i).classList.remove("far");
+                                        document.getElementById("label-"+i).classList.add("fas");
+                                    }
+                                    for (var i = star+1; i <= 5; i++) {
+                                        document.getElementById("label-"+i).classList.add("far");
+                                        document.getElementById("label-"+i).classList.remove("fas");
+                                    }
+                                }
+                                function rate(event, id) {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<form method="post">\n\
+<div class="modal-dialog">\n\
+  <div class="modal-content" role="document">\n\
+    <div class="modal-header">\n\
+      <button type="button" class="close">\n\
+        <span aria-hidden="true">×</span>\n\
+        <span class="sr-only">Close</span>\n\
+      </button>\n\
+      <h4 class="modal-title">\n\
+        <span>Đánh giá Mentor</span>\n\
+      </h4>\n\
+    </div>\n\
+      <div class="modal-body">\n\
+<table style="width: 100%;">\n\
+              <tbody>\n\
+                  <input type="hidden" name="type" value="rate">\n\
+                  <input type="hidden" name="id" value="' + id + '">\n\
+                <tr>\n\
+                  <td>\n\
+                    <span>Đánh giá</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                        <input class="hidden" type="radio" name="noStar" value="1" onclick="ratingStar(this)" id="star-1"><label class="far fa-star" id="label-1" for="star-1"></label>\n\
+                        <input class="hidden" type="radio" name="noStar" value="2" onclick="ratingStar(this)" id="star-2"><label class="far fa-star" id="label-2" for="star-2"></label>\n\
+                        <input class="hidden" type="radio" name="noStar" value="3" onclick="ratingStar(this)" id="star-3"><label class="far fa-star" id="label-3" for="star-3"></label>\n\
+                        <input class="hidden" type="radio" name="noStar" value="4" onclick="ratingStar(this)" id="star-4"><label class="far fa-star" id="label-4" for="star-4"></label>\n\
+                        <input class="hidden" type="radio" name="noStar" value="5" onclick="ratingStar(this)" id="star-5"><label class="far fa-star" id="label-5" for="star-5"></label>\n\
+                  </td>\n\
+                </tr><tr>\n\
+                  <td>\n\
+                    <span>Đánh giá cụ thể</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                    <textarea placeholder="Nhập đánh giá..." required name="comment" maxlength="255" type="text" class="form-control" style="height:50px"></textarea>\n\
+                  </td>\n\
+                </tr>\n\
+              </tbody>\n\
+            </table>\n\
+      </div>\n\
+      <div class="modal-footer">\n\
+        <button type="submit" class="btn btn-success">\n\
+          <span>Xác Nhận</span>\n\
+        </button>\n\
+        <button type="button" class="btn btn-default">\n\
+          <span>Đóng</span>\n\
+        </button>\n\
+      </div>\n\
+  </div>\n\
+</form>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[1].onclick = function (e) {
+                                            e.preventDefault();
+                                            let q = document.querySelectorAll("input[name=noStar]:checked");
+                                            if(q.length < 1) {
+                                                alert("Vui lòng đánh giá số sao!");
+                                            } else {
+                                                this.form.submit();
+                                            }
+                                        }
+                                        btn[2].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                            </script>
                         <div class="clearfix">
                             <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
                             <ul class="pagination">

@@ -11,7 +11,7 @@ package model;
 public class MenteeStatistic {
     int id;
     float totalHours;
-    int totalSkill, totalRequest, acceptedRequest, rejectedRequest;
+    int totalSkill, totalRequest, acceptedRequest, rejectedRequest, totalMentor;
     String name;
     String fullname;
 
@@ -27,6 +27,14 @@ public class MenteeStatistic {
         this.rejectedRequest = rejectedRequest;
         this.name = name;
         this.fullname = fullname;
+    }
+
+    public int getTotalMentor() {
+        return totalMentor;
+    }
+
+    public void setTotalMentor(int totalMentor) {
+        this.totalMentor = totalMentor;
     }
 
     public int getTotalRequest() {

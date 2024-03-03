@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.CV, DAO.FollowDAO, model.Slot, java.util.Calendar, DAO.ScheduleDAO" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Rate, model.CV, java.text.SimpleDateFormat, DAO.FollowDAO, model.Slot, java.util.Calendar, DAO.ScheduleDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -772,47 +772,76 @@
                                 </div>
                             </div>
                             <div class="text-center review-duo-player row">
-                                <div class="col-md-12">
+                                <% ArrayList<Rate> rates = (ArrayList)request.getAttribute("Rates");
+                                    int p = (int) Math.ceil((double)rates.size() / 5);
+                                    for(int i = 0; i < rates.size(); i++) {%>
+                                <div id='<%=i+1%>' class="col-md-12 <%=i > 5 ? "hidden" : ""%>">
                                     <div class="full-size">
                                         <div class="review-image-small">
                                             <div class="avt-rank avt-md">
-                                                <img src="https://files.playerduo.net/production/images/avatar10.png" class="avt-1-15 avt-img" alt="PD">
-                                                <img src="https://playerduo.net/rank/1.png" class="rank-1-15 rank-img" alt="PlayerDuo">
+                                                <img src="<%=rates.get(i).getSenderAvatar() != null ? rates.get(i).getSenderAvatar() : "https://files.playerduo.net/production/images/avatar31.png"%>" class="avt-1-15 avt-img" alt="PD">
                                             </div>
                                         </div>
                                         <div class="wrapper-content-rating">
                                             <div class="review-content">
-                                                <a target="_blank" href="/page646f17c2dc54d85e76a24220">
-                                                    <p class="name-player-review color-vip-1">giau2k2</p>
+                                                <a target="_blank" href="/">
+                                                    <p class="name-player-review color-vip-1"><%=rates.get(i).getSenderName()%></p>
                                                 </a>
                                                 <p class="time-player-review">
-                                                    <span>12:31:57 28/10/2023</span>
+                                                    
+                                                    <span><%=new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(rates.get(i).getRateTime())%></span>
                                                 </p>
                                             </div>
                                             <div class="review-rating">
                                                 <div class="rateting-style">
+                                                    <%for(int j = 0; j < rates.get(i).getNoStar(); j++) {%>
                                                     <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>
-                                                    <i class="fas fa-star"></i>&nbsp;
+                                                    <%}%>
+                                                    <%for(int j = rates.get(i).getNoStar()+1; j <= 5; j++) {%>
+                                                    <i class="far fa-star"></i>
+                                                    <%}%>
+                                                    &nbsp;
                                                 </div>
-                                                <span class="time-rent-review">( <span>Thuê</span>&nbsp;2h) </span>
                                             </div>
-                                            <p class="content-player-review">test </p>
+                                            <p class="content-player-review"><%=rates.get(i).getContent()%> </p>
                                         </div>
                                     </div>
                                 </div>
+                                <%}%>
+                                
+        <script>
+            var max = <%=p%>;
+            var total = <%=rates.size()%>;
+            var p = 1;
+        </script>
                                 <div class="col-md-12">
                                     <div class="page_account">
-                                        <p class="active">1</p>
-                                        <p class="">2</p>
-                                        <p class="">3</p>
-                                        <p class="">4</p>
-                                        <p class="">5</p>
-                                        <p class="active" style="cursor: auto;">1/38</p>
+                                        <%for(int i = 0; i < p; i++) {%>
+                                        <p class="<%=(i==0) ? "active" : ""%>" id="p-<%=i+1%>" onclick="paging(this, event)"  href='<%=i+1%>'>1</p>
+                                        <% } %>
+                                        <p class="active" style="cursor: auto;" id="from-to">1/<%=p%></p>
                                     </div>
                                 </div>
+                                    <script>
+                                    function paging(input, event) {
+                                        event.preventDefault();
+                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
+                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                            if(parseInt(str) !== p) {
+                                                document.getElementById("from-to").innerHTML = parseInt(str)+"/"+max
+                                            }
+                                            document.getElementById("p-"+p).classList.remove("active");
+                                            input.classList.add("active");
+                                                for (var i = (p-1)*5+1; i <= (p*5 > total ? total : p*5); i++) {
+                                                    document.getElementById(i).classList.add("hidden");
+                                                }
+                                                p = parseInt(str);
+                                                for (var i = (p-1)*5+1; i <= (p*5 > total ? total : p*5); i++) {
+                                                    document.getElementById(i).classList.remove("hidden");
+                                                }
+                                        }
+                                    }
+                                    </script>
                             </div>
                         </div>
                     </div>

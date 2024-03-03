@@ -21,10 +21,12 @@ public class ReportDAO {
         ArrayList<Report> arr = new ArrayList();
         Connection dbo = DatabaseUtil.getConn();
         try {
-            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Report]");
+            PreparedStatement ps = dbo.prepareStatement("SELECT [ReportContent]\n" +
+"      ,[reportTime]\n" +
+"      ,[UserID],[Status],[ReportID], (SELECT [fullname] FROM [User] WHERE [UserID] = [Report].[UserID]) as fullname FROM [Report] ORDER BY [Status] ASC");
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
-                arr.add(new Report(rs.getInt("UserID"), rs.getString("ReportContent"), rs.getTimestamp("reportTime")));
+                arr.add(new Report(rs.getInt("UserID"), rs.getString("ReportContent"), rs.getTimestamp("reportTime"), rs.getString("fullname"), rs.getString("Status"), rs.getInt("ReportID")));
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -32,6 +34,20 @@ public class ReportDAO {
             dbo.close();
         }
         return arr;
+    }
+    
+    public static void solvedReport(int id) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("UPDATE [Report] SET [Status] = N'Solved' WHERE [ReportID] = ?");
+            ps.setInt(1, id);
+            ps.executeUpdate();
+            dbo.commit();
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbo.close();
+        }
     }
     
     public static void sendReport(int uid, String report) throws Exception {

@@ -232,6 +232,13 @@ public class RequestDAO {
                     if(rs2.next()) {
                         r.setRejectReason(rs2.getString("Reason"));
                     }
+                } else if(r.getStatus().equalsIgnoreCase("done")) {
+                    ps = dbo.prepareStatement("SELECT * FROM [Rating] WHERE [RequestID] = ?");
+                    ps.setInt(1, rs.getInt("RequestID"));
+                    rs2 = ps.executeQuery();
+                    if(rs2.next()) {
+                        r.setRated(true);
+                    }
                 }
                 ps = dbo.prepareStatement("SELECT * FROM [Skills] WHERE [SkillID] in (SELECT [SkillID] FROM [Request] WHERE [RequestID] = ?)");
                 ps.setInt(1, rs.getInt("RequestID"));

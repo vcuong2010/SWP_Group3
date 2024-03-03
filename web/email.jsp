@@ -473,7 +473,14 @@
                                                             <i class="fas fa-user-lock"></i> Thông Tin CV
                                                         </div>
                                                     </div>
-                                                </div><%}%>
+                                                </div><%} else {%><div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="  panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thống Kê Request
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <%}%>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
                                                         <div class="title-sub  panel-title">
@@ -628,10 +635,11 @@
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "cv";
             };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "statistic";
+            };
             <%}%>
-                <%if(request.getAttribute("alert") != null) {%>
-                 alert('<%=(String)request.getAttribute("alert")%>');
-                <%}%>
         </script>
     </body>
 </html>

@@ -31,7 +31,7 @@ public class ScheduleDAO {
                 return o1.getSlotTime().before(o2.getSlotTime()) ? -1 : 1;
             }
         });
-        int r = 0;
+        int r = 1;
         if (array.size() > 0) {
             int firstWeek = weekOfYear(new java.util.Date());
             int lastWeek = weekOfYear(new java.util.Date(array.get(array.size() - 1).getSlotTime().toInstant().toEpochMilli()));
@@ -67,6 +67,15 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
+                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
+                        ps.setInt(1, sid);
+                        ResultSet rs2 = ps.executeQuery();
+                        rs2.next();
+                        if(rs2.getInt("NotDone") == 0) {
+                            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
+                            ps.setInt(1, sid);
+                            ps.executeUpdate();
+                        }
                     } else {
                         dbo.close();
                         return false;
@@ -77,6 +86,15 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
+                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
+                        ps.setInt(1, sid);
+                        ResultSet rs2 = ps.executeQuery();
+                        rs2.next();
+                        if(rs2.getInt("NotDone") == 0) {
+                            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
+                            ps.setInt(1, sid);
+                            ps.executeUpdate();
+                        }
                     } else {
                         dbo.close();
                         return false;

@@ -11,14 +11,44 @@ import java.sql.Timestamp;
  * @author TGDD
  */
 public class Report {
+    int id;
     int uid;
+    String fullname;
     String content;
     Timestamp SendTime;
+    String status;
 
-    public Report(int uid, String content, Timestamp SendTime) {
+    public Report(int uid, String content, Timestamp SendTime, String fullname, String status, int id) {
         this.uid = uid;
         this.content = content;
         this.SendTime = SendTime;
+        this.fullname = fullname;
+        this.status = status;
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public int getUid() {

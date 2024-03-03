@@ -8,6 +8,7 @@ import Service.AuthorizationService;
 import DAO.CvDAO;
 import DAO.FollowDAO;
 import DAO.MentorDAO;
+import DAO.RateDAO;
 import DAO.RequestDAO;
 import DAO.ScheduleDAO;
 import java.io.IOException;
@@ -86,6 +87,7 @@ public class MentorController extends HttpServlet {
             request.setAttribute("week", week);
             Calendar firstDay = ScheduleDAO.FirstDateOfWeek(year, week);
             request.setAttribute("firstOfWeek", firstDay);
+            request.setAttribute("Rates", RateDAO.getRates(id));
             request.setAttribute("FreeSlot", ScheduleDAO.getFreeSlots(new java.util.Date(), id));
         } catch (Exception e) {
             response.sendRedirect("index");
@@ -189,6 +191,7 @@ public class MentorController extends HttpServlet {
             int week = ScheduleDAO.weekOfYear(today);
             request.setAttribute("year", year);
             request.setAttribute("week", week);
+            request.setAttribute("Rates", RateDAO.getRates(id));
             request.setAttribute("firstOfWeek", ScheduleDAO.FirstDateOfWeek(year, week));
             request.setAttribute("FreeSlot", ScheduleDAO.getFreeSlots(new java.util.Date(), id));
         } catch (Exception e) {

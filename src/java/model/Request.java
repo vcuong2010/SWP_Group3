@@ -20,6 +20,7 @@ public class Request {
     String rejectReason;
     Timestamp DeadlineTime;
     Timestamp requestTime;
+    boolean rated = false;
     ArrayList<Skill> skills = new ArrayList();
 
     public Request(int id, int senderID, int userID, String reason, String status, String subject, Timestamp requestTime, Timestamp DeadlineTime) {
@@ -31,6 +32,14 @@ public class Request {
         this.subject = subject;
         this.requestTime = requestTime;
         this.DeadlineTime = DeadlineTime;
+    }
+
+    public boolean isRated() {
+        return rated;
+    }
+
+    public void setRated(boolean rated) {
+        this.rated = rated;
     }
 
     public String getRejectReason() {

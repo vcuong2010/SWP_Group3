@@ -7,6 +7,7 @@ package Controller;
 import Service.AuthorizationService;
 import DAO.CvDAO;
 import DAO.MentorDAO;
+import DAO.RateDAO;
 import DAO.RequestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -184,6 +185,23 @@ public class RequestController extends HttpServlet {
                 int id = Integer.parseInt(sid);
                 String reason = request.getParameter("reason");
                 RequestDAO.rejectRequest(id, u.getId(), reason);
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("request");
+                return;
+            }
+        } else if(type != null && type.equalsIgnoreCase("rate")) {
+            User u = (User) request.getSession().getAttribute("User");
+            if (u == null || !u.getRole().equalsIgnoreCase("mentee")) {
+                response.sendRedirect("request");
+                return;
+            }
+            try {
+                int id = Integer.parseInt(sid);
+                String noStar = request.getParameter("noStar");
+                int star = Integer.parseInt(noStar);
+                String comment = request.getParameter("comment");
+                RateDAO.Rating(id, star, comment);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("request");
