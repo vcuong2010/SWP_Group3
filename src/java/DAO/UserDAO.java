@@ -335,7 +335,7 @@ public class UserDAO {
             ps.setString(2, email);
             ResultSet rs = ps.executeQuery();
             if(!rs.next()) {
-                ps = dbo.prepareStatement("INSERT INTO [User] ([username], [password], [email], [sex], [dob], [phoneNumber], [address], [RoleID], [wallet], [activeStatus]) VALUES (?, ?, ?, ?, ?, ?, ?, (SELECT [RoleID] FROM [Role] WHERE [roleName] = ?), 0, 1)");
+                ps = dbo.prepareStatement("INSERT INTO [User] ([username], [password], [email], [sex], [dob], [phoneNumber], [address], [RoleID], [wallet], [activeStatus], [fullname]) VALUES (?, ?, ?, ?, ?, ?, ?, (SELECT [RoleID] FROM [Role] WHERE [roleName] = ?), 0, 1, ?)");
                 ps.setString(1, username);
                 ps.setString(2, password);
                 ps.setString(3, email);
@@ -344,24 +344,21 @@ public class UserDAO {
                 ps.setString(6, phone);
                 ps.setString(7, address);
                 ps.setString(8, role);
+                ps.setString(9, fullname);
                 int k = ps.executeUpdate();
                 dbo.commit();
                 User u = UserDAO.getUser(username, password);
-                if(fullname != null) {
                     if(role.equalsIgnoreCase("mentor")) {
-                        ps = dbo.prepareStatement("INSERT INTO [Mentor] ([fullname], [UserID]) VALUES (?, ?)");
-                        ps.setString(1, fullname);
-                        ps.setInt(2, u.getId());
+                        ps = dbo.prepareStatement("INSERT INTO [Mentor] ([UserID]) VALUES (?)");
+                        ps.setInt(1, u.getId());
                         ps.executeUpdate();
                         dbo.commit();
                     } else {
-                        ps = dbo.prepareStatement("INSERT INTO [Mentee] ([fullname], [UserID]) VALUES (?, ?)");
-                        ps.setString(1, fullname);
-                        ps.setInt(2, u.getId());
+                        ps = dbo.prepareStatement("INSERT INTO [Mentee] ([UserID]) VALUES (?)");
+                        ps.setInt(1, u.getId());
                         ps.executeUpdate();
                         dbo.commit();
                     }
-                }
                 if(k > 0)
                     return u;
             }

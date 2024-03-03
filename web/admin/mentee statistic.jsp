@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
+<%@page import="model.Skill, java.util.ArrayList, model.MenteeStatistic, model.User, model.Mentor, model.Mentee, java.util.Collections, java.util.Comparator, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -587,8 +587,21 @@
         <!-- ======= Header ======= -->
         <%  
             User u = (User)session.getAttribute("User");
-            HashMap<String, String> arr = (HashMap)request.getAttribute("maps");
-            ArrayList<Role> roles = (ArrayList)request.getAttribute("roles");
+            ArrayList<MenteeStatistic> arr = (ArrayList)request.getAttribute("mstatistic");
+            ArrayList<MenteeStatistic> AZ = (ArrayList)arr.clone();
+            ArrayList<MenteeStatistic> ZA = (ArrayList)arr.clone();
+            Collections.sort(AZ, new Comparator<MenteeStatistic>() {
+                @Override
+                public int compare(MenteeStatistic o1, MenteeStatistic o2) {
+                    return o1.getName().compareTo(o2.getName()) == 0 ? o1.getFullname().compareTo(o2.getFullname()) : o1.getName().compareTo(o2.getName());
+                }
+            });
+            Collections.sort(ZA, new Comparator<MenteeStatistic>() {
+                @Override
+                public int compare(MenteeStatistic o1, MenteeStatistic o2) {
+                    return o2.getName().compareTo(o1.getName()) == 0 ? o2.getFullname().compareTo(o1.getFullname()) : o2.getName().compareTo(o1.getName());
+                }
+            });
             int p = (int) Math.ceil((double)arr.size() / 10);
             %>
         <header class="menu__header fix-menu" id="header-menu">
@@ -843,12 +856,12 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Authorization</div>
+                                                                    <div class="panel-title">Authorization</div>
                                                                 </div>
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">Mentee Statistic</div>
+                                                                    <div class="panel-title active">Mentee Statistic</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -865,83 +878,75 @@
                         </div>
                     </div>
                 </div>
+                                                        <script>
+                    function sort(input) {
+                        let body = document.getElementById("tbody");
+                        if(input.options[input.selectedIndex].value === 'asc') {
+                            body.innerHTML = '<% for(int i = 0; i < AZ.size(); i++) {%>\n\
+                                                <td><%=i+1%></td>\n\
+                                                <td><%=AZ.get(i).getName()%></td>\n\
+                                            <td><%=AZ.get(i).getFullname()%></td>\n\
+                                            <td><%=AZ.get(i).getTotalHours()%></td>\n\
+                                            <td><%=AZ.get(i).getTotalRequest()%></td>\n\
+                                            <td><%=AZ.get(i).getAcceptedRequest()%></td>\n\
+                                            <td><%=AZ.get(i).getRejectedRequest()%></td>\n\
+                                            <td><%=AZ.get(i).getTotalSkill()%></td>\n\
+                                        </tr> \n\
+                                                <%}%>';
+                        } else {
+                            body.innerHTML = '<% for(int i = 0; i < ZA.size(); i++) {%>\n\
+                                                <td><%=i+1%></td>\n\
+                                                <td><%=ZA.get(i).getName()%></td>\n\
+                                            <td><%=ZA.get(i).getFullname()%></td>\n\
+                                            <td><%=ZA.get(i).getTotalHours()%></td>\n\
+                                            <td><%=ZA.get(i).getTotalRequest()%></td>\n\
+                                            <td><%=ZA.get(i).getAcceptedRequest()%></td>\n\
+                                            <td><%=ZA.get(i).getRejectedRequest()%></td>\n\
+                                            <td><%=ZA.get(i).getTotalSkill()%></td>\n\
+                                        </tr> \n\
+                                                <%}%>';
+                        }
+                    }
+                                                        </script>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
-                        <h3 class="col-sm-8">List of authorization</h3>
+                        <form method="post">
+                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
+                            <input id="filter" type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
+                            <select onchange="sort(this)" style="width: 180px;min-height: 20px;"><option disabled selected>Order By Name</option><option value="desc">từ Z-A</option><option value="asc">từ A-Z</option></select>
+                        </form>
+                        <h3 class="col-sm-8">All Mentee Statistic</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Path</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Authorite Role</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Username</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Hours</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Request</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Accepted Request</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rejected Request</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Skill</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <%  int i = 0;
-                                            for(String path : arr.keySet()) {%>
+                                    <tbody id="tbody">
+                                        <% 
+                                            for(int i = 0; i < arr.size(); i++) {%>
                                         <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
                                                 <%=i+1%>
                                             </td>
-                                            <td><%=path%></td>
-                                            <td><%=arr.get(path)%></td>
-                                            <td>
-                                                <a href="" id="" onclick="update<%=i+1%>(event)" class="edit" data-toggle="modal">
-                                            <i class="fas fa-edit" data-toggle="tooltip" title="update"></i>
-                                        </a>
-                                            <script>
-                                                function update<%=i+1%>(event) {
-                                                    event.preventDefault();
-                            let title = document.title;
-                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                            let modal = document.createElement('div');
-                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Update Authorization</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Path:</td><td><%=path%></td></tr><tr><td><span>Authorite Role</span>:</td><td><%for(int j = 0; j < roles.size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="role" value="<%=roles.get(j).getName()%>" id="<%=roles.get(j).getId()%>" <%=arr.get(path.toLowerCase()).contains(roles.get(j).getName().toLowerCase()) ? "checked" : ""%>><label for="<%=roles.get(j).getId()%>" style="margin-left: 5px"><%=roles.get(j).getName()%></label></div><%}%><div class="col-sm-6"><input type="checkbox" name="role" value="all user" id="all" <%=arr.get(path.toLowerCase()).contains("all user") ? "checked" : ""%>><label for="all" style="margin-left: 5px">All User</label></div><div class="col-sm-6"><input type="checkbox" name="role" value="guest" id="guest" <%=arr.get(path.toLowerCase()).contains("guest") ? "checked" : ""%>><label for="guest" style="margin-left: 5px">Guest</label></div><input type="hidden" name="id" value="<%=path%>"></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Update</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
-                            document.body.appendChild(modal.firstChild);
-                    setTimeout(function () {
-                        document.body.lastChild.children[1].classList.add("in");
-                        document.body.lastChild.firstChild.classList.add("in");
-                        document.getElementsByClassName('close')[0].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        window.onclick = function (e) {
-                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                            }
-                        };
-                        document.title = "Update Authorization";
-                    }, 1);
-                        }
-                                            </script>
-                                            </td>
+                                            <td><%=arr.get(i).getName()%></td>
+                                            <td><%=arr.get(i).getFullname()%></td>
+                                            <td><%=arr.get(i).getTotalHours()%></td>
+                                            <td><%=arr.get(i).getTotalRequest()%></td>
+                                            <td><%=arr.get(i).getAcceptedRequest()%></td>
+                                            <td><%=arr.get(i).getRejectedRequest()%></td>
+                                            <td><%=arr.get(i).getTotalSkill()%></td>
                                         </tr> 
-                                        <%i++;
+                                        <%
                                             }
                                         %>
                                     </tbody>

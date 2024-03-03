@@ -51,12 +51,20 @@ public class ScheduleController extends HttpServlet {
         } catch (Exception e) {
         }
         try {
+            User u = (User) request.getSession().getAttribute("User");
+            if(request.getParameter("type") != null && request.getParameter("type").equalsIgnoreCase("confirm")) {
+                String sid = request.getParameter("id");
+                int id = Integer.parseInt(sid);
+                boolean check = ScheduleDAO.confirmSlot(id, u.getId(), u.getRole());
+                if(!check) {
+                    request.setAttribute("alert", "Something went wrong when confirm slot!");
+                }
+            }
             java.util.Date today = new java.util.Date();
             Calendar c = Calendar.getInstance();
             c.setTime(today);
             int year = c.get(Calendar.YEAR);
             int week = ScheduleDAO.weekOfYear(today);
-            User u = (User) request.getSession().getAttribute("User");
             ArrayList<Slot> arr = null;
             if(u.getRole().equalsIgnoreCase("mentor")) {
                 arr = ScheduleDAO.getSlots(year, week, u.getId());
@@ -76,6 +84,7 @@ public class ScheduleController extends HttpServlet {
             request.setAttribute("numberOfWeek", ScheduleDAO.numberOfWeek(c.get(Calendar.YEAR)));
             request.setAttribute("firstOfWeek", ScheduleDAO.FirstDateOfWeek(c.get(Calendar.YEAR), ScheduleDAO.weekOfYear(today)));
         } catch (Exception e) {
+            e.printStackTrace();
         }
         request.getRequestDispatcher("schedule.jsp").forward(request, response);
     }

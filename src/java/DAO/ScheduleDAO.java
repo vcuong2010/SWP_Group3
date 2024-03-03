@@ -23,7 +23,7 @@ import model.Slot;
  * @author TGDD
  */
 public class ScheduleDAO {
-    
+
     public static int weekCount(ArrayList<Slot> array) {
         Collections.sort(array, new Comparator<Slot>() {
             @Override
@@ -32,12 +32,69 @@ public class ScheduleDAO {
             }
         });
         int r = 0;
-        if(array.size() > 0) {
-            int firstWeek = weekOfYear(new java.util.Date(array.get(0).getSlotTime().toInstant().toEpochMilli()));
+        if (array.size() > 0) {
+            int firstWeek = weekOfYear(new java.util.Date());
             int lastWeek = weekOfYear(new java.util.Date(array.get(array.size() - 1).getSlotTime().toInstant().toEpochMilli()));
             r = lastWeek - firstWeek + 1;
         }
         return r;
+    }
+
+    public static boolean confirmSlot(int sid, int uid, String role) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT Status FROM Slot WHERE SlotID = ? ");
+            ps.setInt(1, sid);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            String status = rs.getString("Status");
+            if (status.toLowerCase().contains("not confirm")) {
+                if (role.equalsIgnoreCase("mentor")) {
+                    ps = dbo.prepareStatement("UPDATE Slot SET Status = N'Mentor Confirm' WHERE SlotID = ? AND ScheduleID in (SELECT ScheduleID From Schedule WHERE MentorID = ?)");
+                    ps.setInt(1, sid);
+                    ps.setInt(2, uid);
+                    ps.executeUpdate();
+                } else {
+                    ps = dbo.prepareStatement("UPDATE Slot SET Status = N'Mentee Confirm' WHERE SlotID = ? AND MenteeID = ?");
+                    ps.setInt(1, sid);
+                    ps.setInt(2, uid);
+                    ps.executeUpdate();
+                }
+            } else {
+                if (status.toLowerCase().contains("mentor confirm")) {
+                    if (role.equalsIgnoreCase("mentee")) {
+                        ps = dbo.prepareStatement("UPDATE Slot SET Status = N'Done' WHERE SlotID = ? AND MenteeID = ?");
+                        ps.setInt(1, sid);
+                        ps.setInt(2, uid);
+                        ps.executeUpdate();
+                    } else {
+                        dbo.close();
+                        return false;
+                    }
+                } else if (status.toLowerCase().contains("mentee confirm")) {
+                    if (role.equalsIgnoreCase("mentor")) {
+                        ps = dbo.prepareStatement("UPDATE Slot SET Status = N'Done' WHERE SlotID = ? AND ScheduleID in (SELECT ScheduleID From Schedule WHERE MentorID = ?)");
+                        ps.setInt(1, sid);
+                        ps.setInt(2, uid);
+                        ps.executeUpdate();
+                    } else {
+                        dbo.close();
+                        return false;
+                    }
+                } else {
+                    dbo.close();
+                    return false;
+                }
+            }
+            dbo.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            dbo.close();
+            return false;
+        } finally {
+            dbo.close();
+        }
+        return true;
     }
 
     public static int numberOfWeek(int year) {
@@ -75,6 +132,12 @@ public class ScheduleDAO {
 
     public static ArrayList<Slot> sortByWeek(Calendar first, Calendar last, ArrayList<Slot> array) {
         ArrayList<Slot> copy = (ArrayList) array.clone();
+        first.set(Calendar.HOUR, 0);
+        first.set(Calendar.MINUTE, 0);
+        first.set(Calendar.SECOND, 0);
+        last.set(Calendar.HOUR, 23);
+        last.set(Calendar.MINUTE, 59);
+        last.set(Calendar.SECOND, 59);
         for (int i = 0; i < copy.size(); i++) {
             if (copy.get(i).getSlotTime().after(last.getTime()) || copy.get(i).getSlotTime().before(first.getTime())) {
                 copy.remove(i);

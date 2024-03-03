@@ -903,7 +903,7 @@
                                                     ArrayList<Slot> sun = new ArrayList();
                                                     for(int i = 0; i < thisWeek.size(); i++) {
                                                         Calendar c = Calendar.getInstance();
-                                                        c.setTime(arr.get(i).getSlotTime());
+                                                        c.setTime(thisWeek.get(i).getSlotTime());
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 1) {
                                                             sun.add(thisWeek.get(i));
                                                         }
