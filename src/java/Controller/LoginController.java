@@ -101,7 +101,11 @@ public class LoginController extends HttpServlet {
                             }
                         }
                     }
-                    response.sendRedirect("index");
+                    if(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) {
+                        response.sendRedirect("admin/request");
+                    } else {
+                        response.sendRedirect("index");
+                    }
                     return;
                 } else {
                     request.getSession().setAttribute("error", "Don't have account");

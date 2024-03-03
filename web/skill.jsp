@@ -799,6 +799,7 @@
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Avatar</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Account</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rating</th>
@@ -810,6 +811,7 @@
                                     <tbody>
                                         <%for(Mentor m : mentors.keySet()) {%>
                                         <tr>
+                                            <td><img src="<%=m.getAvatar()%>" style="height: 50px; width: 50px"></td>
                                             <td><a href="mentor?id=<%=m.getId()%>"><%=m.getFullname()%></a></td>
                                             <td><a href="mentor?id=<%=m.getId()%>"><%=mentors.get(m).getAccount()%></a></td>
                                             <td><%=mentors.get(m).getRating()%></td>
@@ -837,33 +839,32 @@
         <script>
                                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px;';
                                     setTimeout(function () {
-                                        let index = document.body.children.length - 2;
-                                        document.body.children[index].children[1].classList.add("in");
-                                        document.body.children[index].children[0].classList.add("in");
+                                        document.body.children[document.body.children.length - 2].children[1].classList.add("in");
+                                        document.body.children[document.body.children.length - 2].children[0].classList.add("in");
                                         window.onclick = function (e) {
                                             if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                                    document.body.children[index].children[1].classList.remove("in");
-                                                    document.body.children[index].children[0].classList.remove("in");
+                                                    document.body.children[document.body.children.length - 2].children[1].classList.remove("in");
+                                                    document.body.children[document.body.children.length - 2].children[0].classList.remove("in");
                                                     document.body.style = 'padding-top: 100px; display:flex';
                                                     setTimeout(function () {
-                                                        document.body.removeChild(document.body.children[index]);
+                                                        document.body.removeChild(document.body.children[document.body.children.length - 2]);
                                                     }, 200);
                                             }
                                         }
-                                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
-                                                    document.body.children[index].children[1].classList.remove("in");
-                                                    document.body.children[index].children[0].classList.remove("in");
+                                        document.getElementsByClassName('btn btn-default')[<%=(u==null) ? 3 : 2%>].onclick = function (e) {
+                                                    document.body.children[document.body.children.length - 2].children[1].classList.remove("in");
+                                                    document.body.children[document.body.children.length - 2].children[0].classList.remove("in");
                                                     document.body.style = 'padding-top: 100px; display:flex';
                                                     setTimeout(function () {
-                                                        document.body.removeChild(document.body.children[index]);
+                                                        document.body.removeChild(document.body.children[document.body.children.length - 2]);
                                                     }, 200);
                                         }
                                         document.getElementsByClassName('close')[0].onclick = function (e) {
-                                                    document.body.children[index].children[1].classList.remove("in");
-                                                    document.body.children[index].children[0].classList.remove("in");
+                                                    document.body.children[document.body.children.length - 2].children[1].classList.remove("in");
+                                                    document.body.children[document.body.children.length - 2].children[0].classList.remove("in");
                                                     document.body.style = 'padding-top: 100px; display:flex';
                                                     setTimeout(function () {
-                                                        document.body.removeChild(document.body.children[index]);
+                                                        document.body.removeChild(document.body.children[document.body.children.length - 2]);
                                                     }, 200);
                                         }
                                     }, 1);

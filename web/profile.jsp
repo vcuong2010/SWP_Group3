@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, DAO.FollowDAO" %>
 <!doctype html>
 <html lang="en" translate="no">
     <head>
@@ -552,6 +552,14 @@
                                             </button>
                                         </div>
                                     </div>
+                                    <%if(u.getRole().equalsIgnoreCase("mentee")) {%>
+                                    <p class="control-label">Following: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.following(u.getId())%> Mentors</span></p>
+                                    <hr>
+                                    <% } else if(u.getRole().equalsIgnoreCase("mentor")) {%>
+                                    <p class="control-label">Follower: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.follower(u.getId())%> Mentees</span></p>
+                                    <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
+                                    <hr>
+                                    <% } %>
                                     <form class="from-userinfo" action="profile" method="POST">
                                         <div class="fieldGroup ">
                                             <p class="control-label">Họ và tên</p>

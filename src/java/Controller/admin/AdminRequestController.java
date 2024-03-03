@@ -7,6 +7,7 @@ package Controller.admin;
 
 import Service.AuthorizationService;
 import DAO.RequestDAO;
+import DAO.RequestStatusDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import model.Request;
+import model.RequestStatus;
 import model.User;
 
 /**
@@ -42,7 +44,9 @@ public class AdminRequestController extends HttpServlet {
         } catch(Exception e) {}
         try {
             ArrayList<Request> requests = (ArrayList)RequestDAO.getRequests();
+            ArrayList<RequestStatus> status = (ArrayList)RequestStatusDAO.getStatus();
             request.setAttribute("requests", requests);
+            request.setAttribute("status", status);
         } catch(Exception e) {
         }
         request.getRequestDispatcher("request.jsp").forward(request, response);
@@ -79,6 +83,7 @@ public class AdminRequestController extends HttpServlet {
         } catch(Exception e) {}
         try {
             ArrayList<Request> requests = (ArrayList)RequestDAO.getRequests();
+            ArrayList<RequestStatus> status = (ArrayList)RequestStatusDAO.getStatus();
             if(request.getParameter("search") != null && !request.getParameter("search").isEmpty()) {
                 for (int i = 0; i < requests.size(); i++) {
                     if(!requests.get(i).getSubject().contains(request.getParameter("search"))) {
@@ -116,6 +121,7 @@ public class AdminRequestController extends HttpServlet {
                 }
             }
             request.setAttribute("requests", requests);
+            request.setAttribute("status", status);
         } catch(Exception e) {
             e.printStackTrace();
         }

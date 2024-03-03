@@ -31,6 +31,17 @@ public class MentorDAO {
                 ResultSet rs2 = ps.executeQuery();   
                 rs2.next();
                 Mentor m = new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), rs2.getString("fullname"), rs2.getString("Avatar"));
+                ps = dbo.prepareStatement("SELECT Count([FollowID]) as Follow FROM [Follow] WHERE [MentorID] = ?");
+                ps.setInt(1, id);
+                rs2 = ps.executeQuery();   
+                rs2.next();
+                m.setFollow(rs2.getInt("Follow"));
+                ps = dbo.prepareStatement("SELECT Count(*) as ratingTime, AVG(Cast([noStar] as Float)) as Rate FROM [Rating] WHERE MentorID = ?");
+                ps.setInt(1, id);
+                rs2 = ps.executeQuery();   
+                rs2.next();
+                m.setRatingTime(rs2.getInt("ratingTime"));
+                m.setRate(rs2.getFloat("Rate"));
                 dbo.close();
                 return m;
             }

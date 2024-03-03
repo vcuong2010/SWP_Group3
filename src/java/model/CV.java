@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 /**
@@ -14,12 +15,26 @@ public class CV {
     int id;
     String ProfessionIntroduction;
     String ServiceDescription;
+    int cashPerSlot;
     ArrayList<Skill> skills = new ArrayList();
 
     public CV(int id, String ProfessionIntroduction, String ServiceDescription) {
         this.id = id;
         this.ProfessionIntroduction = ProfessionIntroduction;
         this.ServiceDescription = ServiceDescription;
+    }
+    
+    public String CashFormat() {
+        DecimalFormat decimalFormat = new DecimalFormat("#,##0");
+        return decimalFormat.format(cashPerSlot);
+    }
+
+    public int getCashPerSlot() {
+        return cashPerSlot;
+    }
+
+    public void setCashPerSlot(int cashPerSlot) {
+        this.cashPerSlot = cashPerSlot;
     }
 
     public ArrayList<Skill> getSkills() {

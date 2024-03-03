@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of requests</title>
+        <title>List of invited requests</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -587,7 +587,7 @@
         <%ArrayList<Request> arr = (ArrayList)request.getAttribute("requests");
         int p = (int) Math.ceil((double)arr.size() / 10);
         %>
-            <%@include file="header.jsp" %>
+        <%@include file="header.jsp" %>
         <!-- ======= Hero Section ======= -->
         <script>
             var max = <%=p%>;
@@ -600,13 +600,9 @@
                         <div class="table-title">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <h2>All <b>Requests</b></h2>
+                                    <h2>All <b>Invite Requests</b></h2>
                                 </div>
                                 <div style="margin-top: 25px" class="col-sm-2">
-                                    <a href="request?type=delete" id="deletebtn" class="btn btn-danger" data-toggle="modal">
-                                        <i class="fas fa-trash"></i>
-                                        <span>Delete</span>
-                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -621,7 +617,7 @@
                                     </th>
                                     <th style="font-weight: bold; color: black">Subject</th>
                                     <th style="font-weight: bold; color: black">Reason</th>
-                                    <th style="font-weight: bold; color: black">Mentor</th>
+                                    <th style="font-weight: bold; color: black">Sender</th>
                                     <th style="font-weight: bold; color: black">Skills</th>
                                     <th style="font-weight: bold; color: black">Deadline Date</th>
                                     <th style="font-weight: bold; color: black">Status</th>
@@ -637,58 +633,29 @@
                                             <label for="checkbox1"></label>
                                         </span>
                                     </td>
-                                    <td><%=arr.get(i).getSubject()%></td>
+                                    <td><a href="" onclick="update<%=arr.get(i).getId()%>(event)" data-toggle="modal"><%=arr.get(i).getSubject()%></a></td>
                                     <td><%=arr.get(i).getReason()%></td>
-                                    <td>
-                                        <a href="mentor?id=<%=arr.get(i).getUserID()%>"><%=arr.get(i).getMentor()%></a>
-                                    </td>
+                                    <td><%=arr.get(i).getSender()%></td>
                                     <td><%=arr.get(i).getSkillsName()%></td>
                                     <td><%=arr.get(i).getDeadlineTime()%></td>
                                     <td><%=arr.get(i).getStatus()%></td>
                                     <td>
-                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reject")) {%>
-                                        <a href="" onclick="update<%=arr.get(i).getId()%>(event)" class="edit" data-toggle="modal">
-                                            <i class="fas fa-edit" data-toggle="tooltip" title="Edit"></i>
+                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open")) {%>
+                                        <a href="request?type=accept&id=<%=arr.get(i).getId()%>" class="check" data-toggle="modal">
+                                            <i class="fas fa-check" data-toggle="tooltip" title="Accept"></i>
                                         </a>
+                                        <%}%>
                                         <script>
                                             function update<%=arr.get(i).getId()%>(event) {
                                                 event.preventDefault();
-                                                let title = document.title;
                                                 if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
-                                            <%
-                                                try {
-                                                    Mentor currMentor = MentorDAO.getMentor(arr.get(i).getUserID());
-                                                    CV currCV = CvDAO.getCV(currMentor.getCvID());
-                                            %>
                                                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
                                                     //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                                                     let modal = document.createElement('div');
-                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Sửa Request</span></h4></div><form method="post"><input type="hidden" name="id" value="<%=arr.get(i).getId()%>"><input type="hidden" name="type" value="update"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Deadline</span>:</td><td><input type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr><td><span>Trạng Thái</span>:</td><td><select name="status"><%if(!(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("closed"))) {%><option disabled selected><%=arr.get(i).getStatus()%></option><%}%><option value="open" <%=arr.get(i).getStatus().equalsIgnoreCase("open") ? "selected" : ""%>>Open</option><option value="closed" <%=arr.get(i).getStatus().equalsIgnoreCase("closed") ? "selected" : ""%>>Closed</option></select></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int j = 0; j < currCV.getSkills().size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(j).getId()%>" id="<%=currCV.getSkills().get(j).getId()%>" <%=SkillDAO.contains(arr.get(i).getSkills(), currCV.getSkills().get(j)) ? "checked" : ""%>><label for="<%=currCV.getSkills().get(j).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(j).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Cập Nhật</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender: </td><td><%=arr.get(i).getSender()%></td></tr><tr><td><span>Deadline</span>:</td><td><input disabled type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input disabled placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" disabled type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr><td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Kĩ năng muốn học</span>:</td><td><%=arr.get(i).getSkillsName()%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                                     modal.querySelector("input[type=datetime-local]").min = new Date().toISOString().split(":")[0] + ":" + new Date().toISOString().split(":")[1];
                                                     document.body.appendChild(modal.firstChild);
-                                                    let skills = document.body.lastChild.querySelectorAll("input[type=checkbox]");
-                                                    for (var i = 0; i < skills.length; i++) {
-                                                        skills[i].onclick = function (e) {
-                                                            if (this.checked) {
-                                                                let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
-                                                                if (checkeds.length > 1) {
-                                                                    this.checked = false;
-                                                                    alert("Bạn chỉ được chọn tối đa 1 skills!");
-                                                                }
-                                                            }
-                                                        }
-                                                    }
                                                     let btn = document.body.lastChild.getElementsByTagName('button');
-                                                    btn[1].onclick = function (e) {
-                                                        e.preventDefault();
-                                                        let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
-                                                        if (checkeds.length < 1) {
-                                                            alert('Vui lòng chọn ít nhất 1 skill!');
-                                                        } else {
-                                                            this.onclick = null;
-                                                            this.click();
-                                                        }
-                                                    }
                                                     btn[0].onclick = function () {
                                                         document.body.lastChild.firstChild.classList.remove("in");
                                                         document.body.lastChild.children[1].classList.remove("in");
@@ -697,10 +664,9 @@
                                                             document.body.removeChild(document.body.lastChild);
                                                             window.onclick = null;
                                                         }, 100);
-                                                        document.title = title;
 
                                                     }
-                                                    btn[2].onclick = function () {
+                                                    btn[1].onclick = function () {
                                                         document.body.lastChild.firstChild.classList.remove("in");
                                                         document.body.lastChild.children[1].classList.remove("in");
                                                         setTimeout(function () {
@@ -708,7 +674,6 @@
                                                             document.body.removeChild(document.body.lastChild);
                                                             window.onclick = null;
                                                         }, 100);
-                                                        document.title = title;
 
                                                     }
                                                     setTimeout(function () {
@@ -723,12 +688,9 @@
                                                                     document.body.removeChild(document.body.lastChild);
                                                                     window.onclick = null;
                                                                 }, 100);
-                                                                document.title = title;
                                                             }
                                                         };
-                                                        document.title = "Update Request";
                                                     }, 1);
-                                            <%} catch(Exception e) {}%>
                                                 } else {
                                                     //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                                                     document.body.lastChild.children[1].classList.remove("in");
@@ -738,35 +700,135 @@
                                                         document.body.removeChild(document.body.lastChild);
                                                         window.onclick = null;
                                                     }, 100);
-                                                    document.title = title;
                                                 }
                                             }
                                         </script>
-                                        <%}%>
-                                        <a href="request?type=delete&id=<%=arr.get(i).getId()%>" class="delete" data-toggle="modal">
-                                            <i class="fas fa-trash" data-toggle="tooltip" title="Delete"></i>
+                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open")) {%>
+                                        <a href="" class="delete" onclick="popup(<%=arr.get(i).getId()%>)" data-toggle="modal">
+                                            <i class="fas fa-ban" data-toggle="tooltip" title="Reject"></i>
                                         </a>
+                                        <%}%>
                                     </td>
                                 </tr> 
                                 <%}%>
+                            <script>
+                                function popup(id) {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Reject Reason</span>\n\
+          </h4>\n\
+        </div>\n\
+        <form method="post">\n\
+          <div class="modal-body">\n\
+            <table style="width: 100%;">\n\
+              <tbody>\n\
+                <tr>\n\
+                  <input type="hidden" name="type" value="reject">\n\
+                  <input type="hidden" name="id" value="' + id + '">\n\
+                  <td>\n\
+                    <span>Lý do từ chối</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                    <textarea placeholder="Nhập lý do..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea>\n\
+                  </td>\n\
+                </tr>\n\
+              </tbody>\n\
+            </table>\n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="submit" class="btn btn-success">\n\
+              <span>Xác Nhận</span>\n\
+            </button>\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+        </form>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[2].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                            </script>
                             </tbody>
                         </table>
                         <div class="clearfix">
                             <div class="hint-text">Showing <b id="from"><%=(arr.size() >= 10 ? 10 : arr.size())%></b> out of <b id="max"><%=arr.size()%></b> entries</div>
                             <ul class="pagination">
                                 <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
-                                <%
-                                    for(int i = 0; i < p; i++) {
-                                %>
+                                    <%
+                                        for(int i = 0; i < p; i++) {
+                                    %>
                                 <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
-                                <%}%>
+                                    <%}%>
                                 <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                 <script>
                                     function paging(input, event) {
                                         event.preventDefault();
-                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/","").replaceAll('"','');
-                                        if(input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
-                                            if(parseInt(str) !== p) {
+                                        let str = JSON.stringify(input.href).replace("http://localhost:9999/Group3/", "").replaceAll('"', '');
+                                        if (input.innerHTML !== "Next" && input.innerHTML !== "Previous") {
+                                            if (parseInt(str) !== p) {
                                                 let checks = document.querySelectorAll("input[type=checkbox]");
                                                 for (var i = 0; i < checks.length; i++) {
                                                     checks[i].checked = false;
@@ -775,29 +837,29 @@
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
                                                 input.parentNode.classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
                                                 }
                                                 p = parseInt(str);
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
                                             }
                                         } else {
-                                            if(input.innerHTML === "Previous" && p !== 1) {
+                                            if (input.innerHTML === "Previous" && p !== 1) {
                                                 let checks = document.querySelectorAll("input[type=checkbox]");
                                                 for (var i = 0; i < checks.length; i++) {
                                                     checks[i].checked = false;
@@ -805,28 +867,28 @@
                                                 let f = document.getElementById("from");
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p-1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                document.getElementsByClassName("pagination")[0].children[p - 1].classList.add("active");
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
                                                 }
-                                                p = p-1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                p = p - 1;
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
-                                            } else if(input.innerHTML === "Next" && p !== max) {
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
+                                            } else if (input.innerHTML === "Next" && p !== max) {
                                                 let checks = document.querySelectorAll("input[type=checkbox]");
                                                 for (var i = 0; i < checks.length; i++) {
                                                     checks[i].checked = false;
@@ -834,27 +896,27 @@
                                                 let f = document.getElementById("from");
                                                 let m = document.getElementById("max");
                                                 document.getElementsByClassName("page-item active")[0].classList.remove("active");
-                                                document.getElementsByClassName("pagination")[0].children[p+1].classList.add("active");
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                document.getElementsByClassName("pagination")[0].children[p + 1].classList.add("active");
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.add("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "hidden");
                                                 }
-                                                p = p+1;
-                                                for (var i = (p-1)*10+1; i <= (p*10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p*10); i++) {
+                                                p = p + 1;
+                                                for (var i = (p - 1) * 10 + 1; i <= (p * 10 > parseInt(m.innerHTML) ? parseInt(m.innerHTML) : p * 10); i++) {
                                                     document.getElementById(i).classList.remove("hidden");
                                                     document.getElementById(i).children[0].children[0].children[0].setAttribute("type", "checkbox");
                                                 }
-                                                if(p===max) {
+                                                if (p === max) {
                                                     document.getElementById("Next").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Next").parentNode.classList.remove("disabled");
                                                 }
-                                                if(p===1) {
+                                                if (p === 1) {
                                                     document.getElementById("Previous").parentNode.classList.add("disabled");
                                                 } else {
                                                     document.getElementById("Previous").parentNode.classList.remove("disabled");
                                                 }
-                                                f.innerHTML = (parseInt(m.innerHTML) >= p*10 ? 10 : (parseInt(m.innerHTML) - (p-1)*10));
+                                                f.innerHTML = (parseInt(m.innerHTML) >= p * 10 ? 10 : (parseInt(m.innerHTML) - (p - 1) * 10));
                                             }
                                         }
                                     }

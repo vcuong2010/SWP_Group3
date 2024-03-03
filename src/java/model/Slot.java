@@ -4,14 +4,7 @@
  */
 package model;
 
-import DataConnector.DatabaseUtil;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Timestamp;
 
 /**
  *
@@ -19,32 +12,102 @@ import java.util.List;
  */
 public class Slot {
     int id;
-    Date SlotTime;
-    Date createAt;
-    int money;
+    Timestamp SlotTime;
+    float hour;
+    String link;
+    String skill;
+    String mentee, mentor, Status;
+    int menteeId, mentorId;
 
-    public Slot(int id, Date SlotTime, Date createAt, int money) {
+    public Slot(int id, Timestamp SlotTime, float hour, String link, String mentor, int mentorId) {
         this.id = id;
         this.SlotTime = SlotTime;
-        this.createAt = createAt;
-        this.money = money;
+        this.hour = hour;
+        this.link = link;
+        this.mentor = mentor;
+        this.mentorId = mentorId;
+    }
+
+    public String getStatus() {
+        return Status;
+    }
+
+    public void setStatus(String Status) {
+        this.Status = Status;
     }
 
     public int getId() {
         return id;
     }
 
-    public Date getSlotTime() {
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Timestamp getSlotTime() {
         return SlotTime;
     }
 
-    public Date getCreateAt() {
-        return createAt;
+    public void setSlotTime(Timestamp SlotTime) {
+        this.SlotTime = SlotTime;
     }
 
-    public int getMoney() {
-        return money;
+    public float getHour() {
+        return hour;
     }
+
+    public void setHour(float hour) {
+        this.hour = hour;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
+    public String getMentee() {
+        return mentee;
+    }
+
+    public void setMentee(String mentee) {
+        this.mentee = mentee;
+    }
+
+    public String getMentor() {
+        return mentor;
+    }
+
+    public void setMentor(String mentor) {
+        this.mentor = mentor;
+    }
+
+    public int getMenteeId() {
+        return menteeId;
+    }
+
+    public void setMenteeId(int menteeId) {
+        this.menteeId = menteeId;
+    }
+
+    public int getMentorId() {
+        return mentorId;
+    }
+
+    public void setMentorId(int mentorId) {
+        this.mentorId = mentorId;
+    }
+
     
     
 }

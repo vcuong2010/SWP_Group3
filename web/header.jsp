@@ -207,7 +207,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="item-icon balance">
                         <a class="money-user">
-                            <i class="far fa-plus"></i><%=u.getWallet()%> đ </a>
+                            <i class="far fa-plus"></i> <%=u.getWallet()%>đ </a>
                     </li>
                     <li class="item-icon item-avatar dropdown">
                         <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
@@ -256,7 +256,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : "schedule"%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -278,13 +278,119 @@
                                     </div>
                                 </div>
                                 <div class="box-item">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <span>Group</span>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
+                                    <a href="" target="_blank" rel="noopener noreferrer">
                                         <span>Fanpage</span>
                                     </a>
+                                    <a href="" target="_blank" onclick="popup()" rel="noopener noreferrer">
+                                        <span>Report</span>
+                                    </a>
                                 </div>
+                                <script>
+                                function popup() {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        let pre = document.body.style.cssText;
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; ' + pre;
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Report Reason</span>\n\
+          </h4>\n\
+        </div>\n\
+        <form method="post">\n\
+          <div class="modal-body">\n\
+            <table style="width: 100%;">\n\
+              <tbody>\n\
+                <tr>\n\
+                  <input type="hidden" name="type" value="report">\n\
+                  <input type="hidden" name="id" value="<%=u.getId()%>">\n\
+                  <td>\n\
+                    <span>Lý do report</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                    <textarea placeholder="Nhập lý do..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea>\n\
+                  </td>\n\
+                </tr>\n\
+              </tbody>\n\
+            </table>\n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="submit" class="btn btn-success">\n\
+              <span>Xác Nhận</span>\n\
+            </button>\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+        </form>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[2].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                                <%if(request.getAttribute("alert") != null) {%>
+                                setTimeout(function() {
+                                    alert("<%=(String)request.getAttribute("alert")%>");
+                                }, 1000);
+                                <%}%>
+                                </script>
                             </div>
                         </ul>
                     </li>
@@ -376,7 +482,7 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
+                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : "schedule"%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -398,11 +504,11 @@
                                     </div>
                                 </div>
                                 <div class="box-item">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <span>Group</span>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
+                                    <a href="" target="_blank" rel="noopener noreferrer">
                                         <span>Fanpage</span>
+                                    </a>
+                                    <a href="" target="_blank" rel="noopener noreferrer">
+                                        <span>Report</span>
                                     </a>
                                 </div>
                             </div>

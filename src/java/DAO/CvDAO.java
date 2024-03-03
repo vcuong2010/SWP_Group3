@@ -67,6 +67,7 @@ public class CvDAO {
                 ps.setInt(1, rs2.getInt("UserID"));
                 rs2 = ps.executeQuery();
                 CV cv = new CV(rs.getInt("CvID"), rs.getString("ProfessionIntroduction"), rs.getString("ServiceDescription"));
+                cv.setCashPerSlot(rs.getInt("CashPerSlot"));
                 while(rs2.next()) {
                     ps = dbo.prepareStatement("SELECT * FROM [Skills] WHERE [SkillID] = ?");
                     ps.setInt(1, rs2.getInt("SkillID"));

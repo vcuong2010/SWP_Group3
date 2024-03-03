@@ -11,6 +11,9 @@ package model;
 public class Mentor {
     String Achivement, Description, status, fullname, Avatar;
     int id, CvID;
+    int follow;
+    float rate;
+    int ratingTime;
 
     public Mentor(String status, String Achivement, String Description, int id, int CvID, String fullname, String Avatar) {
         this.Avatar = Avatar;
@@ -20,6 +23,30 @@ public class Mentor {
         this.Description = Description;
         this.id = id;
         this.CvID = CvID;
+    }
+
+    public float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    public int getRatingTime() {
+        return ratingTime;
+    }
+
+    public void setRatingTime(int ratingTime) {
+        this.ratingTime = ratingTime;
+    }
+
+    public int getFollow() {
+        return follow;
+    }
+
+    public void setFollow(int follow) {
+        this.follow = follow;
     }
 
     public String getAvatar() {

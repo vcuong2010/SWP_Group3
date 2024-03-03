@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -586,268 +586,33 @@
     <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
-            User u = (User)session.getAttribute("User");
             ArrayList<Request> arr = (ArrayList)request.getAttribute("requests");
             int p = (int) Math.ceil((double)arr.size() / 10);
-            if(u == null) {%>
-        <header class="menu__header fix-menu" id="header-menu">
-            <div class="navbar-header">
-                <a href="index" class="logo">
-                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
-                </a>
-            </div>
-            <div class="navbar">
-                <ul class="nav navbar-nav navbar-left">
-                    <li class="item-search">
-                        <nav class="Navbar__Item">
-                            <div class="Navbar__Link">
-                                <div class="Group-search visible ">
-                                    <span class="search input-group">
-                                        <input disabled="" placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
-                                        <span class="input-group-addon">
-                                            <button disabled="" type="button" class="btn btn-default">
-                                                <i class="fal fa-search" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                        </nav>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-center">
-                    <li class="item-icon">
-                        <a class="group-user " style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
-                            <i class="fal fa-home-alt"></i>
-                        </a>
-                    </li>
-                    <li class="item-icon">
-                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
-                            <i class="fal fa-list"></i>
-                        </a>
-                    </li>
-                    <li class="item-icon group-fb">
-                        <a class="group-user" style="display: block">
-                            <i class="fal fa-trophy-alt"></i>
-                        </a>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="item-icon authent">
-                        <a class="money-user" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/login">
-                            <i class="fal fa-power-off"></i>
-                            <span>Đăng nhập</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-mobile hidden">
-                <button type="button" class="btn-login btn btn-default">
-                    <span>Đăng nhập</span>
-                </button>
-                <a class="btn-bars">
-                    <i class="fal fa-bars"></i>
-                </a>
-                <div class="flex-side hidden">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <div class="box-search">
-                            <nav class="Navbar__Item">
-                                <div class="Navbar__Link">
-                                    <div class="Group-search visible ">
-                                        <span class="search input-group">
-                                            <input disabled="" placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
-                                            <span class="input-group-addon">
-                                                <button disabled="" type="button" class="btn btn-default">
-                                                    <i class="fal fa-search" aria-hidden="true"></i>
-                                                </button>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </nav>
-                            <a class="btn-close">
-                                <i class="fal fa-times fa-2x"></i>
-                            </a>
-                        </div>
-                        <ul class="list-page">
-                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
-                                <li class="item-icon active">
-                                    <a class="group-user">
-                                        <i class="fal fa-home-alt"></i>
-                                        <span>Trang chủ</span>
-                                    </a>
-                                </li>
-                            </a>
-                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
-                                <li class="item-icon " style="display: block">
-                                    <a class="group-user">
-                                        <i class="fal fa-list"></i> Stories </a>
-                                </li>
-                            </a>
-                            <li class="item-icon">
-                                <a class="group-user">
-                                    <i class="fal fa-trophy-alt"></i>
-                                    <span>Bảng xếp hạng</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="list-mode">
-                            <div class="item">
-                                <p class="title">
-                                    <span>Chế độ</span>
-                                </p>
-                                <a class="func mode">
-                                    <i class="fas fa-moon op"></i>
-                                    <i class="fas fa-sun false"></i>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Cộng đồng</span>
-                                </p>
-                                <div class="func group">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <i class="fal fa-globe"></i>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Ngôn ngữ</span>
-                                </p>
-                                <a class="func lang">
-                                    <img src="https://files.playerduo.net/production/static-files/flag/1.png" class="flag op" alt="PD">
-                                    <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag false" alt="PD">
-                                </a>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Tải App</span>
-                                </p>
-                                <div class="func app">
-                                    <a href="https://testflight.apple.com/join/r6H9YvY4" target="_blank" rel="noopener noreferrer" download="">PlayerChat</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <%} else {
-        Object role = null;
-        boolean isMentor = false;
-        if(session.getAttribute("Mentee") == null) {
-            role = session.getAttribute("Mentor");
-            isMentor = true;
-        } else {
-            role = session.getAttribute("Mentee");
-        } 
+            User u = (User)session.getAttribute("User");
         %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
-                <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index" class="logo">
+                <a href="#" class="logo">
                     <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
                 </a>
             </div>
             <div class="navbar">
-                <ul class="nav navbar-nav navbar-left">
-                    <li class="item-search">
-                        <nav class="Navbar__Item">
-                            <div class="Navbar__Link">
-                                <div class="Group-search visible ">
-                                    <span class="search input-group">
-                                        <input placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
-                                        <span class="input-group-addon">
-                                            <button type="button" class="btn btn-default">
-                                                <i class="fal fa-search" aria-hidden="true"></i>
-                                            </button>
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
-                        </nav>
-                    </li>
-                </ul>
-                <ul class="nav navbar-nav navbar-center">
-                    <li class="item-icon">
-                        <a class="group-user" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/index">
-                            <i class="fal fa-home-alt"></i>
-                        </a>
-                    </li>
-                    <li class="item-icon">
-                        <a class="group-user active" style="display: block" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
-                            <i class="fal fa-list"></i>
-                        </a>
-                    </li>
-                    <li class="item-icon group-fb">
-                        <a class="group-user" style="display: block">
-                            <i class="fal fa-trophy-alt"></i>
-                        </a>
-                    </li>
-                </ul>
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="item-icon balance">
-                        <a class="money-user">
-                            <i class="far fa-plus"></i><%=u.getWallet()%> đ </a>
-                    </li>
                     <li class="item-icon item-avatar dropdown">
                         <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
-                            <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                            <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                         </a>
                         <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
                             <li role="presentation" class="page-user">
-                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile">
-                                    <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                                <a role="menuitem" tabindex="-1" href="#">
+                                    <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                                     <div class="text-logo">
                                         <h5><%=u.getUsername()%> </h5>
-                                        <p>ID : <span><%=u.getEmail()%> </span>
-                                        </p>
-                                        <p class="label-user-page">
-                                            <span>Xem trang cá nhân của bạn</span>
-                                        </p>
                                     </div>
                                 </a>
                             </li>
-                            <li role="presentation" class="menu-item hidden-lg hidden-md">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Số dư</span> : <span class="money">0 đ</span>
-                                </a>
-                            </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-minus"></i>
-                                    <span>Rút tiền</span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-credit-card"></i>
-                                    <span>Nạp Tiền</span>
-                                </a>
-                            </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/cv">
-                                    <i class="fas fa-user-lock"></i>
-                                    <span>Tạo/Sửa CV</span>
-                                </a>
-                            </li><% } %> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Lịch sử giao dịch</span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting">
-                                    <i class="fas fa-cogs"></i>
-                                    <span>Cài đặt tài khoản</span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Manager Setting"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -856,21 +621,6 @@
                                     <span>Đăng xuất</span>
                                 </a>
                             </li>
-                            <div class="menu-item list-flag">
-                                <div class="box-item">
-                                    <div class="flag-all active">
-                                        <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD">
-                                    </div>
-                                </div>
-                                <div class="box-item">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <span>Group</span>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
-                                        <span>Fanpage</span>
-                                    </a>
-                                </div>
-                            </div>
                         </ul>
                     </li>
                 </ul>
@@ -916,58 +666,19 @@
                     </li>
                     <li class="item-icon item-avatar dropdown">
                         <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
-                            <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                            <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                         </a>
                         <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
                             <li role="presentation" class="page-user">
                                 <a role="menuitem" tabindex="-1" href="#">
-                                    <img src="<%=role != null ? (isMentor ? (((Mentor)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentor)role).getAvatar()) : (((Mentee)role).getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : ((Mentee)role).getAvatar())) : "https://files.playerduo.net/production/images/avatar31.png" %>" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
+                                    <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
                                     <div class="text-logo">
                                         <h5><%=u.getUsername()%> </h5>
-                                        <p>ID : <span><%=u.getEmail()%> </span>
-                                        </p>
-                                        <p class="label-user-page">
-                                            <span>Xem trang cá nhân của bạn</span>
-                                        </p>
                                     </div>
                                 </a>
                             </li>
-                            <li role="presentation" class="menu-item hidden-lg hidden-md">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Số dư</span> : <span class="money">0 đ</span>
-                                </a>
-                            </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-minus"></i>
-                                    <span>Rút tiền</span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-credit-card"></i>
-                                    <span>Nạp Tiền</span>
-                                </a>
-                            </li><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-user-lock"></i>
-                                    <span>Tạo/Sửa CV</span>
-                                </a>
-                            </li><% } %> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-clock"></i>
-                                    <span>Lịch sử giao dịch</span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=(u.getRole().equalsIgnoreCase("admin") || u.getRole().equalsIgnoreCase("manager")) ? "Admin Setting" : "Schedule"%></span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <i class="fas fa-cogs"></i>
-                                    <span>Cài đặt tài khoản</span>
+                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
@@ -976,21 +687,6 @@
                                     <span>Đăng xuất</span>
                                 </a>
                             </li>
-                            <div class="menu-item list-flag">
-                                <div class="box-item">
-                                    <div class="flag-all active">
-                                        <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag flag-vn" alt="PD">
-                                    </div>
-                                </div>
-                                <div class="box-item">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <span>Group</span>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
-                                        <span>Fanpage</span>
-                                    </a>
-                                </div>
-                            </div>
                         </ul>
                     </li>
                 </ul>
@@ -1098,7 +794,6 @@
             };
 
         </script>
-        <%}%>
         <!-- ======= Hero Section ======= -->
         <script>
             var max = <%=p%>;
@@ -1121,88 +816,9 @@
                                         <div class="panel-group">
                                             <div class="menu__setting--sub panel panel-default">
                                                 <div class="panel-heading">
-                                                    <div class="panel-title">
-                                                        <i class="fas fa-user-tie"></i> Thông tin cá nhân
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="title-sub  panel-title">
-                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="panel-collapse collapse">
-                                                    <div class="panel-body">
-                                                        <div class="panel-group">
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Email</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Tài khoản và mật khẩu</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="  panel-title">
-                                                        <i class="fas fa-user-lock"></i> Thông Tin CV
-                                                    </div>
-                                                </div>
-                                            </div><%}%>
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="title-sub  panel-title">
-                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-history"></i> Lịch sử giao dịch 
-                                                            <i class="fas fa-chevron-right"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <div class="panel-collapse collapse">
-                                                    <div class="panel-body">
-                                                        <div class="panel-group">
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Lịch sử donate</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Lịch sử duo</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Lịch sử tạo code</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Biến động số dư</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Lịch sử mua thẻ</div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
                                                     <div class="active title-sub  panel-title">
                                                         <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-cog"></i> Cài đặt Admin <i class="fas fa-chevron-down"></i>
+                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%> <i class="fas fa-chevron-down"></i>
                                                         </a>
                                                     </div>
                                                 </div>
@@ -1237,20 +853,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="  panel-title">
-                                                        <i class="fas fa-credit-card"></i> Thanh toán 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="  panel-title">
-                                                        <i class="fas fa-wallet"></i> Ví 
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -1265,7 +867,12 @@
                     <div class="aside">
                         <form method="post">
                             <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
-                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option><option value="open">Open</option><option value="processing">Processing</option><option value="closed">Closed</option></select><br>
+                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option>
+                                <% ArrayList<RequestStatus> status = (ArrayList)request.getAttribute("status");
+                                    for(int g = 0; g < status.size(); g++) {%>
+                                    <option value="<%=status.get(g).getStatus()%>"><%=status.get(g).getStatus()%></option>
+                                <%}%>
+                            </select><br>
                             <label>Start Date: </label>
                             <input id="start" type="datetime-local" name="start" style="width: 20%; min-height: 20px">
                             <label style="margin-left: 10px">End Date: </label>
@@ -1494,44 +1101,9 @@
             </div>
         </div>
         <script>
-
-            let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
-            let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
-            document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
-                if (cog.classList.contains("fa-chevron-right")) {
-                    cog.classList.add("fa-chevron-down");
-                    cog.classList.remove("fa-chevron-right");
-                    collapse.classList.remove("collapse");
-                    collapse.classList.add("collapsing");
-                    setTimeout(function () {
-                        collapse.style = "height: 72px;";
-                    }, 1);
-                    setTimeout(function () {
-                        collapse.classList.remove("collapsing");
-                        collapse.classList.add("collapse");
-                        collapse.style = "";
-                        collapse.classList.add("in");
-                    }, 300);
-                } else {
-                    cog.classList.remove("fa-chevron-down");
-                    cog.classList.add("fa-chevron-right");
-                    collapse.style = "height: 72px;";
-                    collapse.classList.remove("collapse");
-                    collapse.classList.add("collapsing");
-                    setTimeout(function () {
-                        collapse.style = "height: 0px;";
-                    }, 1);
-                    setTimeout(function () {
-                        collapse.classList.remove("collapsing");
-                        collapse.classList.add("collapse");
-                        collapse.style = "height: 0px;";
-                        collapse.classList.remove("in");
-                    }, 300);
-                }
-            }
-            let cog2 = document.getElementsByClassName('fas fa-cog')[1].parentNode.children[1];
+            let cog2 = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
             let collapse2 = cog2.parentNode.parentNode.parentNode.parentNode.children[1];
-            document.getElementsByClassName('fas fa-cog')[1].parentNode.onclick = function () {
+            document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
                 if (cog2.classList.contains("fa-chevron-right")) {
                     cog2.classList.add("fa-chevron-down");
                     cog2.classList.remove("fa-chevron-right");
@@ -1571,31 +1143,21 @@
                     return false;
                 }
             }
-            console.log(document.getElementsByClassName('menu__setting--last panel panel-default'));
-            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
-                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/email";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
-                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/setting";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
-                window.location.href = "<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/profile";
-            };
             <%if(u.getRole().equalsIgnoreCase("admin")) {%>
-            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "skill";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[8].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
                 window.location.href = "mentor";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[9].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[2].onclick = function () {
                 window.location.href = "request";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[10].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[3].onclick = function () {
                 window.location.href = "authorization";
             };
             <%} else {%>
-            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "request";
             };
             <%}%>

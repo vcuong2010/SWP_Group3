@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.CV" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.CV, DAO.FollowDAO, model.Slot, java.util.Calendar, DAO.ScheduleDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,6 +35,7 @@
         <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
         <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
         <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
         <!-- Template Main CSS File -->
         <link href="css/0.cbdbec7b.chunk.css" rel="stylesheet">
@@ -511,19 +512,204 @@
                         </table>
                     </div>
                     <div class="player-profile-right-wrap col-md-3 col-md-push-6">
+                        <p class="price-player-profile"><%=currCV.CashFormat()%> đ/slot</p>
                         <div class="right-player-profile">
                             <div class="rateting-style">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star-half-alt"></i>&nbsp; <span>378 <span>Đánh giá</span>
+                                <%=(String)request.getAttribute("Rate")%>
+                                </i>&nbsp; <span><%=currMentor.getRatingTime()%> <span>Đánh giá</span>
                                 </span>
                             </div>
                             <div class="text-center">
                                 <button class="btn-my-style red">Thuê</button>
                                 <button class="btn-my-style white">
                                     <i class="fas fa-comment-alt"></i>Chat </button>
+                                    <%if(u != null && u.getRole().equalsIgnoreCase("mentee")) {%>
+                                    <button class="btn-my-style white" onclick="Follow()">
+                                    <i class="fas fa-user-plus"></i><%=FollowDAO.onPending(u, currMentor.getId()) ? "Hủy Yêu Cầu" : (FollowDAO.onFollow(u, currMentor.getId()) ? "Hủy Follow" : "Follow")%> </button>
+                                    <script>
+                                        
+                                function Follow() {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; padding-top: 66px;';
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        <%if(FollowDAO.onPending(u, currMentor.getId())) {
+                                        %>
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Hủy Yêu Cầu Follow</span>\n\
+          </h4>\n\
+        </div>\n\
+        <form method="post">\n\
+          <div class="modal-body">\n\
+            <input type="hidden" name="type" value="cancel follow">\n\
+            <input type="hidden" name="id" value="<%=currMentor.getId()%>">\n\
+            Bạn có chắc chắn muốn hủy yêu cầu?\n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="submit" class="btn btn-success">\n\
+              <span>Xác Nhận</span>\n\
+            </button>\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+        </form>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+                                        <%
+                                        } else if(FollowDAO.onFollow(u, currMentor.getId())) {
+                                        %>
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Hủy Follow</span>\n\
+          </h4>\n\
+        </div>\n\
+        <form method="post">\n\
+          <div class="modal-body">\n\
+            <input type="hidden" name="type" value="unfollow">\n\
+            <input type="hidden" name="id" value="<%=currMentor.getId()%>">\n\
+            Bạn có chắc chắn muốn hủy follow?\n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="submit" class="btn btn-success">\n\
+              <span>Xác Nhận</span>\n\
+            </button>\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+        </form>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+                                        <%
+                                        } else {%>
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Follow Request</span>\n\
+          </h4>\n\
+        </div>\n\
+        <form method="post">\n\
+          <div class="modal-body">\n\
+            <table style="width: 100%;">\n\
+              <tbody>\n\
+                <tr>\n\
+                  <input type="hidden" name="type" value="follow">\n\
+                  <input type="hidden" name="id" value="<%=currMentor.getId()%>">\n\
+                  <td>\n\
+                    <span>Tiêu Đề Yêu Cầu</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                    <input placeholder="Nhập Tiêu Đề" required name="title" maxlength="255" type="text" class="form-control"/>\n\
+                  </td>\n\
+                </tr>\n\
+                <tr>\n\
+                  <td>\n\
+                    <span>Lý do follow</span>:\n\
+                  </td>\n\
+                  <td>\n\
+                    <textarea placeholder="Nhập lý do..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea>\n\
+                  </td>\n\
+                </tr>\n\
+              </tbody>\n\
+            </table>\n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="submit" class="btn btn-success">\n\
+              <span>Xác Nhận</span>\n\
+            </button>\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+        </form>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+    <%}%>
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'padding-top: 66px;';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[2].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'padding-top: 66px;';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'padding-top: 66px;';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'padding-top: 66px;';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                                    </script>
+                                    <%}%>
                             </div>
                         </div>
                     </div>
@@ -550,10 +736,10 @@
                                 </div>
                                 <div class="col-md-3 col-xs-6">
                                     <div class="item-nav-name">
-                                        <span>Tình trạng thiết bị</span>
+                                        <span>Followers</span>
                                     </div>
                                     <div class="item-nav-value">
-                                        <i class="fas fa-microphone"></i>
+                                        <%=currMentor.getFollow()%> Follower
                                     </div>
                                 </div>
                             </div>
@@ -635,22 +821,223 @@
             <div id="preloader"></div></div>
         <script>
             <%if(request.getAttribute("status") != null) {%>
-            alert("<%=request.getAttribute("status")%>");
+                setTimeout(function() {
+                    alert("<%=request.getAttribute("status")%>");
+                }, 1000);
             <%}%>
+            function previous() {
+                let week = document.getElementById("week");
+                let preWeek = document.getElementById("week-"+(parseInt(week.value)-1));
+                if(preWeek != null) {
+                    preWeek.classList.remove("hidden");
+                    document.getElementById("week-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+(parseInt(week.value)-1)).classList.remove("hidden");
+                    week.value = (parseInt(week.value)-1);
+                }
+            }
+            function next() {
+                let week = document.getElementById("week");
+                let preWeek = document.getElementById("week-"+(parseInt(week.value)+1));
+                if(preWeek != null) {
+                    preWeek.classList.remove("hidden");
+                    document.getElementById("week-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+(parseInt(week.value)+1)).classList.remove("hidden");
+                    week.value = (parseInt(week.value)+1);
+                }
+            }
+            function schedule(input, event) {
+                event.preventDefault();
+                if(!input.parentNode.lastChild.classList.contains("hidden")) {
+                    input.parentNode.lastChild.classList.add("hidden")
+                } else {
+                    <% int year = (int)request.getAttribute("year");
+                        int week = (int)request.getAttribute("week");
+                        Calendar firstDay = (Calendar)request.getAttribute("firstOfWeek");
+                        Calendar lastDay = Calendar.getInstance();
+                        lastDay.setTime(firstDay.getTime());
+                        lastDay.add(Calendar.DATE, 6);
+                        ArrayList<Slot> arr = (ArrayList)request.getAttribute("FreeSlot");
+                        int weekCount = ScheduleDAO.weekCount(arr);
+                    %>
+                    input.parentNode.lastChild.classList.remove("hidden");
+                }
+            }
             let title = document.title;
             document.getElementsByClassName('btn-my-style red')[0].onclick = function () {
+                <%if(u != null && u.getRole().equalsIgnoreCase("mentee")) {%>
                 if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                     //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                     let modal = document.createElement('div');
-                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Request</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Thời gian muốn thuê</span>:</td><td><input type="datetime-local" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea></td></tr><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int i = 0; i < currCV.getSkills().size(); i++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
-                    modal.querySelector("input[type=datetime-local]").min = new Date().toISOString().split(":")[0] + ":" + new Date().toISOString().split(":")[1];
+                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Request</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Deadline</span>:</td><td><input type="datetime-local" required name="deadline"></td></tr><tr><td><span>Chọn Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event)">Nhấn để Hiện Lịch</button><div class="bootstrap-datetimepicker-widget dropdown-menu hidden" style="width: 17em; inset: auto auto auto auto;">\n\
+        <div class="row">\n\
+<div class="datepicker col-md-6">\n\
+<div class="datepicker-days" style="display: block;">\n\
+<table class="table-condensed">\n\
+<thead>\n\
+<tr>\n\
+<th class="prev" data-action="previous" onclick="previous()"><span class="glyphicon glyphicon-chevron-left" title="Previous Week"></span></th>\n\
+<input type="hidden" id="week" name="currWeek" value=<%=week%>>\n\
+<%for(int i = 0; i < weekCount; i++) {%>\n\
+<th class="picker-switch <%=i==0 ? "" : "hidden"%>" data-action="pickerSwitch" colspan="5" title="Select Week" id="week-<%=week+i%>">\n\
+<%=firstDay.get(Calendar.DAY_OF_MONTH) < 10 ? "0"+firstDay.get(Calendar.DAY_OF_MONTH) : firstDay.get(Calendar.DAY_OF_MONTH)%>/<%=(firstDay.get(Calendar.MONTH)+1) < 10 ? "0"+(firstDay.get(Calendar.MONTH)+1) : (firstDay.get(Calendar.MONTH)+1)%> - <%=lastDay.get(Calendar.DAY_OF_MONTH) < 10 ? "0"+lastDay.get(Calendar.DAY_OF_MONTH) : lastDay.get(Calendar.DAY_OF_MONTH)%>/<%=(lastDay.get(Calendar.MONTH)+1) < 10 ? "0"+(lastDay.get(Calendar.MONTH)+1) : (lastDay.get(Calendar.MONTH)+1)%>\n\
+</th>\n\
+<%  firstDay.add(Calendar.DATE, 7);
+    lastDay.add(Calendar.DATE, 7);
+    }%>\n\
+<th class="next" data-action="next" onclick="next()"><span class="glyphicon glyphicon-chevron-right" title="Next Week"></span></th>\n\
+</tr><tr><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th><th class="dow">Su</th></tr>\n\
+</thead>\n\
+<%  firstDay.add(Calendar.DATE, -(7*weekCount));
+    lastDay.add(Calendar.DATE, -(7*weekCount));
+    for(int j = 0; j < weekCount; j++) {
+                        ArrayList<Slot> thisWeek = ScheduleDAO.sortByWeek(firstDay, lastDay, arr);
+                                                    ArrayList<Slot> mon = new ArrayList();
+                                                    ArrayList<Slot> tue = new ArrayList();
+                                                    ArrayList<Slot> wen = new ArrayList();
+                                                    ArrayList<Slot> thu = new ArrayList();
+                                                    ArrayList<Slot> fri = new ArrayList();
+                                                    ArrayList<Slot> sat = new ArrayList();
+                                                    ArrayList<Slot> sun = new ArrayList();
+                                                    for(int i = 0; i < thisWeek.size(); i++) {
+                                                        Calendar c = Calendar.getInstance();
+                                                        c.setTime(arr.get(i).getSlotTime());
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 1) {
+                                                            sun.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 2) {
+                                                            mon.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 3) {
+                                                            tue.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 4) {
+                                                            wen.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 5) {
+                                                            thu.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 6) {
+                                                            fri.add(thisWeek.get(i));
+                                                        }
+                                                        if(c.get(Calendar.DAY_OF_WEEK) == 7) {
+                                                            sat.add(thisWeek.get(i));
+                                                        }
+                                                    }
+                                                    int max = mon.size();
+                                                    if(tue.size() > max) max = tue.size();
+                                                    if(wen.size() > max) max = wen.size();
+                                                    if(thu.size() > max) max = thu.size();
+                                                    if(fri.size() > max) max = fri.size();
+                                                    if(sat.size() > max) max = sat.size();
+                                                    if(sun.size() > max) max = sun.size();
+    %>\n\
+<tbody class="<%=j==0 ? "" : "hidden"%>" id="body-<%=week+j%>">\n\
+<%for(int i = 0; i < (5 < max ? max : 5); i++) {                                                   
+%>\n\
+<tr>\n\
+<%if(mon.size() > i) {
+    Slot s = mon.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(tue.size() > i) {
+    Slot s = tue.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(wen.size() > i) {
+    Slot s = wen.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(thu.size() > i) {
+    Slot s = thu.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>">\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(fri.size() > i) {
+    Slot s = fri.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(sat.size() > i) {
+    Slot s = sat.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+<%if(sun.size() > i) {
+    Slot s = sun.get(i);
+    Calendar c = Calendar.getInstance();
+    c.setTime(s.getSlotTime());
+    Calendar to = Calendar.getInstance();
+    to.setTime(s.getSlotTime());
+    to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+%>\n\
+<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
+</td>\n\
+</tr>\n\
+<%}%>\n\
+</tbody>\n\
+<%  firstDay.add(Calendar.DATE, 7);
+    lastDay.add(Calendar.DATE, 7);
+    }%>\n\
+</table></div><div class="datepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Year"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Year">2024</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Year"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectMonth" class="month">Jan</span><span data-action="selectMonth" class="month">Feb</span><span data-action="selectMonth" class="month active">Mar</span><span data-action="selectMonth" class="month">Apr</span><span data-action="selectMonth" class="month">May</span><span data-action="selectMonth" class="month">Jun</span><span data-action="selectMonth" class="month">Jul</span><span data-action="selectMonth" class="month">Aug</span><span data-action="selectMonth" class="month">Sep</span><span data-action="selectMonth" class="month">Oct</span><span data-action="selectMonth" class="month">Nov</span><span data-action="selectMonth" class="month">Dec</span></td></tr></tbody></table></div><div class="datepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Decade"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Decade">2019-2030</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Decade"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectYear" class="year">2019</span><span data-action="selectYear" class="year">2020</span><span data-action="selectYear" class="year">2021</span><span data-action="selectYear" class="year">2022</span><span data-action="selectYear" class="year">2023</span><span data-action="selectYear" class="year active">2024</span><span data-action="selectYear" class="year">2025</span><span data-action="selectYear" class="year">2026</span><span data-action="selectYear" class="year">2027</span><span data-action="selectYear" class="year">2028</span><span data-action="selectYear" class="year">2029</span><span data-action="selectYear" class="year">2030</span></td></tr></tbody></table></div><div class="datepicker-decades" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Century"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5">2000-2107</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Century"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectDecade" class="decade" data-selection="2005">2000 - 2011</span><span data-action="selectDecade" class="decade" data-selection="2017">2012 - 2023</span><span data-action="selectDecade" class="decade active" data-selection="2029">2024 - 2035</span><span data-action="selectDecade" class="decade" data-selection="2041">2036 - 2047</span><span data-action="selectDecade" class="decade" data-selection="2053">2048 - 2059</span><span data-action="selectDecade" class="decade" data-selection="2065">2060 - 2071</span><span data-action="selectDecade" class="decade" data-selection="2077">2072 - 2083</span><span data-action="selectDecade" class="decade" data-selection="2089">2084 - 2095</span><span data-action="selectDecade" class="decade" data-selection="2101">2096 - 2107</span><span></span><span></span><span></span></td></tr></tbody></table></div></div></div></div></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea></td></tr><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int i = 0; i < currCV.getSkills().size(); i++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                                    let date = new Date();
+                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
+    modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
                     document.body.appendChild(modal.firstChild);
                     let skills = document.body.lastChild.querySelectorAll("input[type=checkbox]");
                     for (var i = 0; i < skills.length; i++) {
                         skills[i].onclick = function (e) {
                             if (this.checked) {
-                                let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
+                                let checkeds = document.body.lastChild.querySelectorAll("input[name=skill]:checked");
                                 if (checkeds.length > 1) {
                                     this.checked = false;
                                     alert("Bạn chỉ được chọn tối đa 1 skills!");
@@ -659,14 +1046,19 @@
                         }
                     }
                     let btn = document.body.lastChild.getElementsByTagName('button');
-                    btn[1].onclick = function (e) {
+                    btn[2].onclick = function (e) {
                         e.preventDefault();
                         let checkeds = document.body.lastChild.querySelectorAll("input[type=checkbox]:checked");
                         if (checkeds.length < 1) {
                             alert('Vui lòng chọn ít nhất 1 skill!');
                         } else {
-                            this.onclick = null;
-                            this.click();
+                            let slot = document.body.lastChild.querySelectorAll("input[name=slot]:checked");
+                            if(slot.length > 0) {
+                                this.onclick = null;
+                                this.click();
+                            } else {
+                                alert('Vui lòng chọn ít nhất 1 slot!');
+                            }
                         }
                     }
                     btn[0].onclick = function () {
@@ -680,7 +1072,7 @@
                         document.title = title;
 
                     }
-                    btn[2].onclick = function () {
+                    btn[3].onclick = function () {
                         document.body.lastChild.firstChild.classList.remove("in");
                         document.body.lastChild.children[1].classList.remove("in");
                         setTimeout(function () {
@@ -719,6 +1111,11 @@
                     }, 100);
                     document.title = title;
                 }
+                <%} else if(u != null) {%>
+                alert("Vui lòng dùng tài khoản mentee để thuê");
+                <%} else {%>
+                alert("Vui lòng đăng nhập trước khi thuê");
+                <%}%>
             }
         </script>
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="

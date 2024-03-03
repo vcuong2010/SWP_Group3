@@ -17,6 +17,7 @@ public class Request {
     String mentor;
     String sender;
     String reason, status, subject;
+    String rejectReason;
     Timestamp DeadlineTime;
     Timestamp requestTime;
     ArrayList<Skill> skills = new ArrayList();
@@ -30,6 +31,14 @@ public class Request {
         this.subject = subject;
         this.requestTime = requestTime;
         this.DeadlineTime = DeadlineTime;
+    }
+
+    public String getRejectReason() {
+        return rejectReason;
+    }
+
+    public void setRejectReason(String rejectReason) {
+        this.rejectReason = rejectReason;
     }
 
     public String getSender() {
