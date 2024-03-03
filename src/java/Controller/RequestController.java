@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import model.CV;
 import model.Mentor;
+import model.MentorStatistic;
 import model.Request;
 import model.User;
 
@@ -102,6 +103,8 @@ public class RequestController extends HttpServlet {
                 ArrayList<Request> arr = RequestDAO.getMenteeRequests(u.getId());
                 request.setAttribute("requests", arr);
             } else {
+                MentorStatistic ms = MentorDAO.getMentorStatistic(u.getId());
+                request.setAttribute("mstatistic", ms);
                 ArrayList<Request> arr = RequestDAO.getMentorRequests(u.getId());
                 request.setAttribute("requests", arr);
                 request.getRequestDispatcher("mentor request.jsp").forward(request, response);

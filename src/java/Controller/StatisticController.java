@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.MenteeDAO;
+import DAO.MentorDAO;
 import Service.AuthorizationService;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import model.MenteeStatistic;
+import model.MentorStatistic;
 import model.User;
 
 /**
@@ -41,8 +43,13 @@ public class StatisticController extends HttpServlet {
         } catch (Exception e) {
         }
         User u = (User)request.getSession().getAttribute("User");
-        MenteeStatistic ms = MenteeDAO.getMenteeStatistic(u.getId());
-        request.setAttribute("mstatistic", ms);
+        if(u.getRole().equalsIgnoreCase("mentee")) {
+            MenteeStatistic ms = MenteeDAO.getMenteeStatistic(u.getId());
+            request.setAttribute("mstatistic", ms);
+        } else {
+            MentorStatistic ms = MentorDAO.getMentorStatistic(u.getId());
+            request.setAttribute("mstatistic", ms);
+        }
         request.getRequestDispatcher("statistic.jsp").forward(request, response);
     } 
 

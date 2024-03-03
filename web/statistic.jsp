@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic, model.MentorStatistic" %>
 <!doctype html>
 <html lang="en" translate="no">
     <head>
@@ -473,6 +473,12 @@
                                                             <i class="fas fa-user-lock"></i> Thông Tin CV
                                                         </div>
                                                     </div>
+                                                </div><div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="active  panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thống Kê Request
+                                                        </div>
+                                                    </div>
                                                 </div><%} else {%><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
                                                         <div class="active  panel-title">
@@ -549,11 +555,11 @@
                     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                         <div class="aside">
                             <h3>Thống Kê Request</h3>
-                            <%MenteeStatistic ms = (MenteeStatistic)request.getAttribute("mstatistic");%>
-                            <form class="changepass-form row" action="setting" method="post">
+                            <%  if(u.getRole().equalsIgnoreCase("mentee")) {
+                                MenteeStatistic ms = (MenteeStatistic)request.getAttribute("mstatistic");%>
                                 <div class="col-md-6">
                                     <div class="fieldGroup changepass--fieldGroup">
-                                        <p class="control-label">Tổng số Request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalRequest()%> requests</span></p>
+                                        <p class="control-label">Tổng số Request đã gửi: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalRequest()%> requests</span></p>
                                     </div>
                                     <hr>
                                     <div class="fieldGroup changepass--fieldGroup">
@@ -572,7 +578,35 @@
                                         <p class="control-label">Tổng số Mentor yêu cầu: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getTotalMentor()%> mentors</span></p>
                                     </div>
                                 </div>
-                            </form>
+                                    <%} else {
+                                    MentorStatistic ms = (MentorStatistic)request.getAttribute("mstatistic");
+                                    %>
+                                <div class="col-md-6">
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request nhận được: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getInvitedRequest()%> requests</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request đã từ chối: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRejectedRequest()%> requests</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tỉ lệ từ chối Request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRejectPercent() * 100%> %</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tổng số Request đã chấp thuận: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getAccepedRequest()%> requests</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Đánh Giá từ học viên: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRating()%> sao</span></p>
+                                    </div>
+                                    <hr>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Tỉ lệ hoàn thành request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getCompletePercent()*100%> %</span></p>
+                                    </div>
+                                </div>
+                                    <% }%>
                             <%if(request.getAttribute("error") != null) {%>
                             <span class="err-message"><%=(String)request.getAttribute("error")%></span>
                             <% } %>
@@ -638,6 +672,9 @@
             <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "statistic";
             };
             <%} else {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {

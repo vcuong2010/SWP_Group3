@@ -12,12 +12,52 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import model.Mentor;
 import model.MentorDetail;
+import model.MentorStatistic;
 
 /**
  *
  * @author TGDD
  */
 public class MentorDAO {
+    
+    public static MentorStatistic getMentorStatistic(int id) {
+        MentorStatistic ms = null;
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("  SELECT Count([RequestID]) as TotalRequest, \n" +
+"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Accepted' OR [RequestStatus] = N'Processing' OR [RequestStatus] = N'Done') as TotalAccepted, \n" +
+"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Reject') as TotalRejected, \n" +
+"  (SELECT AVG(Cast([noStar] as Float)) FROM [Rating] WHERE [MentorID] = ?) as Rating, \n" +
+"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Done') as TotalDone \n" +
+"  FROM [Request] WHERE [UserID] = ?");
+            ps.setInt(1, id);
+            ps.setInt(2, id);
+            ps.setInt(3, id);
+            ps.setInt(4, id);
+            ps.setInt(5, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                ms = new MentorStatistic();
+                ms.setId(id);
+                ms.setInvitedRequest(rs.getInt("TotalRequest"));
+                ms.setAccepedRequest(rs.getInt("TotalAccepted"));
+                ms.setRejectedRequest(rs.getInt("TotalRejected"));
+                ms.setRating(rs.getFloat("Rating"));
+                if(ms.getInvitedRequest() > 0) {
+                    ms.setRejectPercent((float)ms.getRejectedRequest() / (float)ms.getInvitedRequest());
+                } else {
+                    ms.setRejectPercent(0);
+                }
+                if(ms.getAccepedRequest() > 0) {
+                    ms.setCompletePercent((float) rs.getInt("TotalDone") / (float)ms.getAccepedRequest());
+                } else {
+                    ms.setCompletePercent(0);
+                }
+                dbo.close();
+            }
+        } catch(Exception e) {}
+        return ms;
+    }
     
     public static Mentor getMentor(int id) {
         Connection dbo = DatabaseUtil.getConn();

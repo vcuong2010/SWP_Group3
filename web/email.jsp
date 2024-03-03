@@ -473,6 +473,12 @@
                                                             <i class="fas fa-user-lock"></i> Thông Tin CV
                                                         </div>
                                                     </div>
+                                                </div><div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="  panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thống Kê Request
+                                                        </div>
+                                                    </div>
                                                 </div><%} else {%><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
                                                         <div class="  panel-title">
@@ -634,6 +640,9 @@
             <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "statistic";
             };
             <%} else {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {

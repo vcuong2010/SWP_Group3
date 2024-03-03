@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.MentorStatistic" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -592,6 +592,106 @@
         <script>
             var max = <%=p%>;
             var p = 1;
+            function popupStatistic(event) {
+                event.preventDefault();
+            <% MentorStatistic ms = (MentorStatistic)request.getAttribute("mstatistic"); %>
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+  <div class="fade modal-backdrop"></div>\n\
+  <div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+    <div class="modal-dialog">\n\
+      <div class="modal-content" role="document">\n\
+        <div class="modal-header">\n\
+          <button type="button" class="close">\n\
+            <span aria-hidden="true">×</span>\n\
+            <span class="sr-only">Close</span>\n\
+          </button>\n\
+          <h4 class="modal-title">\n\
+            <span>Thống Kê Request</span>\n\
+          </h4>\n\
+        </div>\n\
+          <div class="modal-body">\n\
+            \n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Tổng số Request nhận được: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getInvitedRequest()%> requests</span></p>\n\
+                                    </div>\n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Tổng số Request đã từ chối: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRejectedRequest()%> requests</span></p>\n\
+                                    </div>\n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Tỉ lệ từ chối Request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRejectPercent() * 100%> %</span></p>\n\
+                                    </div>\n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Tổng số Request đã chấp thuận: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getAccepedRequest()%> requests</span></p>\n\
+                                    </div>\n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Đánh Giá từ học viên: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getRating()%> sao</span></p>\n\
+                                    </div>\n\
+                                    <div class="fieldGroup changepass--fieldGroup">\n\
+                                        <p class="control-label">Tỉ lệ hoàn thành request: <span style="color:black; font-weight: bold; text-transform: none"><%=ms.getCompletePercent()*100%> %</span></p>\n\
+                                    </div>\n\
+                                \n\
+          </div>\n\
+          <div class="modal-footer">\n\
+            <button type="button" class="btn btn-default">\n\
+              <span>Đóng</span>\n\
+            </button>\n\
+          </div>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[1].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+            }        
         </script>
         <div class="home-flex-content">
             <div class="container-xl">
@@ -603,6 +703,10 @@
                                     <h2>All <b>Invite Requests</b></h2>
                                 </div>
                                 <div style="margin-top: 25px" class="col-sm-2">
+                                    <a href="" id="popup" class="btn btn-danger" onclick="popupStatistic(event)" data-toggle="modal">
+                                        <i class="fas fa-chart-bar"></i>
+                                        <span>Thống Kê</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
