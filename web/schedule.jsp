@@ -591,18 +591,18 @@
                 <div class="row">
                     <div class="col-md-12" style="display: flex; justify-content: center;">
                         <form method='post'>
-                            <h2 style="font-family: inherit;font-weight: 500;line-height: 1.1;color: inherit;">
+                            <h2 style="font-family: inherit;font-weight: 500;line-height: 1.1;color: inherit;"> Activities for 
                                 <span id="ctl00_mainContent_lblStudent"><%=u.getUsername()%>'s (<%=u.getFullname()%>)</span> schedule <%=u.getRole().equalsIgnoreCase("mentor") ? "<button class=\"btn btn-success\" onclick=\"newSlot()\" style=\"margin-left: 1.25vw\">New Slot</button>" : ""%></h2>
-                                <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
+                                <%if(u.getRole().equalsIgnoreCase("mentor")) {%>                               
                             <script>
                                 function changeType(input) {
                                     let modal = input.parentNode.parentNode.parentNode;
-                                    if(input.options[input.selectedIndex].value === 'byWeek') {
+                                    if (input.options[input.selectedIndex].value === 'byWeek') {
                                         let hidden = modal.querySelectorAll("tr[class=hidden]");
                                         let datetime = modal.querySelector("input[type=datetime-local]");
                                         datetime.setAttribute("type", "time");
                                         document.getElementsByName("weekTime")[0].setAttribute("required", "true");
-                                        for(let i = 0; i < hidden.length; i++) {
+                                        for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "unhidden";
                                         }
                                     } else {
@@ -610,7 +610,7 @@
                                         let datetime = modal.querySelector("input[type=time]");
                                         datetime.setAttribute("type", "datetime-local");
                                         document.getElementsByName("weekTime")[0].removeAttribute("required");
-                                        for(let i = 0; i < hidden.length; i++) {
+                                        for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "hidden";
                                         }
                                     }
@@ -619,7 +619,7 @@
                                     try {
                                         new URL(url);
                                         return true;
-                                    } catch(e) {
+                                    } catch (e) {
                                         return false;
                                     }
                                 }
@@ -627,25 +627,25 @@
                                     event.preventDefault();
                                     let link = document.querySelector("input[name=link]");
                                     let type = document.getElementById("schedule");
-                                    if(type.options[type.selectedIndex].value === "byWeek") {
-                                    let checkbox = document.querySelectorAll("input[type=checkbox]");
-                                    let count = 0;
-                                    for(let i = 0; i < checkbox.length; i++) {
-                                        if(checkbox[i].checked) {
-                                            count++;
+                                    if (type.options[type.selectedIndex].value === "byWeek") {
+                                        let checkbox = document.querySelectorAll("input[type=checkbox]");
+                                        let count = 0;
+                                        for (let i = 0; i < checkbox.length; i++) {
+                                            if (checkbox[i].checked) {
+                                                count++;
+                                            }
                                         }
-                                    }
-                                    if(count < 1) {
-                                        alert("Bạn phải chọn ít nhất 1 ngày trong tuần!");
-                                    } else {
-                                        if(URLValidate(link.value)) {
-                                            input.form.submit();
+                                        if (count < 1) {
+                                            alert("Bạn phải chọn ít nhất 1 ngày trong tuần!");
                                         } else {
-                                            alert("Vui lòng nhập link chính xác!");
+                                            if (URLValidate(link.value)) {
+                                                input.form.submit();
+                                            } else {
+                                                alert("Vui lòng nhập link chính xác!");
+                                            }
                                         }
-                                    }
                                     } else {
-                                        if(URLValidate(link.value)) {
+                                        if (URLValidate(link.value)) {
                                             input.form.submit();
                                         } else {
                                             alert("Vui lòng nhập link chính xác!");
@@ -747,9 +747,9 @@
 </div>\n\
 </div>\n\
 </div>';
-                                    let date = new Date();
-                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
-    modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
+                                        let date = new Date();
+                                        let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
                                         let btn = document.body.lastChild.getElementsByTagName('button');
                                         btn[0].onclick = function () {
@@ -1147,17 +1147,24 @@
                                                         <% } %>
                                                     </tbody>
                                                 </table>
-                                                <p>
-                                                    <b>More note / Chú thích thêm</b>:
+                                                <p style="font-size: 20px; color: #F44336">
+                                                    <b>More note / Chú thích thêm:</b>
                                                 </p>
                                                 <div id="ctl00_mainContent_divfoot">
                                                     <ul>
+                                                        <li>Note: Only shows lessons for which you have registered</li>
                                                         <li>( <font color="green">Done</font>): <%=u.getUsername()%> had confirm this activity / <%=u.getFullname()%> đã xác nhận hoạt động này </li>
                                                         <li>( <font color="red">Not Yet</font>): <%=u.getUsername()%> had NOT confirm this activity / <%=u.getFullname()%> chưa xác nhận buổi này </li>
                                                         <li>(-): no data was given / chưa có dữ liệu</li>
                                                     </ul>
                                                 </div>
                                                 <p>
+                                                <div id="ctl00_divSupport">
+                                                    <br>
+                                                    <b>Mọi góp ý, thắc mắc xin liên hệ: </b><span style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 13.333333969116211px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">SE1756-Group3</span>: Email: <a href="##">?</a>.
+                                                    Điện thoại: <span class="style1" style="color: rgb(34, 34, 34); font-family: arial, sans-serif; font-size: 13.333333969116211px; font-style: normal; font-variant: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px; background-color: rgb(255, 255, 255); display: inline !important; float: none;">0987654321</span>
+                                                    <br>
+                                                </div>
                                                 </p>
                                             </div>
                                         </td>
