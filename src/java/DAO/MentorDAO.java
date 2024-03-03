@@ -25,7 +25,7 @@ public class MentorDAO {
         Connection dbo = DatabaseUtil.getConn();
         try {
             PreparedStatement ps = dbo.prepareStatement("  SELECT Count([RequestID]) as TotalRequest, \n" +
-"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Accepted' OR [RequestStatus] = N'Processing' OR [RequestStatus] = N'Done') as TotalAccepted, \n" +
+"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Accept' OR [RequestStatus] = N'Processing' OR [RequestStatus] = N'Done') as TotalAccepted, \n" +
 "  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Reject') as TotalRejected, \n" +
 "  (SELECT AVG(Cast([noStar] as Float)) FROM [Rating] WHERE [MentorID] = ?) as Rating, \n" +
 "  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Done') as TotalDone \n" +
