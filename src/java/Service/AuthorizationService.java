@@ -49,8 +49,13 @@ public class AuthorizationService {
         getMap().put(path, roles);
     }
     
-    public void sendReport(int uid, String content) throws Exception {
+    public String sendReport(int uid, String content) throws Exception {
+        if (content.replaceAll(" ", "").isEmpty()){
+            return "Bạn cần nhập vào một chuỗi ký tự!";
+        }else{
         ReportDAO.sendReport(uid, content);
+        return "Send Report Successfully!";
+        }
     }
     
     public boolean Authorization(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -62,8 +67,7 @@ public class AuthorizationService {
                         String sid = request.getParameter("id");
                         int id = Integer.parseInt(sid);
                         String content = request.getParameter("reason");
-                        sendReport(id, content);
-                        request.setAttribute("alert", "Send Report Successfully!");
+                        request.setAttribute("alert", sendReport(id, content));
                     } catch(Exception e) {
                         e.printStackTrace();
                     }
@@ -84,8 +88,7 @@ public class AuthorizationService {
                         String sid = request.getParameter("id");
                         int id = Integer.parseInt(sid);
                         String content = request.getParameter("reason");
-                        sendReport(id, content);
-                        request.setAttribute("alert", "Send Report Successfully!");
+                        request.setAttribute("alert", sendReport(id, content));
                     } catch(Exception e) {
                         e.printStackTrace();
                     }
