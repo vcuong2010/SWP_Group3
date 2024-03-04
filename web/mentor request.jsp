@@ -713,12 +713,7 @@
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    <th>
-                                        <span class="custom-checkbox">
-                                            <input type="checkbox" id="selectAll">
-                                            <label for="selectAll"></label>
-                                        </span>
-                                    </th>
+                                    
                                     <th style="font-weight: bold; color: black">Subject</th>
                                     <th style="font-weight: bold; color: black">Reason</th>
                                     <th style="font-weight: bold; color: black">Sender</th>
@@ -731,12 +726,7 @@
                             <tbody>
                                 <%for(int i = 0; i < arr.size(); i++) {%>
                                 <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
-                                    <td>
-                                        <span class="custom-checkbox">
-                                            <input type="<%=(i >= 10 ? "hidden" : "checkbox")%>" id="checkbox1" name="options[]" value="<%=arr.get(i).getId()%>">
-                                            <label for="checkbox1"></label>
-                                        </span>
-                                    </td>
+
                                     <td><a href="" onclick="update<%=arr.get(i).getId()%>(event)" data-toggle="modal"><%=arr.get(i).getSubject()%></a></td>
                                     <td><%=arr.get(i).getReason()%></td>
                                     <td><%=arr.get(i).getSender()%></td>
