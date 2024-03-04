@@ -852,7 +852,7 @@
             <%if(request.getAttribute("status") != null) {%>
                 setTimeout(function() {
                     alert("<%=request.getAttribute("status")%>");
-                }, 1000);
+                }, 500);
             <%}%>
             function previous() {
                 let week = document.getElementById("week");
@@ -881,7 +881,8 @@
                 if(!input.parentNode.lastChild.classList.contains("hidden")) {
                     input.parentNode.lastChild.classList.add("hidden")
                 } else {
-                    <% int year = (int)request.getAttribute("year");
+                    <% 
+                        int year = (int)request.getAttribute("year");
                         int week = (int)request.getAttribute("week");
                         Calendar firstDay = (Calendar)request.getAttribute("firstOfWeek");
                         Calendar lastDay = Calendar.getInstance();
@@ -900,9 +901,11 @@
                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                     //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                     let modal = document.createElement('div');
-                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Request</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Deadline</span>:</td><td><input type="datetime-local" required name="deadline"></td></tr><tr><td><span>Chọn Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event)">Nhấn để Hiện Lịch</button><div class="bootstrap-datetimepicker-widget dropdown-menu hidden" style="width: 17em; inset: auto auto auto auto;">\n\
+                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Tạo Request</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Deadline</span>:</td><td><input type="datetime-local" required name="deadline"></td></tr>\n\
+            <tr><td><span>Chọn Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event)">Nhấn để Hiện Lịch</button>\n\
+            <div class="bootstrap-datetimepicker-widget dropdown-menu hidden" id="datepicker" style="width: 17em; inset: auto auto auto auto;">\n\
         <div class="row">\n\
-<div class="datepicker col-md-6">\n\
+<div class="datepicker" style="margin-right: 14px;margin-left: 14px;">\n\
 <div class="datepicker-days" style="display: block;">\n\
 <table class="table-condensed">\n\
 <thead>\n\
@@ -921,7 +924,10 @@
 </thead>\n\
 <%  firstDay.add(Calendar.DATE, -(7*weekCount));
     lastDay.add(Calendar.DATE, -(7*weekCount));
+    float currWidth = 17;
+    float maxWidth = 17;
     for(int j = 0; j < weekCount; j++) {
+        currWidth = 17;
                         ArrayList<Slot> thisWeek = ScheduleDAO.sortByWeek(firstDay, lastDay, arr);
                                                     ArrayList<Slot> mon = new ArrayList();
                                                     ArrayList<Slot> tue = new ArrayList();
@@ -974,9 +980,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(tue.size() > i) {
@@ -986,9 +994,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(wen.size() > i) {
@@ -998,9 +1008,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(thu.size() > i) {
@@ -1010,9 +1022,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>">\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(fri.size() > i) {
@@ -1022,9 +1036,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(sat.size() > i) {
@@ -1034,9 +1050,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(sun.size() > i) {
@@ -1046,9 +1064,11 @@
     Calendar to = Calendar.getInstance();
     to.setTime(s.getSlotTime());
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
+    currWidth += 1.5;
 %>\n\
 <td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
-<input type="checkbox" name="slot" value="<%=s.getId()%>" >\n\
+<input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 </tr>\n\
@@ -1056,12 +1076,23 @@
 </tbody>\n\
 <%  firstDay.add(Calendar.DATE, 7);
     lastDay.add(Calendar.DATE, 7);
+    if(currWidth > maxWidth) {
+        maxWidth = currWidth;
+    }
     }%>\n\
-</table></div><div class="datepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Year"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Year">2024</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Year"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectMonth" class="month">Jan</span><span data-action="selectMonth" class="month">Feb</span><span data-action="selectMonth" class="month active">Mar</span><span data-action="selectMonth" class="month">Apr</span><span data-action="selectMonth" class="month">May</span><span data-action="selectMonth" class="month">Jun</span><span data-action="selectMonth" class="month">Jul</span><span data-action="selectMonth" class="month">Aug</span><span data-action="selectMonth" class="month">Sep</span><span data-action="selectMonth" class="month">Oct</span><span data-action="selectMonth" class="month">Nov</span><span data-action="selectMonth" class="month">Dec</span></td></tr></tbody></table></div><div class="datepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Decade"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Decade">2019-2030</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Decade"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectYear" class="year">2019</span><span data-action="selectYear" class="year">2020</span><span data-action="selectYear" class="year">2021</span><span data-action="selectYear" class="year">2022</span><span data-action="selectYear" class="year">2023</span><span data-action="selectYear" class="year active">2024</span><span data-action="selectYear" class="year">2025</span><span data-action="selectYear" class="year">2026</span><span data-action="selectYear" class="year">2027</span><span data-action="selectYear" class="year">2028</span><span data-action="selectYear" class="year">2029</span><span data-action="selectYear" class="year">2030</span></td></tr></tbody></table></div><div class="datepicker-decades" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Century"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5">2000-2107</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Century"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectDecade" class="decade" data-selection="2005">2000 - 2011</span><span data-action="selectDecade" class="decade" data-selection="2017">2012 - 2023</span><span data-action="selectDecade" class="decade active" data-selection="2029">2024 - 2035</span><span data-action="selectDecade" class="decade" data-selection="2041">2036 - 2047</span><span data-action="selectDecade" class="decade" data-selection="2053">2048 - 2059</span><span data-action="selectDecade" class="decade" data-selection="2065">2060 - 2071</span><span data-action="selectDecade" class="decade" data-selection="2077">2072 - 2083</span><span data-action="selectDecade" class="decade" data-selection="2089">2084 - 2095</span><span data-action="selectDecade" class="decade" data-selection="2101">2096 - 2107</span><span></span><span></span><span></span></td></tr></tbody></table></div></div></div></div></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea></td></tr><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int i = 0; i < currCV.getSkills().size(); i++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+</table>\n\
+</div>\n\
+<div class="datepicker-months" style="display: none;">\n\
+<table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Year"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Year">2024</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Year"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectMonth" class="month">Jan</span><span data-action="selectMonth" class="month">Feb</span><span data-action="selectMonth" class="month active">Mar</span><span data-action="selectMonth" class="month">Apr</span><span data-action="selectMonth" class="month">May</span><span data-action="selectMonth" class="month">Jun</span><span data-action="selectMonth" class="month">Jul</span><span data-action="selectMonth" class="month">Aug</span><span data-action="selectMonth" class="month">Sep</span><span data-action="selectMonth" class="month">Oct</span><span data-action="selectMonth" class="month">Nov</span><span data-action="selectMonth" class="month">Dec</span></td></tr></tbody></table></div><div class="datepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Decade"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Decade">2019-2030</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Decade"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectYear" class="year">2019</span><span data-action="selectYear" class="year">2020</span><span data-action="selectYear" class="year">2021</span><span data-action="selectYear" class="year">2022</span><span data-action="selectYear" class="year">2023</span><span data-action="selectYear" class="year active">2024</span><span data-action="selectYear" class="year">2025</span><span data-action="selectYear" class="year">2026</span><span data-action="selectYear" class="year">2027</span><span data-action="selectYear" class="year">2028</span><span data-action="selectYear" class="year">2029</span><span data-action="selectYear" class="year">2030</span></td></tr></tbody></table></div><div class="datepicker-decades" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" data-action="previous"><span class="glyphicon glyphicon-chevron-left" title="Previous Century"></span></th><th class="picker-switch" data-action="pickerSwitch" colspan="5">2000-2107</th><th class="next" data-action="next"><span class="glyphicon glyphicon-chevron-right" title="Next Century"></span></th></tr></thead><tbody><tr><td colspan="7"><span data-action="selectDecade" class="decade" data-selection="2005">2000 - 2011</span><span data-action="selectDecade" class="decade" data-selection="2017">2012 - 2023</span><span data-action="selectDecade" class="decade active" data-selection="2029">2024 - 2035</span><span data-action="selectDecade" class="decade" data-selection="2041">2036 - 2047</span><span data-action="selectDecade" class="decade" data-selection="2053">2048 - 2059</span><span data-action="selectDecade" class="decade" data-selection="2065">2060 - 2071</span><span data-action="selectDecade" class="decade" data-selection="2077">2072 - 2083</span><span data-action="selectDecade" class="decade" data-selection="2089">2084 - 2095</span><span data-action="selectDecade" class="decade" data-selection="2101">2096 - 2107</span><span></span><span></span><span></span></td></tr></tbody></table></div></div></div></div></td>\n\
+</tr>\n\
+<tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"></textarea></td></tr><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int i = 0; i < currCV.getSkills().size(); i++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                     let date = new Date();
                                     let dateonly = date.toLocaleString().split(",")[0].split("/");
     modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
                     document.body.appendChild(modal.firstChild);
+                                    if(17 < <%=maxWidth%>) {
+                                       document.getElementById("datepicker").style.width = <%=maxWidth%>+"em";
+                                    }
                     let skills = document.body.lastChild.querySelectorAll("input[type=checkbox]");
                     for (var i = 0; i < skills.length; i++) {
                         skills[i].onclick = function (e) {

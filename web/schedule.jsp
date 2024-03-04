@@ -749,7 +749,7 @@
 </div>';
                                         let date = new Date();
                                         let dateonly = date.toLocaleString().split(",")[0].split("/");
-                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
+                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
                                         let btn = document.body.lastChild.getElementsByTagName('button');
                                         btn[0].onclick = function () {
@@ -1082,7 +1082,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1110,7 +1110,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1138,7 +1138,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1166,7 +1166,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1194,7 +1194,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1222,7 +1222,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1250,7 +1250,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
