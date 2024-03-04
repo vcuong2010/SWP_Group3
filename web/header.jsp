@@ -281,12 +281,12 @@
                                     <a href="" target="_blank" rel="noopener noreferrer">
                                         <span>Fanpage</span>
                                     </a>
-                                    <a href="" target="_blank" onclick="popup()" rel="noopener noreferrer">
+                                    <a href="" target="_blank" onclick="popupReport()" rel="noopener noreferrer">
                                         <span>Report</span>
                                     </a>
                                 </div>
                                 <script>
-                                function popup() {
+                                function popupReport() {
                                     event.preventDefault();
                                     if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
                                         let pre = document.body.style.cssText;
