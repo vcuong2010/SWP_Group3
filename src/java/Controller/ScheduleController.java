@@ -29,7 +29,6 @@ import model.User;
  *
  * @author TGDD
  */
-@WebServlet(name = "ScheduleController", urlPatterns = {"/schedule"})
 public class ScheduleController extends HttpServlet {
 
     /**

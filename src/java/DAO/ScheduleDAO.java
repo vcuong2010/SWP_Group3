@@ -33,9 +33,15 @@ public class ScheduleDAO {
         });
         int r = 1;
         if (array.size() > 0) {
-            int firstWeek = weekOfYear(new java.util.Date());
-            int lastWeek = weekOfYear(new java.util.Date(array.get(array.size() - 1).getSlotTime().toInstant().toEpochMilli()));
-            r = lastWeek - firstWeek + 1;
+            if(array.get(0).getSlotTime().before(new java.util.Date())) {
+                int firstWeek = weekOfYear(array.get(0).getSlotTime());
+                int lastWeek = weekOfYear(new java.util.Date(array.get(array.size() - 1).getSlotTime().toInstant().toEpochMilli()));
+                r = lastWeek - firstWeek + 1;
+            } else {
+                int firstWeek = weekOfYear(new java.util.Date());
+                int lastWeek = weekOfYear(new java.util.Date(array.get(array.size() - 1).getSlotTime().toInstant().toEpochMilli()));
+                r = lastWeek - firstWeek + 1;
+            }
         }
         return r;
     }
@@ -201,7 +207,61 @@ public class ScheduleDAO {
         }
         return arr;
     }
+    
+    
+    public static ArrayList<Integer> getSlotsIDByRequest(int rid) throws Exception {
+        ArrayList<Integer> arr = new ArrayList();
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT [SlotID]\n"
+                    + "      ,[Time]\n"
+                    + "      ,[startAt]\n"
+                    + "      ,[Link]\n"
+                    + "      ,[ScheduleID]\n"
+                    + "      ,[SkillID]\n"
+                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [User].[UserID] = (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID])) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill], (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID]) as [MentorID] FROM [Slot] WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?)");
+            ps.setInt(1, rid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                arr.add(rs.getInt("SlotID"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbo.close();
+        }
+        return arr;
+    }
 
+    public static ArrayList<Slot> getSlotsByRequest(int rid) throws Exception {
+        ArrayList<Slot> arr = new ArrayList();
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT [SlotID]\n"
+                    + "      ,[Time]\n"
+                    + "      ,[startAt]\n"
+                    + "      ,[Link]\n"
+                    + "      ,[ScheduleID]\n"
+                    + "      ,[SkillID]\n"
+                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [User].[UserID] = (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID])) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill], (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID]) as [MentorID] FROM [Slot] WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?)");
+            ps.setInt(1, rid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Slot slot = new Slot(rs.getInt("SlotID"), rs.getTimestamp("startAt"), rs.getFloat("Time"), rs.getString("Link"), rs.getString("Mentor"), rs.getInt("MentorID"));
+                slot.setSkill(rs.getString("Skill"));
+                slot.setMentee(rs.getString("Mentee"));
+                slot.setMenteeId(rs.getInt("MenteeID"));
+                slot.setStatus(rs.getString("Status"));
+                arr.add(slot);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbo.close();
+        }
+        return arr;
+    }
+    
     public static ArrayList<Slot> getSlots(int year, int week, int uid) throws Exception {
         ArrayList<Slot> arr = new ArrayList();
         Connection dbo = DatabaseUtil.getConn();

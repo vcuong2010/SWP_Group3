@@ -31,6 +31,7 @@
         <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
         <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
         <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css" rel="stylesheet">
 
         <!-- Template Main CSS File -->
         <link href="css/0.cbdbec7b.chunk.css" rel="stylesheet">
@@ -713,7 +714,12 @@
                         <table class="table table-striped table-hover">
                             <thead>
                                 <tr>
-                                    
+                                    <th>
+                                        <span class="custom-checkbox">
+                                            <input type="checkbox" id="selectAll">
+                                            <label for="selectAll"></label>
+                                        </span>
+                                    </th>
                                     <th style="font-weight: bold; color: black">Subject</th>
                                     <th style="font-weight: bold; color: black">Reason</th>
                                     <th style="font-weight: bold; color: black">Sender</th>
@@ -723,10 +729,286 @@
                                     <th style="font-weight: bold; color: black">Actions</th>
                                 </tr>
                             </thead>
+                            <script>
+                                Date.prototype.addDays = function (days) {
+                                    var date = new Date(this.valueOf());
+                                    date.setDate(date.getDate() + days);
+                                    return date;
+                                }
+                                Date.prototype.getWeekNumber = function () {
+                                    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+                                    var dayNum = d.getUTCDay() || 7;
+                                    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+                                    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+                                    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+                                };
+                                Date.prototype.addMinutes = function(minutes) {
+                                    return new Date(this.getTime() + minutes*60000);
+                                };
+                                function sortByWeek(firstDay, lastDay, list) {
+                                    let temp = [];
+                                    for (var i = 0; i < list.length; i++) {
+                                        let tempDate = new Date(Date.parse(list[i]["SlotTime"]));
+                                        if (tempDate >= firstDay && tempDate <= lastDay) {
+                                            temp.push(list[i]);
+                                        }
+                                    }
+                                    return temp;
+                                }
+                                function getMonday(d) {
+                                    d = new Date(d);
+                                    var day = d.getDay(),
+                                            diff = d.getDate() - day + (day == 0 ? -6 : 1);
+                                    return new Date(d.setDate(diff));
+                                }
+            function previous() {
+                let week = document.getElementById("week");
+                let preWeek = document.getElementById("week-"+(parseInt(week.value)-1));
+                if(preWeek != null) {
+                    preWeek.classList.remove("hidden");
+                    document.getElementById("week-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+(parseInt(week.value)-1)).classList.remove("hidden");
+                    week.value = (parseInt(week.value)-1);
+                }
+            }
+            function next() {
+                let week = document.getElementById("week");
+                let preWeek = document.getElementById("week-"+(parseInt(week.value)+1));
+                if(preWeek != null) {
+                    preWeek.classList.remove("hidden");
+                    document.getElementById("week-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+week.value).classList.add("hidden");
+                    document.getElementById("body-"+(parseInt(week.value)+1)).classList.remove("hidden");
+                    week.value = (parseInt(week.value)+1);
+                }
+            }
+                                function schedule(input, event, id, mid) {
+                                    event.preventDefault();
+                                    if (input.parentNode.children.length > 1) {
+                                        if (!input.parentNode.lastChild.classList.contains("hidden")) {
+                                            input.parentNode.lastChild.classList.add("hidden")
+                                        } else {
+                                            input.parentNode.lastChild.classList.remove("hidden");
+                                        }
+                                    } else {
+                                        fetch("api/schedule?<%if(u.getRole().equalsIgnoreCase("mentee")) { %>free=true&mid="+mid+"&<%}%>id=" + id).then(function (response) {
+                                            if (!response.ok) {
+                                                throw new Error('Response was not ok');
+                                            }
+                                            return response.json();
+                                        }).then(function (body) {
+                                            let schedule = document.createElement("div");
+                                            let weekCount = body["weekCount"];
+                                            let firstDay = getMonday(new Date());
+                                            let week = new Date().getWeekNumber();
+                                            let lastDay = getMonday(new Date()).addDays(6);
+                                            let innerString = '<div class="bootstrap-datetimepicker-widget dropdown-menu" id="datepicker" style="width: 15em; inset: auto auto auto auto;">\n\
+        <div class="row">\n\
+<div class="datepicker" style="margin-right: 14px;margin-left: 14px;">\n\
+<div class="datepicker-days" style="display: block;">\n\
+<table class="table-condensed">\n\
+<thead>\n\
+<tr>\n\
+<th class="prev" data-action="previous" onclick="previous()"><span class="glyphicon glyphicon-chevron-left" title="Previous Week"></span></th>\n\
+<input type="hidden" id="week" name="currWeek" value=' + week + '>\n\
+';
+                                            for (let i = 0; i < weekCount; i++) {
+                                                innerString += '\n\
+<th class="picker-switch ' + (i === 0 ? "" : "hidden") + '" data-action="pickerSwitch" colspan="5" title="Select Week" id="week-' + (week + i) + '">\n\
+' + (firstDay.getDate() < 10 ? "0" + firstDay.getDate() : firstDay.getDate()) + '/' + ((firstDay.getMonth() + 1) < 10 ? "0" + (firstDay.getMonth() + 1) : (firstDay.getMonth() + 1)) + ' - ' + (lastDay.getDate() < 10 ? "0" + lastDay.getDate() : lastDay.getDate()) + '/' + ((lastDay.getMonth() + 1) < 10 ? "0" + (lastDay.getMonth() + 1) : (lastDay.getMonth() + 1)) + '\n\
+</th>';
+                                                firstDay = firstDay.addDays(7);
+                                                lastDay = lastDay.addDays(7);
+                                            }
+                                            innerString += '\n\
+<th class="next" data-action="next" onclick="next()"><span class="glyphicon glyphicon-chevron-right" title="Next Week"></span></th>\n\
+</tr><tr><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th><th class="dow">Su</th></tr>\n\
+</thead>';
+                                            firstDay = firstDay.addDays(-(7 * weekCount));
+                                            lastDay = lastDay.addDays(-(7 * weekCount));
+                                            let currWidth = 15;
+                                            let maxWidth = 15;
+                                            for (let j = 0; j < weekCount; j++) {
+                                                currWidth = 15;
+                                                let thisWeek = sortByWeek(firstDay, lastDay, body["slots"]);
+                                                let mon = [];
+                                                let tue = [];
+                                                let wen = [];
+                                                let thu = [];
+                                                let fri = [];
+                                                let sat = [];
+                                                let sun = [];
+                                                for (var i = 0; i < thisWeek.length; i++) {
+                                                    let tempDate = new Date(Date.parse(thisWeek[i]["SlotTime"]));
+                                                    if (tempDate.getDay() === 1) {
+                                                        mon.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 2) {
+                                                        tue.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 3) {
+                                                        wen.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 4) {
+                                                        thu.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 5) {
+                                                        fri.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 6) {
+                                                        sat.push(thisWeek[i]);
+                                                    }
+                                                    if (tempDate.getDay() === 0) {
+                                                        sun.push(thisWeek[i]);
+                                                    }
+                                                }
+                                                let max = mon.length;
+                                                if (tue.length > max)
+                                                    max = tue.length;
+                                                if (wen.length > max)
+                                                    max = wen.length;
+                                                if (thu.length > max)
+                                                    max = thu.length;
+                                                if (fri.length > max)
+                                                    max = fri.length;
+                                                if (sat.length > max)
+                                                    max = sat.length;
+                                                if (sun.length > max)
+                                                    max = sun.length;
+                                                innerString += '<tbody class="' + (j === 0 ? "" : "hidden") + '" id="body-' + (week + j) + '">'
+                                for(let i = 0; i < (5 < max ? max : 5); i++) {                                                   
+                                innerString += '\n\
+<tr>';
+                                if(mon.length > i) {
+    let s = mon[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(tue.length > i) {
+    let s = tue[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(wen.length > i) {
+    let s = wen[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(thu.length > i) {
+    let s = thu[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(fri.length > i) {
+    let s = fri[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(sat.length > i) {
+    let s = sat[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td>'
+                                if(sun.length > i) {
+    let s = sun[i];
+    let c = new Date(Date.parse(s["SlotTime"]));
+    let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
+    currWidth += 2;
+                                innerString += '\n\
+<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
+<label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
+                                } else {
+                                    innerString += '<td data-action="selectDay" class="day"> -'
+                                    }
+                                    innerString += '\n\
+</td></tr>'
+                                }
+                                    innerString += '\n\
+</tbody>'
+                                                firstDay = firstDay.addDays(7);
+                                                lastDay = lastDay.addDays(7);
+                                                if (currWidth > maxWidth) {
+                                                    maxWidth = currWidth;
+                                                }
+                                            }
+                                                    innerString += '\n\
+</table>\n\
+</div>\n\
+</div></div></div>';
+    schedule.innerHTML = innerString;
+    input.parentNode.appendChild(schedule.firstChild);
+                                    if(15 < maxWidth) {
+                                       document.getElementById("datepicker").style.width = maxWidth+"em";
+                                    }
+                                        });
+                                    }
+                                }
+                            </script>
                             <tbody>
                                 <%for(int i = 0; i < arr.size(); i++) {%>
                                 <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
-
+                                    <td>
+                                        <span class="custom-checkbox">
+                                            <input type="<%=(i >= 10 ? "hidden" : "checkbox")%>" id="checkbox1" name="options[]" value="<%=arr.get(i).getId()%>">
+                                            <label for="checkbox1"></label>
+                                        </span>
+                                    </td>
                                     <td><a href="" onclick="update<%=arr.get(i).getId()%>(event)" data-toggle="modal"><%=arr.get(i).getSubject()%></a></td>
                                     <td><%=arr.get(i).getReason()%></td>
                                     <td><%=arr.get(i).getSender()%></td>
@@ -746,7 +1028,10 @@
                                                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
                                                     //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                                                     let modal = document.createElement('div');
-                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender: </td><td><%=arr.get(i).getSender()%></td></tr><tr><td><span>Deadline</span>:</td><td><input disabled type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input disabled placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" disabled type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr><td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Kĩ năng muốn học</span>:</td><td><%=arr.get(i).getSkillsName()%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender: </td><td><%=arr.get(i).getSender()%></td></tr><tr><td><span>Deadline</span>:</td><td><input disabled type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input disabled placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" disabled type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr>\n\
+                                        <tr><td><span>Xem Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event, <%=arr.get(i).getId()%>, <%=u.getId()%>)">Nhấn để Hiện Lịch</button>\n\
+</td></tr>\n\
+                                        <td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Kĩ năng muốn học</span>:</td><td><%=arr.get(i).getSkillsName()%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                                     modal.querySelector("input[type=datetime-local]").min = new Date().toISOString().split(":")[0] + ":" + new Date().toISOString().split(":")[1];
                                                     document.body.appendChild(modal.firstChild);
                                                     let btn = document.body.lastChild.getElementsByTagName('button');
@@ -760,7 +1045,7 @@
                                                         }, 100);
 
                                                     }
-                                                    btn[1].onclick = function () {
+                                                    btn[2].onclick = function () {
                                                         document.body.lastChild.firstChild.classList.remove("in");
                                                         document.body.lastChild.children[1].classList.remove("in");
                                                         setTimeout(function () {

@@ -8,6 +8,14 @@
         <servlet-name>AdminSkillController</servlet-name>
         <servlet-class>Controller.admin.AdminSkillController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ApiScheduleController</servlet-name>
+        <servlet-class>Controller.Api.ScheduleController</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ScheduleController</servlet-name>
+        <servlet-class>Controller.ScheduleController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RequestController</servlet-name>
         <url-pattern>/request</url-pattern>
@@ -23,6 +31,14 @@
     <servlet-mapping>
         <servlet-name>AdminSkillController</servlet-name>
         <url-pattern>/admin/skill</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApiScheduleController</servlet-name>
+        <url-pattern>/api/schedule</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ScheduleController</servlet-name>
+        <url-pattern>/schedule</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of requests</title>
+        <title>List of reports</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -896,7 +896,7 @@
                                 this.click();
                             }
                         </script>
-                        <h3>List of request</h3>
+                        <h3>List of report</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
