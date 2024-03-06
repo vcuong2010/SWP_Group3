@@ -680,29 +680,25 @@
             }
             document.getElementsByClassName('cropimg-avatar')[0].onclick = function () {
                 let n = document.createElement("div");
-                n.innerHTML = '<div class="editor-avatar-section"><div><img width="387.5" height="387.5" class="editor-canvas" style="width: 310px; height: 310px;" src="https://files.playerduo.net/production/images/avatar31.png"></div><br><div class="box"><input name="newImage" type="text" placeholder="Enter Avatar Url"></div><br><button value="Save">Lưu</button><button value="Cancel">Huỷ bỏ</button></div>';
+                n.innerHTML = '<form method="post" enctype="multipart/form-data"><div class="editor-avatar-section"><div><img width="387.5" height="387.5" class="editor-canvas" style="width: 310px; height: 310px;" src="https://files.playerduo.net/production/images/avatar31.png"></div><br><div class="box"><input name="avt" type="file" required style="max-width: 20em;"></div><br><button value="Save">Lưu</button><button value="Cancel">Huỷ bỏ</button></div></form>';
                 let img = n.getElementsByTagName('img')[0];
                 let inp = n.getElementsByTagName('input')[0];
-                inp.onkeydown = function () {
-                    setTimeout(function () {
-                        if (isValidUrl(inp.value)) {
-                            img.src = inp.value;
-                        } else {
-                            img.src = "https://files.playerduo.net/production/images/avatar31.png";
-                        }
-                    }, 1);
+                inp.onchange = function (event) {
+                        var selectedFile = event.target.files[0];
+  var reader = new FileReader();
+
+  img.title = selectedFile.name;
+
+  reader.onload = function(event) {
+    img.src = event.target.result;
+  };
+
+            reader.readAsDataURL(selectedFile);
                 }
                 let cancel = n.getElementsByTagName('button')[1];
-                let save = n.getElementsByTagName('button')[0];
+                //let save = n.getElementsByTagName('button')[0];
                 cancel.onclick = function () {
                     cancel.parentNode.parentNode.removeChild(cancel.parentNode);
-                }
-                save.onclick = function () {
-                    if (isValidUrl(inp.value)) {
-                        window.location.href = "profile?avt=" + inp.value;
-                    } else {
-                        window.location.href = "profile";
-                    }
                 }
                 document.getElementsByClassName('d-flex img-avatar')[0].appendChild(n.firstChild);
             }

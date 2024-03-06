@@ -9,10 +9,15 @@ import DAO.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import model.Mentee;
 import model.Mentor;
 import model.User;
@@ -22,6 +27,11 @@ import model.User;
  * @author TGDD
  */
 @WebServlet(name = "ProfileController", urlPatterns = {"/profile"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 100
+)
 public class ProfileController extends HttpServlet {
 
     /**
@@ -47,15 +57,6 @@ public class ProfileController extends HttpServlet {
         } else {
             Mentor r = (Mentor) UserDAO.getRole(u.getId(), u.getRole());
             request.getSession().setAttribute("Mentor", r);
-        }
-        //Update avatar
-        if (request.getParameter("avt") != null) {
-            try {
-                UserDAO.updateAvatar(u.getId(), request.getParameter("avt"));
-            } catch (Exception e) {
-            }
-            response.sendRedirect("profile");
-            return;
         }
         request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
@@ -103,7 +104,7 @@ public class ProfileController extends HttpServlet {
         }
         //Update Phone
         String sdt = request.getParameter("sdt");
-        if (!(sdt.isEmpty() || u.getPhone().equals(sdt))) {
+        if (sdt != null && !(sdt.isEmpty() || u.getPhone().equals(sdt))) {
             //Phone validate
             boolean isPhone = true;
             for (int i = 0; i < sdt.length(); i++) {
@@ -123,7 +124,7 @@ public class ProfileController extends HttpServlet {
         }
         //Update Date Of Birth
         String dob = request.getParameter("dob");
-        if (!(dob.isEmpty() || u.getDob().equals(dob))) {
+        if (dob != null && !(dob.isEmpty() || u.getDob().equals(dob))) {
             try {
                 UserDAO.updateDob(u.getId(), dob);
             } catch (Exception e) {
@@ -132,7 +133,7 @@ public class ProfileController extends HttpServlet {
         }
         //Update address
         String address = request.getParameter("address");
-        if (!(address.isEmpty() || u.getAddress().equals(address))) {
+        if (address != null && !(address.isEmpty() || u.getAddress().equals(address))) {
 
             try {
                 UserDAO.updateAddress(u.getId(), address);
@@ -142,7 +143,7 @@ public class ProfileController extends HttpServlet {
         }
         //Update gender
         String gender = request.getParameter("gender");
-        if (!gender.isEmpty()) {
+        if (gender != null && !gender.isEmpty()) {
             if (gender.equalsIgnoreCase("male") && u.isGender()) {
                 try {
                     UserDAO.updateGender(u.getId(), false);
@@ -155,6 +156,29 @@ public class ProfileController extends HttpServlet {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+        }
+        //Update avatar
+        if(request.getPart("avt") != null) {
+            try {
+                Part avt = request.getPart("avt");
+                BufferedImage img = ImageIO.read(avt.getInputStream());
+                String path = request.getServletContext().getRealPath("/avatar");
+                String realpath = request.getServletContext().getRealPath("/avatar").replace("\\build\\web\\avatar", "\\web\\avatar");
+                File outputfile = new File(path+"/"+u.getUsername()+"_"+u.getId()+".png");
+                ImageIO.write(img, "png", outputfile);
+                System.out.println(realpath);
+                File realoutputfile = new File(realpath+"/"+u.getUsername()+"_"+u.getId()+".png");
+                ImageIO.write(img, "png", realoutputfile);
+                try {
+                    UserDAO.updateAvatar(u.getId(), "avatar"+"/"+u.getUsername()+"_"+u.getId()+".png");
+                    u.setAvatar("avatar"+"/"+u.getUsername()+"_"+u.getId()+".png");
+                } catch (Exception e) {
+                }
+                response.sendRedirect("profile");
+                return;
+            } catch(Exception e) {
+                request.setAttribute("alert", "Vui lòng lòng chọn file hợp lệ");
             }
         }
         try {
