@@ -157,7 +157,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                MentorDetail md = new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (done / (accept / 100)) : 0), account, profession, active);
+                MentorDetail md = new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? ((accept / 100) == 0 ? 0 : (done / (accept / 100))) : 0), account, profession, active);
                 md.setRequests(request);
                 arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), md);
             }
