@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, DAO.RequestDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -946,7 +946,7 @@
 </button><h4 class="modal-title"><span>Sửa Request</span></h4></div><form method="post"><input type="hidden" name="id" value="<%=arr.get(i).getId()%>"><input type="hidden" name="type" value="update"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Mentor:</td><td><%=currMentor.getFullname()%></td></tr><tr><td><span>Request Deadline</span>:</td><td><input type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr>\n\
 <tr><td><span>Xem Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event, <%=arr.get(i).getId()%>, <%=currMentor.getId()%>)">Nhấn để Hiện Lịch</button>\n\
 </td></tr>\n\
-<tr><td><span>Trạng Thái</span>:</td><td><select name="status"><%if(!(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reopen") || arr.get(i).getStatus().equalsIgnoreCase("closed"))) {%><option value="<%=arr.get(i).getStatus()%>" disabled selected><%=arr.get(i).getStatus()%></option><%}%><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><option value="open" <%=arr.get(i).getStatus().equalsIgnoreCase("reopen") ? "selected" : ""%>>Reopen</option><%}%><option value="closed" <%=arr.get(i).getStatus().equalsIgnoreCase("closed") ? "selected" : ""%>>Closed</option></select></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int j = 0; j < currCV.getSkills().size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(j).getId()%>" id="<%=currCV.getSkills().get(j).getId()%>" <%=SkillDAO.contains(arr.get(i).getSkills(), currCV.getSkills().get(j)) ? "checked" : ""%>><label for="<%=currCV.getSkills().get(j).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(j).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Cập Nhật</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+<tr><td><span>Trạng Thái</span>:</td><td><select name="status"><%if(!(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reopen") || arr.get(i).getStatus().equalsIgnoreCase("closed"))) {%><option value="<%=arr.get(i).getStatus()%>" disabled selected><%=arr.get(i).getStatus()%></option><%}%><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><option value="open" <%=arr.get(i).getStatus().equalsIgnoreCase("reopen") ? "selected" : ""%>>Reopen</option><%}%><option value="open" <%=arr.get(i).getStatus().equalsIgnoreCase("open") ? "selected" : ""%>>Open</option><option value="closed" <%=arr.get(i).getStatus().equalsIgnoreCase("closed") ? "selected" : ""%>>Closed</option></select></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Chọn kĩ năng cần học</span>:</td><td><%for(int j = 0; j < currCV.getSkills().size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="skill" value="<%=currCV.getSkills().get(j).getId()%>" id="<%=currCV.getSkills().get(j).getId()%>" <%=SkillDAO.contains(arr.get(i).getSkills(), currCV.getSkills().get(j)) ? "checked" : ""%>><label for="<%=currCV.getSkills().get(j).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(j).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Cập Nhật</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                                     let date = new Date();
                                                     let dateonly = date.toLocaleString().split(",")[0].split("/");
                                                     modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
@@ -1038,6 +1038,148 @@
                                         <a href="" onclick="rate(event, <%=arr.get(i).getId()%>)" class="edit" data-toggle="modal">
                                             <i class="fas fa-comment" data-toggle="tooltip" title="Rate"></i>
                                         </a>
+                                        
+                                        <%} else if(arr.get(i).getStatus().equalsIgnoreCase("accept") && !arr.get(i).isRated()) {%> 
+                                        <a href="" onclick="pay<%=arr.get(i).getId()%>(event)" class="success" data-toggle="modal">
+                                            <i class="fas fa-usd-square" data-toggle="tooltip" title="pay"></i>
+                                        </a>
+                                            <script>
+                                                function pay<%=arr.get(i).getId()%>(event) {
+                                event.preventDefault();
+                                if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                    document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                    //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    let modal = document.createElement('div');
+                                    modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<form method="post">\n\
+<div class="modal-dialog">\n\
+<div class="modal-content" role="document">\n\
+<div class="modal-header">\n\
+  <button type="button" class="close">\n\
+    <span aria-hidden="true">×</span>\n\
+    <span class="sr-only">Close</span>\n\
+  </button>\n\
+  <h4 class="modal-title">\n\
+    <span>Xác nhận trả tiền</span>\n\
+  </h4>\n\
+</div>\n\
+  <div class="modal-body">\n\
+<table style="width: 100%;">\n\
+          <tbody>\n\
+              <input type="hidden" name="type" value="pay">\n\
+              <input type="hidden" name="id" value="<%=arr.get(i).getId()%>">\n\
+              <input type="hidden" name="uid" value="<%=arr.get(i).getSenderID()%>">\n\
+              <input type="hidden" name="oid" value="<%=arr.get(i).getUserID()%>">\n\
+            <tr>\n\
+              <td>\n\
+                <span>Mentor</span>:\n\
+              </td>\n\
+              <td>\n\
+                    <%=arr.get(i).getMentor()%>\n\
+              </td>\n\
+            </tr>\n\
+            <tr>\n\
+              <td>\n\
+                <span>Giá trên 1 slot</span>:\n\
+              </td>\n\
+              <td>\n\
+                <%int slotCash = MentorDAO.getSlotCash(arr.get(i).getUserID());
+                    int Rslots = RequestDAO.getSlots(arr.get(i).getId());
+                %>\n\
+                <%=slotCash%>đ\n\
+              </td>\n\
+            </tr>\n\
+            <tr>\n\
+              <td>\n\
+                <span>Số slot muốn thuê</span>:\n\
+              </td>\n\
+              <td>\n\
+                <%=Rslots%>\n\
+              </td>\n\
+            </tr>\n\
+            <tr>\n\
+              <td>\n\
+                <span>Tổng tiền phải trả</span>:\n\
+              </td>\n\
+              <td>\n\
+                <%=slotCash*Rslots%>đ\n\
+              </td>\n\
+            </tr>\n\
+          </tbody>\n\
+        </table>\n\
+  </div>\n\
+  <div class="modal-footer">\n\
+    <button type="submit" class="btn btn-success">\n\
+      <span>Xác Nhận</span>\n\
+    </button>\n\
+    <button type="button" class="btn btn-default">\n\
+      <span>Đóng</span>\n\
+    </button>\n\
+  </div>\n\
+</div>\n\
+</form>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                    document.body.appendChild(modal.firstChild);
+                                    let btn = document.body.lastChild.getElementsByTagName('button');
+                                    btn[0].onclick = function () {
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+
+                                    }
+                                    btn[1].onclick = function () {
+                                        event.preventDefault();
+                                        if(<%=slotCash*Rslots%> > <%=u.getWallet()%>) {
+                                            alert("Bạn không có đủ tiền, vui lòng nạp thêm!");
+                                        } else {
+                                            btn[1].form.submit();
+                                        }
+                                    }
+                                    btn[2].onclick = function () {
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+
+                                    }
+                                    setTimeout(function () {
+                                        document.body.lastChild.children[1].classList.add("in");
+                                        document.body.lastChild.children[0].classList.add("in");
+                                        window.onclick = function (e) {
+                                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+                                            }
+                                        };
+                                    }, 1);
+                                } else {
+                                    //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                    document.body.lastChild.children[1].classList.remove("in");
+                                    document.body.lastChild.children[0].classList.remove("in");
+                                    setTimeout(function () {
+                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                        document.body.removeChild(document.body.lastChild);
+                                        window.onclick = null;
+                                    }, 100);
+                                }
+                                                }
+                                            </script>
                                         <%}%>
                                         <a href="request?type=delete&id=<%=arr.get(i).getId()%>" class="delete" data-toggle="modal">
                                             <i class="fas fa-trash" data-toggle="tooltip" title="Delete"></i>

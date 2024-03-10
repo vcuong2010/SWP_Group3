@@ -21,6 +21,23 @@ import model.Skill;
  * @author TGDD
  */
 public class RequestDAO {
+    
+    
+    public static int getSlots(int id) {
+        int cash = 0;
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT Count([SlotID]) as Count FROM [RequestSlot] WHERE [RequestID] = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            cash = rs.getInt("Count");
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return cash;
+    }
 
     public static boolean deleteAll(int uid) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
@@ -115,13 +132,23 @@ public class RequestDAO {
         try {
             PreparedStatement ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] - ((SELECT Count([SlotID]) FROM [RequestSlot] WHERE [RequestID] = ?) * (SELECT [CashPerSlot] FROM [CV] WHERE [CvID] = (SELECT [CvID] FROM [Mentor] WHERE [UserID] = ?))) WHERE [UserID] = ?");
             ps.setInt(1, rid);
-            ps.setInt(1, oid);
-            ps.setInt(1, uid);
+            ps.setInt(2, oid);
+            ps.setInt(3, uid);
+            ps.executeUpdate();
+            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Processing' WHERE [RequestID] = ?");
+            ps.setInt(1, rid);
             ps.executeUpdate();
             ps = dbo.prepareStatement("UPDATE [Slot] SET [SkillID] = (SELECT [SkillID] FROM [Request] WHERE [RequestID] = ? AND [UserID] = ?), MenteeID = (SELECT [SenderID] FROM [Request] WHERE [RequestID] = ? AND [UserID] = ?) WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?)");
             ps.setInt(1, rid);
             ps.setInt(2, oid);
             ps.setInt(3, rid);
+            ps.setInt(4, oid);
+            ps.setInt(5, rid);
+            ps.executeUpdate();
+            ps = dbo.prepareStatement("INSERT INTO [Payment] ([Status], [Balance], [UserID], [ReceiverID], [RequestID]) VALUES (N'Sent', ((SELECT Count([SlotID]) FROM [RequestSlot] WHERE [RequestID] = ?) * (SELECT [CashPerSlot] FROM [CV] WHERE [CvID] = (SELECT [CvID] FROM [Mentor] WHERE [UserID] = ?))), ?, ?, ?)");
+            ps.setInt(1, rid);
+            ps.setInt(2, oid);
+            ps.setInt(3, uid);
             ps.setInt(4, oid);
             ps.setInt(5, rid);
             int k = ps.executeUpdate();

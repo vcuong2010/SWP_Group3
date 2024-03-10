@@ -20,6 +20,22 @@ import model.MentorStatistic;
  */
 public class MentorDAO {
     
+    public static int getSlotCash(int id) {
+        int cash = 0;
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT [CashPerSlot] FROM [CV] WHERE [CvID] = (SELECT [CvID] FROM [Mentor] WHERE [UserID] = ?)");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            cash = rs.getInt("CashPerSlot");
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return cash;
+    }
+    
     public static MentorStatistic getMentorStatistic(int id) {
         MentorStatistic ms = null;
         Connection dbo = DatabaseUtil.getConn();

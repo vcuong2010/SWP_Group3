@@ -81,6 +81,13 @@ public class ScheduleDAO {
                             ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
                             ps.setInt(1, sid);
                             ps.executeUpdate();
+                            ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] + (SELECT [Balance] FROM [Payment] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [Status] != N'Done') WHERE [UserID] = (SELECT [UserID] FROM [Request] WHERE [SlotID] = ?)");
+                            ps.setInt(1, sid);
+                            ps.setInt(2, sid);
+                            ps.executeUpdate();
+                            ps = dbo.prepareStatement("UPDATE [Payment] SET [Status] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?)");
+                            ps.setInt(1, sid);
+                            ps.executeUpdate();
                         }
                     } else {
                         dbo.close();
@@ -98,6 +105,13 @@ public class ScheduleDAO {
                         rs2.next();
                         if(rs2.getInt("NotDone") == 0) {
                             ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
+                            ps.setInt(1, sid);
+                            ps.executeUpdate();
+                            ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] + (SELECT [Balance] FROM [Payment] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [Status] != N'Done') WHERE [UserID] = (SELECT [UserID] FROM [Request] WHERE [SlotID] = ?)");
+                            ps.setInt(1, sid);
+                            ps.setInt(2, sid);
+                            ps.executeUpdate();
+                            ps = dbo.prepareStatement("UPDATE [Payment] SET [Status] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?)");
                             ps.setInt(1, sid);
                             ps.executeUpdate();
                         }

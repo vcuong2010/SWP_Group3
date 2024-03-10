@@ -210,6 +210,25 @@ public class RequestController extends HttpServlet {
                 response.sendRedirect("request");
                 return;
             }
+        }  else if(type != null && type.equalsIgnoreCase("pay")) {
+            User u = (User) request.getSession().getAttribute("User");
+            if (u == null || !u.getRole().equalsIgnoreCase("mentee")) {
+                response.sendRedirect("request");
+                return;
+            }
+            try {
+                int rid = Integer.parseInt(sid);
+                int uid = Integer.parseInt(request.getParameter("uid"));
+                int oid = Integer.parseInt(request.getParameter("oid"));
+                RequestDAO.payment(rid, oid, uid);
+                int slotCash = MentorDAO.getSlotCash(oid);
+                int slots = RequestDAO.getSlots(rid);
+                u.setWallet(u.getWallet() - (slotCash*slots));
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("request");
+                return;
+            }
         }
         response.sendRedirect("request");
     }
