@@ -581,7 +581,7 @@
                                     </div>
                                     <div class="fieldGroup changepass--fieldGroup">
                                         <p class="control-label">Giá thuê mỗi slot:</p>
-                                        <input type="number" name="cashPerSlot" min="1" required value="<%=cv.getCashPerSlot() == null ? "" : cv.getCashPerSlot()%>">
+                                        <input type="number" name="cashPerSlot" min="1" required value="<%=cv.getCashPerSlot()%>">
                                     </div>
                                     <div class="fieldGroup changepass--fieldGroup">
                                         <p class="control-label">Skills:</p>
