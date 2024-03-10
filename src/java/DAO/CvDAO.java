@@ -87,13 +87,14 @@ public class CvDAO {
         return null;
     }
     
-    public static boolean updateCV(int CvID, String ProfessionIntroduction, String ServiceDescription) throws Exception {
+    public static boolean updateCV(int CvID, String ProfessionIntroduction, String ServiceDescription, int CashPerSlot) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
-            PreparedStatement ps = dbo.prepareStatement("UPDATE [CV] SET [ProfessionIntroduction] = ?, [ServiceDescription] = ? WHERE [CvID] = ?");
+            PreparedStatement ps = dbo.prepareStatement("UPDATE [CV] SET [ProfessionIntroduction] = ?, [ServiceDescription] = ?, [CashPerSlot] = ? WHERE [CvID] = ?");
             ps.setString(1, ProfessionIntroduction);
             ps.setString(2, ServiceDescription);
-            ps.setInt(3, CvID);
+            ps.setInt(4, CashPerSlot);
+            ps.setInt(4, CvID);
             ps.executeUpdate();
             dbo.commit();
             dbo.close();

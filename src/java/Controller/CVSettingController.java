@@ -115,9 +115,11 @@ public class CVSettingController extends HttpServlet {
             } else if(type.equalsIgnoreCase("update")) {
                 String Profession = request.getParameter("profession");
                 String Service = request.getParameter("service");
-                if(Profession != null && !Profession.isEmpty() && Service != null && !Service.isEmpty()) {
+                String CashPerSlot = request.getParameter("cashPerSlot");
+                if(Profession != null && !Profession.isEmpty() && Service != null && !Service.isEmpty() && CashPerSlot != null && !CashPerSlot.isEmpty()) {
                 try {
-                    CvDAO.updateCV(m.getCvID(), Profession, Service);
+                    int CashPS = Integer.parseInt(CashPerSlot);
+                    CvDAO.updateCV(m.getCvID(), Profession, Service, CashPS);
                 } catch(Exception e) {
                     e.printStackTrace();
                 }

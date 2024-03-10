@@ -573,11 +573,15 @@
                                     <input type="hidden" name="type" value="update">
                                     <div class="fieldGroup changepass--fieldGroup">
                                         <p class="control-label">Profession Introduction:</p>
-                                        <input type="text" name="profession" placeholder="" maxlength="5000" autocomplete="false" value="<%=cv.getProfessionIntroduction() == null ? "" : cv.getProfessionIntroduction()%>">
+                                        <input type="text" name="profession" placeholder="" required maxlength="255" autocomplete="false" value="<%=cv.getProfessionIntroduction() == null ? "" : cv.getProfessionIntroduction()%>">
                                     </div>
                                     <div class="fieldGroup changepass--fieldGroup">
                                         <p class="control-label">Service Description:</p>
-                                        <input type="text" name="service" placeholder="" maxlength="5000" autocomplete="false" value="<%=cv.getServiceDescription() == null ? "" : cv.getServiceDescription()%>">
+                                        <input type="text" name="service" placeholder="" required maxlength="255" autocomplete="false" value="<%=cv.getServiceDescription() == null ? "" : cv.getServiceDescription()%>">
+                                    </div>
+                                    <div class="fieldGroup changepass--fieldGroup">
+                                        <p class="control-label">Giá thuê mỗi slot:</p>
+                                        <input type="number" name="cashPerSlot" min="1" required value="<%=cv.getCashPerSlot() == null ? "" : cv.getCashPerSlot()%>">
                                     </div>
                                     <div class="fieldGroup changepass--fieldGroup">
                                         <p class="control-label">Skills:</p>
@@ -637,7 +641,7 @@
                         document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                         //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                         let modal = document.createElement('div');
-                        modal.innerHTML = '<div role="dialog"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal" style="display: block;"><div class="auth-modal modal-dialog"><div class="modal-content" role="document"><div class="modal-body"><div class="logo"><img alt="logo playerduo" style="border-radius: 20%;" src="images/logo.png"><h1>Happy Programming</h1></div><div class="content-main"><form method="post"><div class="fieldGroup "><input type="text" name="profession" placeholder="Profession Introduction" maxlength="5000" autocomplete="false" required value=""></div><div class="fieldGroup "><input type="text" name="service" placeholder="Service Description" required maxlength="5000" autocomplete="false" value=""></div><div class="fieldGroup" style="text-align: center;"><span>Chọn kĩ năng bạn dạy:</span></div><div style="margin: 10px 0 0;" class="fieldGroup"><select name="skills" style="height: 100px" required multiple><%for(int i = 0; i < skills.size(); i++) {%><option value="<%=skills.get(i).getId()%>"><%=skills.get(i).getName()%></option><%}%></select></div><div class="fieldGroup" style="text-align: center;"><input type="number" name="cash" step="1" min="1" placeholder="Giá Thuê Trên Slot"></div><button type="submit"><span>Tạo CV</span></button><input type="hidden" name="type" value="create"></form></div></div></div></div></div></div>';
+                        modal.innerHTML = '<div role="dialog"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal" style="display: block;"><div class="auth-modal modal-dialog"><div class="modal-content" role="document"><div class="modal-body"><div class="logo"><img alt="logo playerduo" style="border-radius: 20%;" src="images/logo.png"><h1>Happy Programming</h1></div><div class="content-main"><form method="post"><div class="fieldGroup "><input type="text" name="profession" placeholder="Profession Introduction" maxlength="255" autocomplete="false" required value=""></div><div class="fieldGroup "><input type="text" name="service" placeholder="Service Description" required maxlength="255" autocomplete="false" value=""></div><div class="fieldGroup" style="text-align: center;"><span>Chọn kĩ năng bạn dạy:</span></div><div style="margin: 10px 0 0;" class="fieldGroup"><select name="skills" style="height: 100px" required multiple><%for(int i = 0; i < skills.size(); i++) {%><option value="<%=skills.get(i).getId()%>"><%=skills.get(i).getName()%></option><%}%></select></div><div class="fieldGroup" style="text-align: center;"><input type="number" name="cash" step="1" min="1" placeholder="Giá Thuê Trên Slot"></div><button type="submit"><span>Tạo CV</span></button><input type="hidden" name="type" value="create"></form></div></div></div></div></div></div>';
                         document.body.appendChild(modal.firstChild);
                         setTimeout(function () {
                             document.body.lastChild.children[1].classList.add("in");
