@@ -201,14 +201,16 @@ public class ScheduleController extends HttpServlet {
                 String from = request.getParameter("fromDay");
                 String to = request.getParameter("toDay");
                 String[] hours = start.split(":");
-                java.util.Date fromDate = new java.util.Date(java.util.Date.parse(from));
-                java.util.Date toDate = new java.util.Date(java.util.Date.parse(to));
+                
+                try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date fromDate = formatter.parse(from);
+                java.util.Date toDate = formatter.parse(to);
                 Calendar c = Calendar.getInstance();
                 c.setTime(fromDate);
                 c.set(Calendar.HOUR, Integer.parseInt(hours[0]));
                 c.set(Calendar.MINUTE, Integer.parseInt(hours[1]));
                 c.set(Calendar.SECOND, 0);
-                try {
                 while(c.getTime().before(toDate)) {
                     if(weekdays.contains(c.get(Calendar.DAY_OF_WEEK))) {
                         int woy = ScheduleDAO.weekOfYear(c.getTime());

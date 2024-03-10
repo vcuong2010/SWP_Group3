@@ -73,7 +73,7 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
-                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
+                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [Status] != N'Reject' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
                         ps.setInt(1, sid);
                         ResultSet rs2 = ps.executeQuery();
                         rs2.next();
@@ -92,7 +92,7 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
-                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
+                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [Status] != N'Reject' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
                         ps.setInt(1, sid);
                         ResultSet rs2 = ps.executeQuery();
                         rs2.next();
