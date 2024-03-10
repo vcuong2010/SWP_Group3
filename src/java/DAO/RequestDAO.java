@@ -177,7 +177,7 @@ public class RequestDAO {
         Connection dbo = DatabaseUtil.getConn();
         ArrayList<Request> arr = new ArrayList();
         try {
-            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request] WHERE [UserID] = ?");
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request] WHERE [UserID] = ? AND [DeadlineTime] > GETDATE()");
             ps.setInt(1, uid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -215,7 +215,7 @@ public class RequestDAO {
         Connection dbo = DatabaseUtil.getConn();
         ArrayList<Request> arr = new ArrayList();
         try {
-            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request] WHERE [SenderID] = ?");
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request] WHERE [SenderID] = ? AND [DeadlineTime] > GETDATE()");
             ps.setInt(1, uid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

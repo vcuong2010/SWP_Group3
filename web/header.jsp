@@ -234,13 +234,13 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="wallet">
                                     <i class="fas fa-minus"></i>
                                     <span>Rút tiền</span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="wallet">
                                     <i class="fas fa-credit-card"></i>
                                     <span>Nạp Tiền</span>
                                 </a>
@@ -460,13 +460,13 @@
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="wallet">
                                     <i class="fas fa-minus"></i>
                                     <span>Rút tiền</span>
                                 </a>
                             </li>
                             <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="wallet">
                                     <i class="fas fa-credit-card"></i>
                                     <span>Nạp Tiền</span>
                                 </a>

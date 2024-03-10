@@ -818,7 +818,7 @@
                                             <td><%=mentors.get(m).getRequests()%></td>
                                             <td><%=mentors.get(m).getAcceptedRequest()%></td>
                                             <td>
-                                                <a href="mentor?id=<%=m.getId()%>&invite=true" class="delete" data-toggle="modal">
+                                                <a href="mentor?id=<%=m.getId()%>&invite=true&sid=<%=request.getParameter("id")%>" class="delete" data-toggle="modal">
                                             <i class="fas fa-user-plus" data-toggle="tooltip" title="Thuê"></i>
                                         </a>
                                             </td>

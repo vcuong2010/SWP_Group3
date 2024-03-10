@@ -87,6 +87,9 @@ public class LoginController extends HttpServlet {
             try {
                 User u = UserDAO.getUser(username, password);
                 if(u != null) {
+                    if(!u.isIsActive()) {
+                        throw new Exception("Tài khoản của bạn đã bị khóa bởi admin!");
+                    }
                     request.getSession().setAttribute("User", u);
                     if(remember != null) {
                         Cookie c = new Cookie("user", "User|"+username+"_Pass|"+password);

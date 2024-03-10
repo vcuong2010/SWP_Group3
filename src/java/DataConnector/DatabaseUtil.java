@@ -17,24 +17,22 @@ public class DatabaseUtil {
     static String dtbName = "SWP_Project";
     static String username = "sa";
     static String password = "12345678";
-    
+
     public static Connection getConn() {
         Connection conn = null;
 
         try {
             if (conn == null || conn.isClosed()) {
-                String connectionString = "jdbc:sqlserver://localhost;databaseName="+dtbName+";encrypt=true;trustServerCertificate=true";
+                String connectionString = "jdbc:sqlserver://localhost;databaseName=" + dtbName + ";encrypt=true;trustServerCertificate=true";
                 String driverName = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
-                try {
-                    Class.forName(driverName);
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                Class.forName(driverName);
                 conn = DriverManager.getConnection(connectionString, username, password);
                 conn.setAutoCommit(false);
             }
         } catch (SQLException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
 

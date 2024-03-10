@@ -19,6 +19,23 @@ import model.User;
  */
 public class UserDAO {
     
+    public static int getWallet(int uid)  throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        int wallet = 0;
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT [wallet] FROM [User] WHERE [UserID] = ?");
+            ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            wallet = rs.getInt("wallet");
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbo.close();
+        }
+        return wallet;
+    }
+    
     public static boolean verifyAccount(int uid, String email) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
@@ -322,6 +339,16 @@ public class UserDAO {
         e.printStackTrace();
         }
         return null;
+    }
+    
+    public static void updateMoney(int uid, int balance) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = ? WHERE [UserID] = ?");
+        ps.setInt(1, balance);
+        ps.setInt(2, uid);
+        ps.executeUpdate();
+        dbo.commit();
+        dbo.close();
     }
     
     public static User register(String username, String password, String email, String phone, String address, String role, String gender, String fullname, String dob) throws Exception {

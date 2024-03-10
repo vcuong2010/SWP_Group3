@@ -107,8 +107,10 @@ public class CVSettingController extends HttpServlet {
                 String Profession = request.getParameter("profession");
                 String Service = request.getParameter("service");
                 String[] skills = request.getParameterValues("skills");
+                String sCash = request.getParameter("cash");
+                int cash = Integer.parseInt(sCash);
                 try {
-                    CvDAO.createCV(u.getId(), Profession, Service, skills);
+                    CvDAO.createCV(u.getId(), Profession, Service, skills, cash);
                 } catch(Exception e) {}
             } else if(type.equalsIgnoreCase("update")) {
                 String Profession = request.getParameter("profession");

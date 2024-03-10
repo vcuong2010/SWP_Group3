@@ -198,29 +198,26 @@ public class ScheduleController extends HttpServlet {
                         }
                     }
                 }
-                String sweek = request.getParameter("weekTime");
-                int week = Integer.parseInt(sweek);
+                String from = request.getParameter("fromDay");
+                String to = request.getParameter("toDay");
                 String[] hours = start.split(":");
-                java.util.Date today = new java.util.Date();
-                for (int i = 0; i < weekdays.size(); i++) {
-                    Calendar c = Calendar.getInstance();
-                    c.setTime(today);
-                    try {
-                        c = ScheduleDAO.FirstDateOfWeek(c.get(Calendar.YEAR), ScheduleDAO.weekOfYear(today));
-                        c.set(Calendar.HOUR, Integer.parseInt(hours[0]));
-                        c.set(Calendar.MINUTE, Integer.parseInt(hours[1]));
-                        c.set(Calendar.SECOND, 0);
-                        while (c.get(Calendar.DAY_OF_WEEK) != weekdays.get(i)) {
-                            c.add(Calendar.DATE, 1);
-                        }
+                java.util.Date fromDate = new java.util.Date(java.util.Date.parse(from));
+                java.util.Date toDate = new java.util.Date(java.util.Date.parse(to));
+                Calendar c = Calendar.getInstance();
+                c.setTime(fromDate);
+                c.set(Calendar.HOUR, Integer.parseInt(hours[0]));
+                c.set(Calendar.MINUTE, Integer.parseInt(hours[1]));
+                c.set(Calendar.SECOND, 0);
+                try {
+                while(c.getTime().before(toDate)) {
+                    if(weekdays.contains(c.get(Calendar.DAY_OF_WEEK))) {
                         int woy = ScheduleDAO.weekOfYear(c.getTime());
-                        for (int j = 0; j < week; j++) {
-                            ScheduleDAO.addSlot(link, hour, c.getTime(), woy, c.get(Calendar.YEAR), u.getId());
-                            c.add(Calendar.DATE, 7);
-                            woy++;
-                        }
-                    } catch (Exception e) {
+                        ScheduleDAO.addSlot(link, hour, c.getTime(), woy, c.get(Calendar.YEAR), u.getId());
                     }
+                    c.add(Calendar.DATE, 1);
+                }
+                } catch(Exception e) {
+                    
                 }
             }
             try {

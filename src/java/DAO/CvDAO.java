@@ -18,12 +18,13 @@ import model.Skill;
  */
 public class CvDAO {
     
-    public static boolean createCV(int userID, String ProfessionIntroduction, String ServiceDescription, String[] skills) throws Exception {
+    public static boolean createCV(int userID, String ProfessionIntroduction, String ServiceDescription, String[] skills, int cash) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
-            PreparedStatement ps = dbo.prepareStatement("INSERT INTO [CV] ([ProfessionIntroduction], [ServiceDescription]) VALUES (?, ?)");
+            PreparedStatement ps = dbo.prepareStatement("INSERT INTO [CV] ([ProfessionIntroduction], [ServiceDescription], [CashPerSlot]) VALUES (?, ?, ?)");
             ps.setString(1, ProfessionIntroduction);
             ps.setString(2, ServiceDescription);
+            ps.setInt(3, cash);
             ps.executeUpdate();
             dbo.commit();
             ps = dbo.prepareStatement("SELECT TOP (1) [CvID] FROM [CV] ORDER BY [CvID] DESC");

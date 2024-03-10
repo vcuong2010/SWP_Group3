@@ -489,7 +489,6 @@
                                                         <div class="title-sub  panel-title">
                                                             <a aria-expanded="false" class="collapsed" role="button" href="#">
                                                                 <i class="fas fa-history"></i> Lịch sử giao dịch 
-                                                                <i class="fas fa-chevron-right"></i>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -638,7 +637,7 @@
                         document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                         //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                         let modal = document.createElement('div');
-                        modal.innerHTML = '<div role="dialog"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal" style="display: block;"><div class="auth-modal modal-dialog"><div class="modal-content" role="document"><div class="modal-body"><div class="logo"><img alt="logo playerduo" style="border-radius: 20%;" src="images/logo.png"><h1>Happy Programming</h1></div><div class="content-main"><form method="post"><div class="fieldGroup "><input type="text" name="profession" placeholder="Profession Introduction" maxlength="5000" autocomplete="false" required value=""></div><div class="fieldGroup "><input type="text" name="service" placeholder="Service Description" required maxlength="5000" autocomplete="false" value=""></div><div class="fieldGroup" style="text-align: center;"><span>Chọn kĩ năng bạn dạy:</span></div><div style="margin: 10px 0 0;" class="fieldGroup"><select name="skills" style="height: 100px" required multiple><%for(int i = 0; i < skills.size(); i++) {%><option value="<%=skills.get(i).getId()%>"><%=skills.get(i).getName()%></option><%}%></select></div><button type="submit"><span>Tạo CV</span></button><input type="hidden" name="type" value="create"></form></div></div></div></div></div></div>';
+                        modal.innerHTML = '<div role="dialog"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal" style="display: block;"><div class="auth-modal modal-dialog"><div class="modal-content" role="document"><div class="modal-body"><div class="logo"><img alt="logo playerduo" style="border-radius: 20%;" src="images/logo.png"><h1>Happy Programming</h1></div><div class="content-main"><form method="post"><div class="fieldGroup "><input type="text" name="profession" placeholder="Profession Introduction" maxlength="5000" autocomplete="false" required value=""></div><div class="fieldGroup "><input type="text" name="service" placeholder="Service Description" required maxlength="5000" autocomplete="false" value=""></div><div class="fieldGroup" style="text-align: center;"><span>Chọn kĩ năng bạn dạy:</span></div><div style="margin: 10px 0 0;" class="fieldGroup"><select name="skills" style="height: 100px" required multiple><%for(int i = 0; i < skills.size(); i++) {%><option value="<%=skills.get(i).getId()%>"><%=skills.get(i).getName()%></option><%}%></select></div><div class="fieldGroup" style="text-align: center;"><input type="number" name="cash" step="1" min="1" placeholder="Giá Thuê Trên Slot"></div><button type="submit"><span>Tạo CV</span></button><input type="hidden" name="type" value="create"></form></div></div></div></div></div></div>';
                         document.body.appendChild(modal.firstChild);
                         setTimeout(function () {
                             document.body.lastChild.children[1].classList.add("in");
@@ -674,6 +673,12 @@
             };
             document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
                 window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
+                window.location.href = "wallet";
             };
             <%}%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {

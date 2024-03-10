@@ -18,6 +18,8 @@ import model.Skill;
  */
 public class AuthorizeDAO {
     
+    private AuthorizeDAO() {}
+    
     public static void loadAuthorizeMap() throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         try {
@@ -41,6 +43,7 @@ public class AuthorizeDAO {
             ps.setString(2, path);
             ps.executeUpdate();
             dbo.commit();
+            ps.close();
         } catch(Exception e) {
             e.printStackTrace();
         } finally {

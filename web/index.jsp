@@ -474,7 +474,7 @@
 
     <body style="padding-top: 66px; display:flex" >
         <%
-            ArrayList<Mentor> Marr = (ArrayList)request.getAttribute("Mentors");
+            ArrayList<Mentor> Marr = (ArrayList)request.getAttribute("mentors");
             ArrayList<Skill> arr = (ArrayList<Skill>)request.getAttribute("skills");
         %>
         <%@include file="header.jsp" %>
@@ -508,34 +508,90 @@
                 <!-- ======= About Section ======= -->
                 <section id="about" class="about">
                     <div class="filter-player  hidden">
-                        <select class="form-control gender ">
+                        <select class="form-control gender">
                             <option value="">Giới tính</option>
-                            <option value="female">Nữ</option>
-                            <option value="male">Nam</option>
+                            <option value="female" <%=request.getParameter("gender") == null ? "" : (request.getParameter("gender").equals("female") ? "selected" : "")%>>Nữ</option>
+                            <option value="male" <%=request.getParameter("gender") == null ? "" : (request.getParameter("gender").equals("male") ? "selected" : "")%>>Nam</option>
                         </select>
-                        <select class="form-control type ">
-                            <option disable selected>Thể loại</option>
-                            <option value="new">Người mới</option>
-                            <option value="top">Top</option>
-                            <option value="other">Other</option>
+                        <select class="form-control skill">
+                            <% int sid = -1;
+                                try {
+                                    if(request.getParameter("skill") != null) {
+                                        sid = Integer.parseInt(request.getParameter("skill"));
+                                    }
+                                } catch(Exception e) {}
+                            %>
+                            <option disable value="" selected>Skill</option><%for(int i = 0; i < arr.size(); i++) { %> <option value="<%=arr.get(i).getId()%>" <%=(sid == arr.get(i).getId()) ? "selected" : ""%>><%=arr.get(i).getName()%> </option><%}%>
                         </select>
-                        <select class="form-control type ">
-                            <option disable selected>Skill</option><%for(int i = 0; i < arr.size(); i++) {%> <option value="<%=arr.get(i).getId()%>"><%=arr.get(i).getName()%> </option><%}%>
-                        </select>
-                        <div class="form-control ready false">Sẵn sàng</div>
-                        <input type="text" class="form-control city" placeholder="Sống tại" value="">
-                        <input type="text" class="form-control name" placeholder="Tên Mentor" autocomplete="off" maxlength="32" value="">
+                        <div class="form-control ready <%=request.getParameter("ready") == null ? "check" : (request.getParameter("ready").equalsIgnoreCase("false") ? "false" : "check")%>">Sẵn sàng</div>
+                        <input type="text" class="form-control city" placeholder="Sống tại" value="<%=request.getParameter("city") == null ? "" : request.getParameter("city")%>">
+                        <input type="text" class="form-control name" placeholder="Tên Mentor" autocomplete="off" maxlength="32" value="<%=request.getParameter("name") == null ? "" : request.getParameter("name")%>">
                         <button type="button" class="form-control btn-filter btn btn-default">
                             <i class="fa fa-search"></i> Tìm kiếm
                         </button>
+                        <script>
+                            var ready = document.getElementsByClassName('form-control ready')[0];
+                            var gender = document.getElementsByClassName('form-control gender')[0];
+                            var skill = document.getElementsByClassName('form-control skill')[0];
+                            var city = document.getElementsByClassName('form-control city')[0];
+                            ready.onclick = function() {
+                                if(this.classList.contains("false")) {
+                                    this.classList.remove("false");
+                                    this.classList.add("check");
+                                } else {
+                                    this.classList.remove("check");
+                                    this.classList.add("false");
+                                }
+                            }
+                            document.getElementsByClassName('form-control btn-filter btn btn-default')[0].onclick = function() {
+                                var rd = !ready.classList.contains("false");
+                                var name = document.getElementsByClassName('form-control name')[0].value;
+                                var loc = "index?";
+                                var filter = 0;
+                                if(city.value) {
+                                    loc += "city=" + city.value;
+                                    filter++;
+                                }
+                                if(name) {
+                                    if(filter > 0) {
+                                        loc += "&";
+                                    }
+                                    loc += "name=" + name;
+                                    filter++;
+                                }
+                                if(rd) {
+                                    if(filter > 0) {
+                                        loc += "&";
+                                    }
+                                    loc += "ready=" + rd;
+                                    filter++;
+                                }
+                                if(skill.selectedIndex !== 0) {
+                                    if(filter > 0) {
+                                        loc += "&";
+                                    }
+                                    loc += "skill=" + skill.options[skill.selectedIndex].value;
+                                    filter++;
+                                }
+                                if(gender.selectedIndex !== 0) {
+                                    if(filter > 0) {
+                                        loc += "&";
+                                    }
+                                    loc += "gender=" + gender.options[gender.selectedIndex].value;
+                                    filter++;
+                                }
+                                window.location.href = loc;
+                            }
+                        </script>
                     </div>
                     <div class="list-player">
                         <div class="box vip-player">
                             <header class="title-header vip">
-                                <h5 class="title-header-left">Skills</h5>
+                                <h5 class="title-header-left"><%=Marr == null ? "Skills" : "Mentors"%></h5>
                             </header>
                             <div class="card-player row">
-                                <%for(int i = 0; i < arr.size(); i++) {%>
+                                <%  if(Marr == null) {
+                                    for(int i = 0; i < (arr.size() > 14 ? 14 : arr.size()); i++) {%>
                                 <div class="col-md-3">
                                     <div class="player-information-card-wrap">
                                         <div class="player-avatar">
@@ -569,6 +625,27 @@
                                         </a>
                                     </div>
                                 </div>
+                                <% } else {
+                                    for(int i = 0; i < Marr.size(); i++) {%>
+                                <div class="col-md-3">
+                                    <div class="player-information-card-wrap">
+                                        <div class="player-avatar">
+                                            <a target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>">
+                                                <img src="<%=Marr.get(i).getAvatar() != null ? Marr.get(i).getAvatar() : "images/no-image.jpg"%>" class="" alt="PD" id="avt-img-reponsiver">
+                                            </a>
+                                        </div>
+                                        <a target="_blank" class="player-information" href="mentor?id=<%=Marr.get(i).getId()%>">
+                                            <h3 class="player-name">
+                                                <span style="font-weight: 700;color: #000;" target="_blank" href="mentor?id=<%=Marr.get(i).getId()%>"><%=Marr.get(i).getFullname() != null ? Marr.get(i).getFullname() : ""%> </span>
+                                                <i class="fas fa-check-circle kyc" aria-hidden="true"></i>
+                                                <div class="player-status ready"></div>
+                                            </h3>
+                                            <p class="player-title"><%=Marr.get(i).getDescription() != null ? Marr.get(i).getDescription() : ""%> </p>
+                                        </a>
+                                    </div>
+                                </div>
+                                <%}}
+                                %>
                             </div>
                         </div>
                     </div>

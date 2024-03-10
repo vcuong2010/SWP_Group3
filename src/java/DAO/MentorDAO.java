@@ -25,7 +25,7 @@ public class MentorDAO {
         Connection dbo = DatabaseUtil.getConn();
         try {
             PreparedStatement ps = dbo.prepareStatement("  SELECT Count([RequestID]) as TotalRequest, \n" +
-"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Accept' OR [RequestStatus] = N'Processing' OR [RequestStatus] = N'Done') as TotalAccepted, \n" +
+"  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND ([RequestStatus] = N'Accept' OR [RequestStatus] = N'Processing' OR [RequestStatus] = N'Done')) as TotalAccepted, \n" +
 "  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Reject') as TotalRejected, \n" +
 "  (SELECT AVG(Cast([noStar] as Float)) FROM [Rating] WHERE [MentorID] = ?) as Rating, \n" +
 "  (SELECT Count([RequestID]) FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = N'Done') as TotalDone \n" +
@@ -93,7 +93,7 @@ public class MentorDAO {
         Connection dbo = DatabaseUtil.getConn();
         HashMap<Mentor, MentorDetail> arr = new HashMap();
         try {
-            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [UserID] in (SELECT [MentorID] FROM [MentorSkills] WHERE [SkillID] = ?)");
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [UserID] in (SELECT [MentorID] FROM [MentorSkills] WHERE [SkillID] = ?) AND (SELECT [activeStatus] FROM [User] WHERE [UserID] = [Mentor].[UserID]) = 1");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -106,7 +106,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [accept]  FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done' OR [RequestStatus] = 'In Progress'");
+                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [accept]  FROM [Request] WHERE [UserID] = ? AND ([RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done' OR [RequestStatus] = 'Processing')");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 int accept = 0;
@@ -115,7 +115,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [done]  FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done'");
+                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [done]  FROM [Request] WHERE [UserID] = ? AND ([RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done')");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 int done = 0;
@@ -157,7 +157,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                MentorDetail md = new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? ((accept / 100) == 0 ? 0 : (done / (accept / 100))) : 0), account, profession, active);
+                MentorDetail md = new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? ((accept) == 0 ? 0 : (int)((float)done / (float)(accept / 100))) : 0), account, profession, active);
                 md.setRequests(request);
                 arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), md);
             }
@@ -188,6 +188,51 @@ public class MentorDAO {
         return arr;
     }
     
+    public static ArrayList<Mentor> searchMentor(String name, String city, String skill, String gender, String ready) throws Exception {
+        ArrayList<Mentor> arr = new ArrayList();
+        String sql = "SELECT [Mentor].[UserID] ,[Description] ,[CvID] ,[Achivement] ,[MentorStatus], [Avatar], [fullname] FROM [SWP_Project].[dbo].[Mentor] INNER JOIN [User] ON [User].[UserID] = [Mentor].[UserID] WHERE ";
+        int filter = 0;
+        if(name != null) {
+            sql += "([User].[username] LIKE N'%"+name+"%' OR [User].[fullname] LIKE N'%"+name+"%')";
+            filter++;
+        }
+        if(city != null) {
+            if(filter > 0) {
+                sql += " AND ";
+            }
+            sql += "([User].[address] LIKE N'%"+city+"%')";
+            filter++;
+        }
+        if(gender != null) {
+            if(filter > 0) {
+                sql += " AND ";
+            }
+            sql += "([User].[sex] = "+ (gender.equalsIgnoreCase("female") ? 1 : 0 ) +")";
+            filter++;
+        }
+        if(ready != null) {
+            if(filter > 0) {
+                sql += " AND ";
+            }
+            sql += "([Mentor].[MentorStatus] "+ (ready.equalsIgnoreCase("true") ? "= N'active'" : "!= N'active'" ) +")";
+            filter++;
+        }
+        if(skill != null) {
+            if(filter > 0) {
+                sql += " AND ";
+            }
+            sql += "(SELECT [SkillID] FROM [MentorSkills] WHERE [MentorID] = [Mentor].[UserID]) = " + skill;
+        }
+        Connection dbo = DatabaseUtil.getConn();
+        PreparedStatement ps = dbo.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            arr.add(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), rs.getString("fullname"), rs.getString("Avatar")));
+        }
+        dbo.close();
+        return arr;
+    }
+    
     public static HashMap<Mentor, MentorDetail> getAllWithDetail() throws Exception {
         Connection dbo = DatabaseUtil.getConn();
         HashMap<Mentor, MentorDetail> arr = new HashMap();
@@ -204,7 +249,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [accept]  FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done' OR [RequestStatus] = 'In Progress'");
+                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [accept]  FROM [Request] WHERE [UserID] = ? AND ([RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done' OR [RequestStatus] = 'Processing')");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 int accept = 0;
@@ -213,7 +258,7 @@ public class MentorDAO {
                 }
                 rs2.close();
                 ps2.close();
-                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [done]  FROM [Request] WHERE [UserID] = ? AND [RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done'");
+                ps2 = dbo.prepareStatement("SELECT Count([RequestID]) as [done]  FROM [Request] WHERE [UserID] = ? AND ([RequestStatus] = 'Confirmed' OR [RequestStatus] = 'Done')");
                 ps2.setInt(1, rs.getInt("UserID"));
                 rs2 = ps2.executeQuery();
                 int done = 0;
@@ -244,7 +289,7 @@ public class MentorDAO {
                 if(rs2.next()) {
                     profession = rs2.getString("ProfessionIntroduction");
                 }
-                arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (done / (accept / 100)) : 0), account, profession, active));
+                arr.put(new Mentor(rs.getString("MentorStatus"), rs.getString("Achivement"), rs.getString("Description"), rs.getInt("UserID"), rs.getInt("CvID"), fullname, avatar), new MentorDetail(rs.getInt("UserID"), rate, accept, (accept > 0 ? (int)((float)done / ((float)accept / 100)) : 0), account, profession, active));
             }
         } catch(Exception e) {
             e.printStackTrace();

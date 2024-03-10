@@ -492,7 +492,6 @@
                                                         <div class="title-sub  panel-title">
                                                             <a aria-expanded="false" class="collapsed" role="button" href="#">
                                                                 <i class="fas fa-history"></i> Lịch sử giao dịch 
-                                                                <i class="fas fa-chevron-right"></i>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -642,9 +641,21 @@
             document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
                 window.location.href = "statistic";
             };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
+                window.location.href = "wallet";
+            };
             <%} else {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "wallet";
             };
                 <%}%>
         </script>

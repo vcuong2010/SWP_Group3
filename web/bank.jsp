@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, DAO.FollowDAO" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic, model.MentorStatistic, model.Bank" %>
 <!doctype html>
 <html lang="en" translate="no">
     <head>
@@ -25,7 +25,7 @@
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="keywords" content="Playerduo, player duo, play dua, thuê gái chơi game">
         <meta name="description" content="PlayerDuo Cộng đồng game thủ lớn nhất Việt Nam, Cùng chơi với những game thủ chuyên nghiệp, hot streamer, hot girl và những người nổi tiếng.">
-        <title>Profile</title>
+        <title>Statistic of requests</title>
         <meta content="index,follow" name="googlebot">
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="robots" content="INDEX,FOLLOW">
@@ -412,9 +412,6 @@
     <body class="fixed-header" style="padding-top: 66px;">
         <div id="root">
             <%@include file="header.jsp" %>
-            <%
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            %>
             <div class="hidden">
                 <audio src="https://playerduo.net/static/media/notification-sound.805a8904.mp3"></audio>
                 <audio src="https://playerduo.net/static/media/notification-group-sound.4c7ac55b.mp3"></audio>
@@ -438,16 +435,16 @@
                                             <div class="panel-group">
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class=" active panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-user-tie"></i> Thông tin cá nhân
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="title-sub  panel-title">
+                                                        <div class=" title-sub  panel-title">
                                                             <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
+                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-down"></i>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -475,13 +472,13 @@
                                                     </div>
                                                 </div><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="active  panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
                                                 </div><%} else {%><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
@@ -495,48 +492,17 @@
                                                             </a>
                                                         </div>
                                                     </div>
-                                                    <div class="panel-collapse collapse">
-                                                        <div class="panel-body">
-                                                            <div class="panel-group">
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử donate</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử duo</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử tạo code</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Biến động số dư</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử mua thẻ</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="active panel-title">
                                                             <i class="fas fa-credit-card"></i> Thanh toán 
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-wallet"></i> Ví 
                                                         </div>
                                                     </div>
@@ -553,100 +519,49 @@
                     </div>
                     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                         <div class="aside">
-                            <div class="row">
-                                <div class="col-md-6 col-sm-12 col-xs-12 personalinfo">
-                                    <h3>Thông tin cá nhân</h3>
-                                    <div class="d-flex img-avatar">
-                                        <img src="<%=u.getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : u.getAvatar() %>" class="" alt="avatar" sizes="sm"> <div class="cropimg-avatar">
-                                            <button type="button">
-                                                <span> Thay Đổi <p>JPG, GIF or PNG, &lt;5 MB. </p>
-                                                </span>
-                                            </button>
-                                        </div>
+                            <%
+                                Bank bank = (Bank)request.getAttribute("Bank");
+                            %>
+                            <h3>Cài đặt thanh toán</h3>
+                            <form class="withdraw-form row" method="post">
+                                <div class="col-md-6">
+                                    <label>Cổng thanh toán:</label>
+                                    <select name="bankName" required="">
+                                        <option selected="" disabled="">--- Chọn ngân hàng ---</option>
+                                        <option value="Vietcombank" <%=(bank != null && bank.getBankType().contains("Vietcombank")) ? "selected" : ""%>>Vietcombank</option>
+                                        <option value="Vietinbank" <%=(bank != null && bank.getBankType().contains("Vietinbank")) ? "selected" : ""%>>Vietinbank</option>
+                                        <option value="BIDV" <%=(bank != null && bank.getBankType().contains("BIDV")) ? "selected" : ""%>>BIDV</option>
+                                        <option value="Sacombank" <%=(bank != null && bank.getBankType().contains("Sacombank")) ? "selected" : ""%>>Sacombank</option>
+                                        <option value="Á Châu" <%=(bank != null && bank.getBankType().contains("Á Châu")) ? "selected" : ""%>>Á Châu</option>
+                                        <option value="MBBank" <%=(bank != null && bank.getBankType().contains("MBBank")) ? "selected" : ""%>>MBBank</option>
+                                        <option value="Techcombank" <%=(bank != null && bank.getBankType().contains("Techcombank")) ? "selected" : ""%>>Techcombank</option>
+                                        <option value="DongA" <%=(bank != null && bank.getBankType().contains("DongA")) ? "selected" : ""%>>Đông Á</option>
+                                        <option value="VP bank" <%=(bank != null && bank.getBankType().contains("VP bank")) ? "selected" : ""%>>VP bank</option>
+                                        <option value="Eximbank" <%=(bank != null && bank.getBankType().contains("Eximbank")) ? "selected" : ""%>>Eximbank</option>
+                                        <option value="TP bank" <%=(bank != null && bank.getBankType().contains("TP bank")) ? "selected" : ""%>>TP bank</option>
+                                        <option value="Ocean bank" <%=(bank != null && bank.getBankType().contains("Ocean bank")) ? "selected" : ""%>>Ocean bank</option>
+                                        <option value="OCB" <%=(bank != null && bank.getBankType().contains("OCB")) ? "selected" : ""%>>OCB</option>
+                                        <option value="SHBank" <%=(bank != null && bank.getBankType().contains("SHBank")) ? "selected" : ""%>>SHBank</option>
+                                    </select>
+                                    <div class="fieldGroup ">
+                                        <p class="control-label">Chủ tài khoản:</p>
+                                        <input style="text-align: left" type="text" name="bankAccountName" required placeholder="Ví dụ: NGUYEN VAN A" maxlength="100" autocomplete="false" value="<%=bank != null ? bank.getBankName() : ""%>">
                                     </div>
-                                    <%if(u.getRole().equalsIgnoreCase("mentee")) {%>
-                                    <p class="control-label">Following: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.following(u.getId())%> Mentors</span></p>
+                                    <div class="fieldGroup ">
+                                        <p class="control-label">Số tài khoản:</p>
+                                        <input style="text-align: left" type="text" name="bankAccountNumber" required placeholder="Ví dụ: 0123456789" maxlength="100" autocomplete="false" value="<%=bank != null ? bank.getBankNo() : ""%>">
+                                    </div>
                                     <hr>
-                                    <% } else if(u.getRole().equalsIgnoreCase("mentor")) {%>
-                                    <p class="control-label">Follower: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.follower(u.getId())%> Mentees</span></p>
-                                    <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
-                                    <hr>
-                                    <% } %>
-                                    <form class="from-userinfo" action="profile" method="POST">
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Họ và tên</p>
-                                            <input type="text" name="fullname" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getFullname()%>">
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Số Điện Thoại</p>
-                                            <input type="text" name="sdt" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getPhone()%>">
-                                        </div>
-                                        <p class="control-label">Ngày sinh</p>
-                                        <div class="datefield">
-                                            <div class="react-datepicker-wrapper">
-                                                <div class="react-datepicker__input-container">
-                                                    <input type="date" class="example-custom-input" name="dob" value="<%=u.getDob()%>" />
-                                                </div>
-                                            </div>
-                                            <div></div>
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Địa Chỉ</p>
-                                            <input type="text" name="address" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getAddress()%>">
-                                        </div>
-                                        <p class="control-label">Giới tính</p>
-                                        <div class="d-flex">
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="male" <%=!u.isGender() ? "checked" : ""%>>Nam <span></span>
-                                            </label>
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="female" <%=u.isGender() ? "checked" : ""%>>Nữ <span></span>
-                                            </label>
-                                        </div>
-                                        <hr>
-                                        <button type="submit" class="btn-update">Cập nhật</button>
-                                    </form>
+                                    <button type="submit" class="btn-update">Cập nhật</button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
-            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "cv";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
-                window.location.href = "statistic";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
-                window.location.href = "bank";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
-                window.location.href = "wallet";
-            };
-            <%} else {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "statistic";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
-                window.location.href = "bank";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
-                window.location.href = "wallet";
-            };
-                <%}%>
-            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
-                window.location.href = "email";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
-                window.location.href = "setting";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
-                window.location.href = "profile";
-            };
+
             let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
             let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
             document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
@@ -689,31 +604,40 @@
                     return false;
                 }
             }
-            document.getElementsByClassName('cropimg-avatar')[0].onclick = function () {
-                let n = document.createElement("div");
-                n.innerHTML = '<form method="post" enctype="multipart/form-data"><div class="editor-avatar-section"><div><img width="387.5" height="387.5" class="editor-canvas" style="width: 310px; height: 310px;" src="https://files.playerduo.net/production/images/avatar31.png"></div><br><div class="box"><input name="avt" type="file" required style="max-width: 20em;"></div><br><button value="Save">Lưu</button><button value="Cancel">Huỷ bỏ</button></div></form>';
-                let img = n.getElementsByTagName('img')[0];
-                let inp = n.getElementsByTagName('input')[0];
-                inp.onchange = function (event) {
-                        var selectedFile = event.target.files[0];
-  var reader = new FileReader();
 
-  img.title = selectedFile.name;
-
-  reader.onload = function(event) {
-    img.src = event.target.result;
-  };
-
-            reader.readAsDataURL(selectedFile);
-                }
-                let cancel = n.getElementsByTagName('button')[1];
-                //let save = n.getElementsByTagName('button')[0];
-                cancel.onclick = function () {
-                    cancel.parentNode.parentNode.removeChild(cancel.parentNode);
-                }
-                document.getElementsByClassName('d-flex img-avatar')[0].appendChild(n.firstChild);
-            }
-
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "email";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "setting";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "profile";
+            };
+            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%}%>
         </script>
     </body>
 </html>

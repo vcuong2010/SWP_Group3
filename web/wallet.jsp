@@ -5,7 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, DAO.FollowDAO" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic, model.MentorStatistic, model.Bank" %>
 <!doctype html>
 <html lang="en" translate="no">
     <head>
@@ -25,7 +25,7 @@
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="keywords" content="Playerduo, player duo, play dua, thuê gái chơi game">
         <meta name="description" content="PlayerDuo Cộng đồng game thủ lớn nhất Việt Nam, Cùng chơi với những game thủ chuyên nghiệp, hot streamer, hot girl và những người nổi tiếng.">
-        <title>Profile</title>
+        <title>Statistic of requests</title>
         <meta content="index,follow" name="googlebot">
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="robots" content="INDEX,FOLLOW">
@@ -438,16 +438,16 @@
                                             <div class="panel-group">
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class=" active panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-user-tie"></i> Thông tin cá nhân
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="title-sub  panel-title">
+                                                        <div class=" title-sub  panel-title">
                                                             <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-right"></i>
+                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-down"></i>
                                                             </a>
                                                         </div>
                                                     </div>
@@ -475,13 +475,13 @@
                                                     </div>
                                                 </div><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="active  panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
                                                 </div><%} else {%><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
@@ -495,37 +495,6 @@
                                                             </a>
                                                         </div>
                                                     </div>
-                                                    <div class="panel-collapse collapse">
-                                                        <div class="panel-body">
-                                                            <div class="panel-group">
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử donate</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử duo</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử tạo code</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Biến động số dư</div>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="menu__setting--last panel panel-default">
-                                                                    <div class="panel-heading">
-                                                                        <div class="panel-title">Lịch sử mua thẻ</div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
@@ -536,7 +505,7 @@
                                                 </div>
                                                 <div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="  panel-title">
+                                                        <div class="active panel-title">
                                                             <i class="fas fa-wallet"></i> Ví 
                                                         </div>
                                                     </div>
@@ -553,100 +522,442 @@
                     </div>
                     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                         <div class="aside">
+                            <%
+                                Bank bank = (Bank)request.getAttribute("Bank");
+                                if(bank == null) {
+                            %>
+                            <h3>Bạn Cần Tạo Ví Trong Mục Thanh Toán Trước</h3>
+                            <%
+                                } else {
+                            %>
+                            <h3>Ví</h3>
                             <div class="row">
-                                <div class="col-md-6 col-sm-12 col-xs-12 personalinfo">
-                                    <h3>Thông tin cá nhân</h3>
-                                    <div class="d-flex img-avatar">
-                                        <img src="<%=u.getAvatar() == null ? "https://files.playerduo.net/production/images/avatar31.png" : u.getAvatar() %>" class="" alt="avatar" sizes="sm"> <div class="cropimg-avatar">
-                                            <button type="button">
-                                                <span> Thay Đổi <p>JPG, GIF or PNG, &lt;5 MB. </p>
-                                                </span>
-                                            </button>
-                                        </div>
+                                <div class="wallet col-sm-6">
+                                    <div class="col-sm-6 view">
+                                        <label>Số dư hiện tại</label>
+                                        <br>
+                                        <span><%=u.getWallet()%> đ</span>
                                     </div>
-                                    <%if(u.getRole().equalsIgnoreCase("mentee")) {%>
-                                    <p class="control-label">Following: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.following(u.getId())%> Mentors</span></p>
-                                    <hr>
-                                    <% } else if(u.getRole().equalsIgnoreCase("mentor")) {%>
-                                    <p class="control-label">Follower: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.follower(u.getId())%> Mentees</span></p>
-                                    <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
-                                    <hr>
-                                    <% } %>
-                                    <form class="from-userinfo" action="profile" method="POST">
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Họ và tên</p>
-                                            <input type="text" name="fullname" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getFullname()%>">
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Số Điện Thoại</p>
-                                            <input type="text" name="sdt" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getPhone()%>">
-                                        </div>
-                                        <p class="control-label">Ngày sinh</p>
-                                        <div class="datefield">
-                                            <div class="react-datepicker-wrapper">
-                                                <div class="react-datepicker__input-container">
-                                                    <input type="date" class="example-custom-input" name="dob" value="<%=u.getDob()%>" />
-                                                </div>
-                                            </div>
-                                            <div></div>
-                                        </div>
-                                        <div class="fieldGroup ">
-                                            <p class="control-label">Địa Chỉ</p>
-                                            <input type="text" name="address" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getAddress()%>">
-                                        </div>
-                                        <p class="control-label">Giới tính</p>
-                                        <div class="d-flex">
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="male" <%=!u.isGender() ? "checked" : ""%>>Nam <span></span>
+                                    <div class="col-sm-3 view-btn">
+                                        <button type="button" id="recharge">
+                                            <label>
+                                                <i class="fas fa-wallet"></i>
                                             </label>
-                                            <label class="gender--radio">
-                                                <input name="gender" type="radio" value="female" <%=u.isGender() ? "checked" : ""%>>Nữ <span></span>
+                                            <br>
+                                            <span style="font-weight: bold;">Nạp thêm</span>
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-3 view-btn">
+                                        <button type="button" id="withdraw">
+                                            <label>
+                                                <i class="fas fa-money-bill-alt"></i>
                                             </label>
-                                        </div>
-                                        <hr>
-                                        <button type="submit" class="btn-update">Cập nhật</button>
-                                    </form>
+                                            <br>
+                                            <span style="font-weight: bold;">Rút tiền</span>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                            <script>
+                                
+                                document.getElementById("recharge").onclick = function () {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        let pre = document.body.style.cssText;
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; ' + pre;
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade recharge-modal modal" style="display: block;">\n\
+<div class="modal-dialog">\n\
+<div class="modal-content" role="document">\n\
+<div class="modal-header">\n\
+  <button type="button" class="close">\n\
+    <span aria-hidden="true">×</span>\n\
+    <span class="sr-only">Close</span>\n\
+  </button>\n\
+  <h4 class="modal-title">\n\
+    <span>Rút Tiền</span>\n\
+  </h4>\n\
+</div>\n\
+  <div class="modal-body">\n\
+<div id="accordion-controlled-example" role="tablist" class="panel-group">\n\
+  <div class="panel panel-default">\n\
+    <div role="tab" id="accordion-controlled-example-heading-3" class="panel-heading">\n\
+      <div class="panel-title">\n\
+        <a aria-expanded="false" class="collapsed" aria-controls="accordion-controlled-example-body-3" role="button" href="#">\n\
+          <div class="option">\n\
+            <img src="https://files.playerduo.net/production/static-files/icon/atm-card.png" alt="PD" class="option-icon img-rounded">\n\
+            <div class="option-title">\n\
+              <p>\n\
+                <span>Thanh toán trực tiếp thẻ quốc tế</span>.\n\
+              </p>\n\
+              <p>\n\
+                <span>Nạp qua mastercard/visa</span>\n\
+              </p>\n\
+            </div>\n\
+          </div>\n\
+        </a>\n\
+      </div>\n\
+    </div>\n\
+    <div class="panel-collapse collapse" id="accordion-controlled-example-body-1" role="tabpanel" aria-labelledby="accordion-controlled-example-heading-1006" aria-expanded="false">\n\
+      <div class="option-content panel-body">\n\
+        <div>\n\
+          <div class="form-recharge row">\n\
+            <div class="col-xs-12">\n\
+              <form method="post">\n\
+                <div class="fieldGroup ">\n\
+                  <input type="hidden" name="type" value="INTCARD">\n\
+                  <input type="text" name="amount" placeholder="Số tiền muốn nạp (VND)" maxlength="5000" autocomplete="false" value="">\n\
+                </div>\n\
+                <p class="text-center">\n\
+                  <button type="submit" class="btn btn-success">\n\
+                    <span>Nạp tiền</span>\n\
+                  </button>\n\
+                </p>\n\
+              </form>\n\
+            </div>\n\
+          </div>\n\
+        </div>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+  <div class="panel panel-default">\n\
+    <div role="tab" id="accordion-controlled-example-heading-1006" class="panel-heading">\n\
+      <div class="panel-title">\n\
+        <a aria-expanded="false" class="collapsed" aria-controls="accordion-controlled-example-body-1006" role="button" href="#">\n\
+          <div class="option">\n\
+            <img src="https://files.playerduo.net/production/static-files/icon/qr_code.png" alt="PD" class="option-icon img-rounded">\n\
+            <div class="option-title">\n\
+              <p>\n\
+                <span>Thanh toán trực tiếp qua QR Code</span>\n\
+              </p>\n\
+              <p>\n\
+                <span>Quét mã QR thông qua VNPAY</span>\n\
+              </p>\n\
+            </div>\n\
+          </div>\n\
+        </a>\n\
+      </div>\n\
+    </div>\n\
+    <div class="panel-collapse collapse" id="accordion-controlled-example-body-2" role="tabpanel" aria-labelledby="accordion-controlled-example-heading-1006" aria-expanded="false">\n\
+      <div class="option-content panel-body">\n\
+        <div>\n\
+          <div class="form-recharge row">\n\
+            <div class="col-xs-12">\n\
+              <form method="post">\n\
+                <div class="fieldGroup ">\n\
+                  <input type="hidden" name="type" value="">\n\
+                  <input type="text" name="amount" placeholder="Số tiền muốn nạp (VND)" maxlength="5000" autocomplete="false" value="">\n\
+                </div>\n\
+                <p class="text-center">\n\
+                  <button type="submit" class="btn btn-success">\n\
+                    <span>Nạp tiền</span>\n\
+                  </button>\n\
+                </p>\n\
+              </form>\n\
+            </div>\n\
+          </div>\n\
+        </div>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+  <div class="panel panel-default">\n\
+    <div role="tab" id="accordion-controlled-example-heading-7" class="panel-heading">\n\
+      <div class="panel-title">\n\
+        <a aria-expanded="false" class="collapsed" aria-controls="accordion-controlled-example-body-7" role="button" href="#">\n\
+          <div class="option">\n\
+            <img src="https://files.playerduo.net/production/static-files/icon/atm-card.png" alt="PD" class="option-icon img-rounded">\n\
+            <div class="option-title">\n\
+              <p>\n\
+                <span>Nạp tiền qua thẻ ATM nội địa</span>\n\
+              </p>\n\
+              <p>\n\
+                <span>Nạp thông qua thẻ nội địa</span>\n\
+              </p>\n\
+            </div>\n\
+          </div>\n\
+        </a>\n\
+      </div>\n\
+    </div>\n\
+    <div class="panel-collapse collapse" id="accordion-controlled-example-body-3" role="tabpanel" aria-labelledby="accordion-controlled-example-heading-1006" aria-expanded="false">\n\
+      <div class="option-content panel-body">\n\
+        <div>\n\
+          <div class="form-recharge row">\n\
+            <div class="col-xs-12">\n\
+              <form method="post">\n\
+                <div class="fieldGroup ">\n\
+                  <input type="hidden" name="type" value="VNBANK">\n\
+                  <input type="text" name="amount" placeholder="Số tiền muốn nạp (VND)" maxlength="5000" autocomplete="false" value="">\n\
+                </div>\n\
+                <p class="text-center">\n\
+                  <button type="submit" class="btn btn-success">\n\
+                    <span>Nạp tiền</span>\n\
+                  </button>\n\
+                </p>\n\
+              </form>\n\
+            </div>\n\
+          </div>\n\
+        </div>\n\
+      </div>\n\
+    </div>\n\
+  </div>\n\
+</div>\n\
+  </div>\n\
+  <div class="modal-footer">\n\
+    <button type="button" class="btn btn-default">\n\
+      <span>Đóng</span>\n\
+    </button>\n\
+  </div>\n\
+</div>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        
+                                        
+                                        let parentDiv = document.getElementById('accordion-controlled-example');
+                                        parentDiv.children[0].children[0].onclick = function() {
+                                            let curr = document.getElementById('accordion-controlled-example-body-1');
+                                            if(!curr.classList.contains("in")) {
+                                               curr.classList.remove("collapse");
+                                                curr.classList.add("collapsing");
+                                                setTimeout(function() {
+                                                    curr.style = "height: 130px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                    curr.classList.add("in");
+                                                    curr.style = "";
+                                                }, 500);
+                                            } else {
+                                                curr.classList.remove("collapse");
+                                                curr.classList.remove("in");
+                                                curr.classList.add("collapsing");
+                                                curr.style = "height: 130px;";
+                                                setTimeout(function() {
+                                                    curr.style = "height: 0px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                }, 500);
+                                            }
+                                        }
+                                        
+                                        parentDiv.children[1].children[0].onclick = function() {
+                                            let curr = document.getElementById('accordion-controlled-example-body-2');
+                                            if(!curr.classList.contains("in")) {
+                                               curr.classList.remove("collapse");
+                                                curr.classList.add("collapsing");
+                                                setTimeout(function() {
+                                                    curr.style = "height: 130px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                    curr.classList.add("in");
+                                                    curr.style = "";
+                                                }, 500);
+                                            } else {
+                                                curr.classList.remove("collapse");
+                                                curr.classList.remove("in");
+                                                curr.classList.add("collapsing");
+                                                curr.style = "height: 130px;";
+                                                setTimeout(function() {
+                                                    curr.style = "height: 0px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                }, 500);
+                                            }
+                                        }
+                                        
+                                        parentDiv.children[2].children[0].onclick = function() {
+                                            let curr = document.getElementById('accordion-controlled-example-body-3');
+                                            if(!curr.classList.contains("in")) {
+                                               curr.classList.remove("collapse");
+                                                curr.classList.add("collapsing");
+                                                setTimeout(function() {
+                                                    curr.style = "height: 130px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                    curr.classList.add("in");
+                                                    curr.style = "";
+                                                }, 500);
+                                            } else {
+                                                curr.classList.remove("collapse");
+                                                curr.classList.remove("in");
+                                                curr.classList.add("collapsing");
+                                                curr.style = "height: 130px;";
+                                                setTimeout(function() {
+                                                    curr.style = "height: 0px;";
+                                                }, 1);
+                                                setTimeout(function() {
+                                                    curr.classList.remove("collapsing");
+                                                    curr.classList.add("collapse");
+                                                }, 500);
+                                            }
+                                        }
+                                        
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[1].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                                
+                                document.getElementById("withdraw").onclick = function () {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        let pre = document.body.style.cssText;
+                                        document.body.style = 'overflow: hidden; padding-right: 17px; ' + pre;
+                                        //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        let modal = document.createElement('div');
+                                        modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<div class="modal-dialog">\n\
+<div class="modal-content" role="document">\n\
+<div class="modal-header">\n\
+  <button type="button" class="close">\n\
+    <span aria-hidden="true">×</span>\n\
+    <span class="sr-only">Close</span>\n\
+  </button>\n\
+  <h4 class="modal-title">\n\
+    <span>Rút Tiền</span>\n\
+  </h4>\n\
+</div>\n\
+<form class="withdraw" method="post">\n\
+  <div class="modal-body">\n\
+  <div class="fieldGroup "><p class="control-label">Cổng thanh toán</p><input type="text" name="bankName" placeholder="" disabled="" maxlength="5000" autocomplete="false" value="<%=bank.getBankType()%>" style="font-size: 18px; text-align: left; height: 54px; padding: 16px 17px; border: 1px solid #e6eeee; color: #354052; border-radius: 5px;"></div><div class="fieldGroup "><p class="control-label">Chủ tài khoản</p><input type="text" name="bankAccountName" placeholder="" disabled="" maxlength="5000" autocomplete="false" value="<%=bank.getBankName()%>"  style="font-size: 18px; text-align: left; height: 54px; padding: 16px 17px; border: 1px solid #e6eeee; color: #354052; border-radius: 5px;"></div><div class="fieldGroup "><p class="control-label">Số tài khoản:</p><input type="text" name="bankAccountNumber" placeholder="" disabled="" maxlength="5000" autocomplete="false" value="<%=bank.getBankNo()%>"  style="font-size: 18px; text-align: left; height: 54px; padding: 16px 17px; border: 1px solid #e6eeee; color: #354052; border-radius: 5px;"></div><div class="fieldGroup "><p class="control-label">Số tiền có thể rút</p><input type="text" name="totalMoney" placeholder="" disabled="" maxlength="5000" autocomplete="false" value="<%=u.getWallet()%> VNĐ"  style="font-size: 18px; text-align: left; height: 54px; padding: 16px 17px; border: 1px solid #e6eeee; color: #354052; border-radius: 5px;"></div><div class="fieldGroup "><p class="control-label">Bạn muốn rút</p><input type="text" name="amount" placeholder="" maxlength="5000" autocomplete="false" value=""  style="font-size: 18px; text-align: left; height: 54px; padding: 16px 17px; border: 1px solid #e6eeee; color: #354052; border-radius: 5px;"></div><br>\n\
+  </div>\n\
+  <div class="modal-footer">\n\
+    <button type="submit" class="btn-update btn btn-default">\n\
+      <span>Rút Tiền</span>\n\
+    </button>\n\
+    <button type="button" class="btn btn-default">\n\
+      <span>Đóng</span>\n\
+    </button>\n\
+  </div>\n\
+</form>\n\
+</div>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                        document.body.appendChild(modal.firstChild);
+                                        let btn = document.body.lastChild.getElementsByTagName('button');
+                                        
+                                        btn[1].onclick = function () {
+                                            if(document.getElementsByName("amount")[0].value > <%=u.getWallet()%>) {
+                                                alert("Bạn chỉ có thể rút tối đa <%=u.getWallet()%>VND");
+                                            } else {
+                                                btn[1].form.submit();
+                                            }
+                                        }
+                                        btn[0].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        btn[2].onclick = function () {
+                                            document.body.lastChild.children[0].classList.remove("in");
+                                            document.body.lastChild.children[1].classList.remove("in");
+                                            setTimeout(function () {
+                                                document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                document.body.removeChild(document.body.lastChild);
+                                                window.onclick = null;
+                                            }, 100);
+
+                                        }
+                                        setTimeout(function () {
+                                            document.body.lastChild.children[1].classList.add("in");
+                                            document.body.lastChild.children[0].classList.add("in");
+                                            window.onclick = function (e) {
+                                                if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+                                                }
+                                            };
+                                        }, 1);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = (document.body.style.cssText).replace('overflow: hidden; padding-right: 17px; ', '');
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
+                            </script>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
-            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "cv";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
-                window.location.href = "statistic";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
-                window.location.href = "bank";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
-                window.location.href = "wallet";
-            };
-            <%} else {%>
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
-                window.location.href = "statistic";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
-                window.location.href = "bank";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
-                window.location.href = "wallet";
-            };
-                <%}%>
-            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
-                window.location.href = "email";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
-                window.location.href = "setting";
-            };
-            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
-                window.location.href = "profile";
-            };
+
             let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
             let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
             document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
@@ -689,31 +1000,40 @@
                     return false;
                 }
             }
-            document.getElementsByClassName('cropimg-avatar')[0].onclick = function () {
-                let n = document.createElement("div");
-                n.innerHTML = '<form method="post" enctype="multipart/form-data"><div class="editor-avatar-section"><div><img width="387.5" height="387.5" class="editor-canvas" style="width: 310px; height: 310px;" src="https://files.playerduo.net/production/images/avatar31.png"></div><br><div class="box"><input name="avt" type="file" required style="max-width: 20em;"></div><br><button value="Save">Lưu</button><button value="Cancel">Huỷ bỏ</button></div></form>';
-                let img = n.getElementsByTagName('img')[0];
-                let inp = n.getElementsByTagName('input')[0];
-                inp.onchange = function (event) {
-                        var selectedFile = event.target.files[0];
-  var reader = new FileReader();
 
-  img.title = selectedFile.name;
-
-  reader.onload = function(event) {
-    img.src = event.target.result;
-  };
-
-            reader.readAsDataURL(selectedFile);
-                }
-                let cancel = n.getElementsByTagName('button')[1];
-                //let save = n.getElementsByTagName('button')[0];
-                cancel.onclick = function () {
-                    cancel.parentNode.parentNode.removeChild(cancel.parentNode);
-                }
-                document.getElementsByClassName('d-flex img-avatar')[0].appendChild(n.firstChild);
-            }
-
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "email";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "setting";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "profile";
+            };
+            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%}%>
         </script>
     </body>
 </html>

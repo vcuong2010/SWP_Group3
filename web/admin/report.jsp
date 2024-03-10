@@ -881,7 +881,7 @@
                                     <option value="Solved">Solved</option>
                                     <option value="Pending">Pending</option>
                             </select>
-                            <input id="filter"  type="submit" value="filter" style="margin-left: 10px; width: 10%; min-height: 20px;">
+                            <input id="filter"  type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
                         </form>
                         <script>
                             document.getElementById("filter").onclick = function() {

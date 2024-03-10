@@ -601,7 +601,8 @@
                                         let hidden = modal.querySelectorAll("tr[class=hidden]");
                                         let datetime = modal.querySelector("input[type=datetime-local]");
                                         datetime.setAttribute("type", "time");
-                                        document.getElementsByName("weekTime")[0].setAttribute("required", "true");
+                                        document.getElementsByName("fromDay")[0].setAttribute("required", "true");
+                                        document.getElementsByName("toDay")[0].setAttribute("required", "true");
                                         for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "unhidden";
                                         }
@@ -609,7 +610,8 @@
                                         let hidden = modal.querySelectorAll("tr[class=unhidden]");
                                         let datetime = modal.querySelector("input[type=time]");
                                         datetime.setAttribute("type", "datetime-local");
-                                        document.getElementsByName("weekTime")[0].removeAttribute("required");
+                                        document.getElementsByName("fromDay")[0].removeAttribute("required");
+                                        document.getElementsByName("toDay")[0].removeAttribute("required");
                                         for (let i = 0; i < hidden.length; i++) {
                                             hidden[i].classList = "hidden";
                                         }
@@ -690,12 +692,12 @@
                 <span>Lịch học</span>:\n\
               </td>\n\
               <td>\n\
-                <select id="schedule" name="type" required onchange="changeType(this)"><option selected value="byDay">Theo Ngày Cụ Thể</option><option value="byWeek">Theo Ngày Trong Tuần</option></select>\n\
+                <select id="schedule" name="type" required onchange="changeType(this)"><option value="byDay">Theo Ngày Cụ Thể</option><option selected value="byWeek">Theo Ngày Trong Tuần</option></select>\n\
               </td>\n\
             </tr>\n\
             <tr>\n\
               <td>\n\
-                <span>Thời gian bắt đầu</span>:\n\
+                <span>Thời gian bắt đầu slot học</span>:\n\
               </td>\n\
               <td>\n\
                 <input placeholder="Chọn giờ bắt đầu" required name="start" type="datetime-local" class="form-control"/>\n\
@@ -703,10 +705,10 @@
             </tr>\n\
             <tr>\n\
               <td>\n\
-                <span>Số giờ học</span>:\n\
+                <span>Số giờ dạy</span>:\n\
               </td>\n\
               <td>\n\
-                <input placeholder="Nhập số giờ học" required name="hour" step="0.01" min="0.1" type="number" class="form-control"/>\n\
+                <input placeholder="Nhập số giờ dạy" required name="hour" step="0.01" min="0.1" type="number" class="form-control"/>\n\
               </td>\n\
             </tr>\n\
             <tr class="hidden">\n\
@@ -725,10 +727,11 @@
             </tr>\n\
             <tr class="hidden">\n\
               <td>\n\
-                <span>Số Tuần</span>:\n\
+                <span>Thời gian thực hiện</span>:\n\
               </td>\n\
               <td>\n\
-                <input placeholder="Nhập số tuần" name="weekTime" step="1" min="1" type="number" class="form-control"/>\n\
+                <input placeholder="Chọn ngày bắt đầu" name="fromDay" required type="date" style="max-width: 50%;float: left;" class="form-control"/>\n\
+                <input placeholder="Chọn ngày kết thúc" name="toDay" required type="date" style="max-width: 50%;float: left;" class="form-control"/>\n\
               </td>\n\
             </tr>\n\
           </tbody>\n\
@@ -751,6 +754,34 @@
                                         let dateonly = date.toLocaleString().split(",")[0].split("/");
                                         modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
+                                        var fromDate = document.querySelector("input[name=fromDay]");
+                                        var toDate = document.querySelector("input[name=toDay]");
+                                        fromDate.min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
+                                        toDate.min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
+                                        fromDate.onchange = function(e) {
+                                            if(toDate.value) {
+                                                if(fromDate.value >= toDate.value) {
+                                                    alert("Ngày bắt đầu phải trước ngày kết thúc");
+                                                    fromDate.value = null;
+                                                }
+                                            }
+                                        }
+                                        toDate.onchange = function(e) {
+                                            if(fromDate.value) {
+                                                if(fromDate.value >= toDate.value) {
+                                                    alert("Ngày bắt đầu phải trước ngày kết thúc");
+                                                    toDate.value = null;
+                                                }
+                                            }
+                                        }
+                                        let hidden = document.querySelectorAll("tr[class=hidden]");
+                                        let datetime = document.querySelector("input[type=datetime-local]");
+                                        datetime.setAttribute("type", "time");
+                                        document.getElementsByName("fromDay")[0].setAttribute("required", "true");
+                                        document.getElementsByName("toDay")[0].setAttribute("required", "true");
+                                        for (let i = 0; i < hidden.length; i++) {
+                                            hidden[i].classList = "unhidden";
+                                        }
                                         let btn = document.body.lastChild.getElementsByTagName('button');
                                         btn[0].onclick = function () {
                                             document.body.lastChild.children[0].classList.remove("in");

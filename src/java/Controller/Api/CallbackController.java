@@ -2,11 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package Controller;
+package Controller.Api;
 
-import Service.AuthorizationService;
-import DAO.MentorDAO;
-import DAO.SkillDAO;
+import DAO.BankDAO;
 import DAO.UserDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,18 +13,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import model.Mentee;
-import model.Mentor;
-import model.Skill;
 import model.User;
 
 /**
  *
  * @author TGDD
  */
-@WebServlet(name = "IndexController", urlPatterns = {"/index"})
-public class IndexController extends HttpServlet {
+@WebServlet(name = "CallbackController", urlPatterns = {"/callback"})
+public class CallbackController extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,43 +33,41 @@ public class IndexController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            if (!AuthorizationService.gI().Authorization(request, response)) {
-                return;
-            }
-            if (request.getParameter("name") != null || request.getParameter("city") != null || request.getParameter("ready") != null || request.getParameter("gender") != null || request.getParameter("skill") != null) {
-                ArrayList<Mentor> arr = MentorDAO.searchMentor(request.getParameter("name"), request.getParameter("city"), request.getParameter("skill"), request.getParameter("gender"), request.getParameter("ready"));
-                request.setAttribute("mentors", arr);
-            }
-                ArrayList<Skill> a = SkillDAO.getAll();
-                for (int i = 0; i < a.size(); i++) {
-                    for (int j = i; j < a.size(); j++) {
-                        if (a.get(i).getName().compareToIgnoreCase(a.get(j).getName()) > 0) {
-                            Skill temp = a.get(i);
-                            a.set(i, a.get(j));
-                            a.set(j, temp);
-                        }
+        response.setContentType("text/html;charset=UTF-8");
+
+        String sAmount = request.getParameter("vnp_Amount");
+        String vpn_TxnRef = request.getParameter("vnp_TxnRef");
+        String status = request.getParameter("vnp_ResponseCode");
+        String vnp_TransactionStatus = request.getParameter("vnp_TransactionStatus");
+        int returnVal = 0;
+        if (status.equals("00") && vnp_TransactionStatus.equals("00")) {
+            returnVal = 1;
+            try {
+                int uid = BankDAO.UpdateTrans(vpn_TxnRef, "Success");
+                if (uid != -1) {
+                    User u = (User) request.getSession().getAttribute("User");
+                    if (u != null && u.getId() == uid) {
+                        UserDAO.updateMoney(uid, u.getWallet() + (Integer.parseInt(sAmount) / 100));
+                        u.setWallet(u.getWallet() + (Integer.parseInt(sAmount) / 100));
+                    } else {
+                        UserDAO.updateMoney(uid, UserDAO.getWallet(uid) + (Integer.parseInt(sAmount) / 100));
                     }
+                } else {
+                    returnVal = 0;
                 }
-                request.setAttribute("skills", a); //All skill
-            //General Statistic
-            request.setAttribute("skill", SkillDAO.skillCount());
-            request.setAttribute("mentee", UserDAO.menteeCount());
-            request.setAttribute("mentor", UserDAO.mentorCount());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        User u = (User) request.getSession().getAttribute("User");
-        if (u != null) {
-            if (UserDAO.isMentee(u)) {
-                Mentee r = (Mentee) UserDAO.getRole(u.getId(), u.getRole());
-                request.getSession().setAttribute("Mentee", r);
-            } else {
-                Mentor r = (Mentor) UserDAO.getRole(u.getId(), u.getRole());
-                request.getSession().setAttribute("Mentor", r);
+            } catch (Exception e) {
+                try {
+                    BankDAO.UpdateTrans(vpn_TxnRef, "Fail");
+                } catch (Exception ex) {
+                }
+            }
+        } else {
+            try {
+                BankDAO.UpdateTrans(vpn_TxnRef, "Fail");
+            } catch (Exception e) {
             }
         }
-        request.getRequestDispatcher("index.jsp").forward(request, response);
+        response.sendRedirect("wallet?callback=" + returnVal);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

@@ -1016,7 +1016,7 @@
                                     <td><%=arr.get(i).getDeadlineTime()%></td>
                                     <td><%=arr.get(i).getStatus()%></td>
                                     <td>
-                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open")) {%>
+                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reopen")) {%>
                                         <a href="request?type=accept&id=<%=arr.get(i).getId()%>" class="check" data-toggle="modal">
                                             <i class="fas fa-check" data-toggle="tooltip" title="Accept"></i>
                                         </a>
@@ -1028,7 +1028,7 @@
                                                     document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
                                                     //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
                                                     let modal = document.createElement('div');
-                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender: </td><td><%=arr.get(i).getSender()%></td></tr><tr><td><span>Deadline</span>:</td><td><input disabled type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input disabled placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" disabled type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr>\n\
+                                                    modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Request Detail</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Sender: </td><td><%=arr.get(i).getSender()%></td></tr><tr><td><span>Request Deadline</span>:</td><td><input disabled type="datetime-local" value="<%=new SimpleDateFormat("yyyy-MM-dd'T'HH:mm").format(arr.get(i).getDeadlineTime())%>" required name="deadline"></td></tr><tr><td><span>Tiêu Đề</span>:</td><td><input disabled placeholder="Nhập tiêu đề..." value="<%=arr.get(i).getSubject()%>" required name="subject"></td></tr><tr><td><span>Yêu Cầu</span>:</td><td><textarea placeholder="Nhập yêu cầu..." required name="reason" maxlength="255" disabled type="text" class="form-control" style="height:50px"><%=arr.get(i).getReason()%></textarea></td></tr><tr>\n\
                                         <tr><td><span>Xem Lịch</span>:</td><td><button class="btn btn-default" style="font: inherit;" onclick="schedule(this, event, <%=arr.get(i).getId()%>, <%=u.getId()%>)">Nhấn để Hiện Lịch</button>\n\
 </td></tr>\n\
                                         <td><span>Trạng Thái</span>:</td><td><%=arr.get(i).getStatus()%></td></tr><%if(arr.get(i).getStatus().equalsIgnoreCase("reject")) {%><tr><td><span>Lý Do Từ Chối</span>:</td><td><%=arr.get(i).getRejectReason()%></td></tr><%}%><tr><td><span>Kĩ năng muốn học</span>:</td><td><%=arr.get(i).getSkillsName()%></td></tr></tbody></table></div><div class="modal-footer"><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
@@ -1082,7 +1082,7 @@
                                                 }
                                             }
                                         </script>
-                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open")) {%>
+                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reopen")) {%>
                                         <a href="" class="delete" onclick="popup(<%=arr.get(i).getId()%>)" data-toggle="modal">
                                             <i class="fas fa-ban" data-toggle="tooltip" title="Reject"></i>
                                         </a>
