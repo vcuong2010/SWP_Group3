@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.MentorStatistic" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.MentorStatistic, DAO.ScheduleDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -701,7 +701,7 @@
                         <div class="table-title">
                             <div class="row">
                                 <div class="col-sm-10">
-                                    <h2>All <b>Invite Requests</b></h2>
+                                    <h2>Your <b>Invite Requests</b></h2>
                                 </div>
                                 <div style="margin-top: 25px" class="col-sm-2">
                                     <a href="" id="popup" class="btn btn-danger" onclick="popupStatistic(event)" data-toggle="modal">
@@ -826,7 +826,13 @@
 </tr><tr><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th><th class="dow">Su</th></tr>\n\
 </thead>';
                                             firstDay = firstDay.addDays(-(7 * weekCount));
+                                            firstDay.setHours(0);
+                                            firstDay.setMinutes(0);
+                                            firstDay.setSeconds(0);
                                             lastDay = lastDay.addDays(-(7 * weekCount));
+                                            lastDay.setHours(23);
+                                            lastDay.setMinutes(59);
+                                            lastDay.setSeconds(59);
                                             let currWidth = 15;
                                             let maxWidth = 15;
                                             for (let j = 0; j < weekCount; j++) {
@@ -839,27 +845,49 @@
                                                 let fri = [];
                                                 let sat = [];
                                                 let sun = [];
+                                                var hod = [5, 7, 10, 12, 15, 17, 20];
                                                 for (var i = 0; i < thisWeek.length; i++) {
                                                     let tempDate = new Date(Date.parse(thisWeek[i]["SlotTime"]));
                                                     if (tempDate.getDay() === 1) {
+                                                            while(tempDate.getHours() !== hod[mon.length]) {
+                                                                mon.push(null);
+                                                            }
                                                         mon.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 2) {
+                                                            while(tempDate.getHours() !== hod[tue.length]) {
+                                                                tue.push(null);
+                                                            }
                                                         tue.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 3) {
+                                                            while(tempDate.getHours() !== hod[wen.length]) {
+                                                                wen.push(null);
+                                                            }
                                                         wen.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 4) {
+                                                            while(tempDate.getHours() !== hod[thu.length]) {
+                                                                thu.push(null);
+                                                            }
                                                         thu.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 5) {
+                                                            while(tempDate.getHours() !== hod[fri.length]) {
+                                                                fri.push(null);
+                                                            }
                                                         fri.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 6) {
+                                                            while(tempDate.getHours() !== hod[sat.length]) {
+                                                                sat.push(null);
+                                                            }
                                                         sat.push(thisWeek[i]);
                                                     }
                                                     if (tempDate.getDay() === 0) {
+                                                            while(tempDate.getHours() !== hod[sun.length]) {
+                                                                sun.push(null);
+                                                            }
                                                         sun.push(thisWeek[i]);
                                                     }
                                                 }
@@ -880,13 +908,13 @@
                                 for(let i = 0; i < (5 < max ? max : 5); i++) {                                                   
                                 innerString += '\n\
 <tr>';
-                                if(mon.length > i) {
+                                if(mon.length > i && mon[i] !== null) {
     let s = mon[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -894,13 +922,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(tue.length > i) {
+                                if(tue.length > i && tue[i] !== null) {
     let s = tue[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -908,13 +936,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(wen.length > i) {
+                                if(wen.length > i && wen[i] !== null) {
     let s = wen[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -922,13 +950,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(thu.length > i) {
+                                if(thu.length > i && thu[i] !== null) {
     let s = thu[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -936,13 +964,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(fri.length > i) {
+                                if(fri.length > i && fri[i] !== null) {
     let s = fri[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -950,13 +978,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(sat.length > i) {
+                                if(sat.length > i && sat[i] !== null) {
     let s = sat[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -964,13 +992,13 @@
                                     }
                                     innerString += '\n\
 </td>'
-                                if(sun.length > i) {
+                                if(sun.length > i && sun[i] !== null) {
     let s = sun[i];
     let c = new Date(Date.parse(s["SlotTime"]));
     let to = new Date(Date.parse(s["SlotTime"])).addMinutes(60*s["hour"]);
     currWidth += 2;
                                 innerString += '\n\
-<td data-action="selectDay" class="day" title="'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+' - '+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'">\n\
+<td data-action="selectDay" class="day" title="Slot '+i+'">\n\
 <input type="checkbox" name="slot" value="'+s["id"]+'" id="checkbox-'+s["id"]+'" <%=u.getRole().equalsIgnoreCase("mentor") ? "disabled" : ""%> checked>\n\
 <label for="checkbox-'+s["id"]+'">'+(c.getHours() < 10 ? "0"+c.getHours() : c.getHours())+':'+(c.getMinutes() < 10 ? "0"+c.getMinutes() : c.getMinutes())+'<br>'+(to.getHours() < 10 ? "0"+to.getHours() : to.getHours())+':'+(to.getMinutes() < 10 ? "0"+to.getMinutes() : to.getMinutes())+'</label>'
                                 } else {
@@ -1014,8 +1042,13 @@
                                     <td><%=arr.get(i).getSender()%></td>
                                     <td><%=arr.get(i).getSkillsName()%></td>
                                     <td><%=arr.get(i).getDeadlineTime()%></td>
-                                    <td><%=arr.get(i).getStatus()%></td>
+                                    <td><%=arr.get(i).getStatus().equalsIgnoreCase("processing") ? ScheduleDAO.getPercentByRequest(arr.get(i).getId()) + "%" : arr.get(i).getStatus()%></td>
                                     <td>
+                                        <%if(arr.get(i).getStatus().equalsIgnoreCase("processing") && ScheduleDAO.getPercentByRequest(arr.get(i).getId()) == 100) {%>
+                                        <a href="request?type=complete&id=<%=arr.get(i).getId()%>" class="check" data-toggle="modal">
+                                            <i class="fas fa-check" data-toggle="tooltip" title="Complete Request"></i>
+                                        </a>
+                                        <%}%>
                                         <%if(arr.get(i).getStatus().equalsIgnoreCase("open") || arr.get(i).getStatus().equalsIgnoreCase("reopen")) {%>
                                         <a href="request?type=accept&id=<%=arr.get(i).getId()%>" class="check" data-toggle="modal">
                                             <i class="fas fa-check" data-toggle="tooltip" title="Accept"></i>

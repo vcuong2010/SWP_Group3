@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -51,21 +52,41 @@ public class ScheduleController extends HttpServlet {
         }
         try {
             User u = (User) request.getSession().getAttribute("User");
-            if(request.getParameter("type") != null && request.getParameter("type").equalsIgnoreCase("confirm")) {
+            if (request.getParameter("type") != null && request.getParameter("type").equalsIgnoreCase("confirm")) {
                 String sid = request.getParameter("id");
                 int id = Integer.parseInt(sid);
                 boolean check = ScheduleDAO.confirmSlot(id, u.getId(), u.getRole());
-                if(!check) {
-                    request.setAttribute("alert", "Something went wrong when confirm slot!");
+                if (!check) {
+                    request.getSession().setAttribute("alert", "Something went wrong when confirm slot!");
                 }
+                response.sendRedirect("schedule");
+                return;
+            }
+            if (request.getParameter("type") != null && request.getParameter("type").equalsIgnoreCase("delete")) {
+                String sid = request.getParameter("id");
+                int id = Integer.parseInt(sid);
+                boolean check = ScheduleDAO.deleteSlot(id);
+                if (!check) {
+                    request.getSession().setAttribute("alert", "Xóa Slot thất bại, bạn đã chấp nhận yêu cầu thuê slot này của học viên!");
+                } else {
+                    request.getSession().setAttribute("alert", "Xóa Slot thành công!");
+                }
+                response.sendRedirect("schedule");
+                return;
             }
             java.util.Date today = new java.util.Date();
             Calendar c = Calendar.getInstance();
             c.setTime(today);
             int year = c.get(Calendar.YEAR);
             int week = ScheduleDAO.weekOfYear(today);
+            if(request.getSession().getAttribute("year") != null) {
+                year = (int)request.getSession().getAttribute("year");
+            }
+            if(request.getSession().getAttribute("week") != null) {
+                week = (int)request.getSession().getAttribute("week");
+            }
             ArrayList<Slot> arr = null;
-            if(u.getRole().equalsIgnoreCase("mentor")) {
+            if (u.getRole().equalsIgnoreCase("mentor")) {
                 arr = ScheduleDAO.getSlots(year, week, u.getId());
             } else {
                 arr = ScheduleDAO.menteeGetSlots(year, week, u.getId());
@@ -127,24 +148,42 @@ public class ScheduleController extends HttpServlet {
             try {
                 int year = Integer.parseInt(sYear);
                 int week = Integer.parseInt(sWeek);
-            ArrayList<Slot> arr = null;
-            if(u.getRole().equalsIgnoreCase("mentor")) {
-                arr = ScheduleDAO.getSlots(year, week, u.getId());
-            } else {
-                arr = ScheduleDAO.menteeGetSlots(year, week, u.getId());
-            }
-            Collections.sort(arr, new Comparator<Slot>() {
-                @Override
-                public int compare(Slot o1, Slot o2) {
-                    return o1.getSlotTime().before(o2.getSlotTime()) ? -1 : 1;
+                request.getSession().setAttribute("week", week);
+                request.getSession().setAttribute("year", year);
+                ArrayList<Slot> arr = null;
+                if (u.getRole().equalsIgnoreCase("mentor")) {
+                    arr = ScheduleDAO.getSlots(year, week, u.getId());
+                } else {
+                    arr = ScheduleDAO.menteeGetSlots(year, week, u.getId());
                 }
-            });
-            request.setAttribute("Slots", arr);
+                Collections.sort(arr, new Comparator<Slot>() {
+                    @Override
+                    public int compare(Slot o1, Slot o2) {
+                        return o1.getSlotTime().before(o2.getSlotTime()) ? -1 : 1;
+                    }
+                });
+                request.setAttribute("Slots", arr);
                 request.setAttribute("fistDate", ScheduleDAO.FirstDateOfWeek(year, 1));
                 request.setAttribute("year", year);
                 request.setAttribute("weekOfYear", week);
                 request.setAttribute("numberOfWeek", ScheduleDAO.numberOfWeek(year));
                 request.setAttribute("firstOfWeek", ScheduleDAO.FirstDateOfWeek(year, week));
+            } catch (Exception e) {
+            }
+        } else if (request.getParameter("type") != null && request.getParameter("type").equalsIgnoreCase("update")) {
+            try {
+                String sid = request.getParameter("id");
+                int id = Integer.parseInt(sid);
+                String link = request.getParameter("link");
+                String start = request.getParameter("start");
+                String hour = request.getParameter("hour");
+                String time = request.getParameter("time");
+                start += "T" + time;
+                float hours = Float.parseFloat(hour);
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
+                java.util.Date startDate = format.parse(start);
+                Timestamp startTime = Timestamp.from(startDate.toInstant());
+                ScheduleDAO.updateSlot(id, link, hours, startTime);
             } catch (Exception e) {
             }
         } else {
@@ -201,25 +240,25 @@ public class ScheduleController extends HttpServlet {
                 String from = request.getParameter("fromDay");
                 String to = request.getParameter("toDay");
                 String[] hours = start.split(":");
-                
+
                 try {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date fromDate = formatter.parse(from);
-                java.util.Date toDate = formatter.parse(to);
-                Calendar c = Calendar.getInstance();
-                c.setTime(fromDate);
-                c.set(Calendar.HOUR, Integer.parseInt(hours[0]));
-                c.set(Calendar.MINUTE, Integer.parseInt(hours[1]));
-                c.set(Calendar.SECOND, 0);
-                while(c.getTime().before(toDate)) {
-                    if(weekdays.contains(c.get(Calendar.DAY_OF_WEEK))) {
-                        int woy = ScheduleDAO.weekOfYear(c.getTime());
-                        ScheduleDAO.addSlot(link, hour, c.getTime(), woy, c.get(Calendar.YEAR), u.getId());
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    java.util.Date fromDate = formatter.parse(from);
+                    java.util.Date toDate = formatter.parse(to);
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(fromDate);
+                    c.set(Calendar.HOUR, Integer.parseInt(hours[0]));
+                    c.set(Calendar.MINUTE, Integer.parseInt(hours[1]));
+                    c.set(Calendar.SECOND, 0);
+                    while (c.getTime().before(toDate)) {
+                        if (weekdays.contains(c.get(Calendar.DAY_OF_WEEK))) {
+                            int woy = ScheduleDAO.weekOfYear(c.getTime());
+                            ScheduleDAO.addSlot(link, hour, c.getTime(), woy, c.get(Calendar.YEAR), u.getId());
+                        }
+                        c.add(Calendar.DATE, 1);
                     }
-                    c.add(Calendar.DATE, 1);
-                }
-                } catch(Exception e) {
-                    
+                } catch (Exception e) {
+
                 }
             }
             try {
@@ -228,19 +267,19 @@ public class ScheduleController extends HttpServlet {
                 c.setTime(today);
                 int year = c.get(Calendar.YEAR);
                 int week = ScheduleDAO.weekOfYear(today);
-            ArrayList<Slot> arr = null;
-            if(u.getRole().equalsIgnoreCase("mentor")) {
-                arr = ScheduleDAO.getSlots(year, week, u.getId());
-            } else {
-                arr = ScheduleDAO.menteeGetSlots(year, week, u.getId());
-            }
-            Collections.sort(arr, new Comparator<Slot>() {
-                @Override
-                public int compare(Slot o1, Slot o2) {
-                    return o1.getSlotTime().before(o2.getSlotTime()) ? -1 : 1;
+                ArrayList<Slot> arr = null;
+                if (u.getRole().equalsIgnoreCase("mentor")) {
+                    arr = ScheduleDAO.getSlots(year, week, u.getId());
+                } else {
+                    arr = ScheduleDAO.menteeGetSlots(year, week, u.getId());
                 }
-            });
-            request.setAttribute("Slots", arr);
+                Collections.sort(arr, new Comparator<Slot>() {
+                    @Override
+                    public int compare(Slot o1, Slot o2) {
+                        return o1.getSlotTime().before(o2.getSlotTime()) ? -1 : 1;
+                    }
+                });
+                request.setAttribute("Slots", arr);
                 request.setAttribute("fistDate", ScheduleDAO.FirstDateOfWeek(c.get(Calendar.YEAR), 1));
                 request.setAttribute("year", year);
                 request.setAttribute("weekOfYear", week);

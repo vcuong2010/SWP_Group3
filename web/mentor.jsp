@@ -520,7 +520,7 @@
                                 </span>
                             </div>
                             <div class="text-center">
-                                <button class="btn-my-style red">Thuê</button>
+                                <button class="btn-my-style red">Tạo Request</button>
                                 <button class="btn-my-style white">
                                     <i class="fas fa-comment-alt"></i>Chat </button>
                                     <%if(u != null && u.getRole().equalsIgnoreCase("mentee")) {%>
@@ -895,6 +895,7 @@
                 }
             }
             let title = document.title;
+            <%if(currMentor.getStatus().equalsIgnoreCase("accepted")) {%>
             document.getElementsByClassName('btn-my-style red')[0].onclick = function () {
                 <%if(u != null && u.getRole().equalsIgnoreCase("mentee")) {%>
                 if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
@@ -936,28 +937,50 @@
                                                     ArrayList<Slot> fri = new ArrayList();
                                                     ArrayList<Slot> sat = new ArrayList();
                                                     ArrayList<Slot> sun = new ArrayList();
+                                                    int[] hod = new int[] { 5, 7, 10, 12, 15, 17, 20 };
                                                     for(int i = 0; i < thisWeek.size(); i++) {
                                                         Calendar c = Calendar.getInstance();
                                                         c.setTime(thisWeek.get(i).getSlotTime());
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 1) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[sun.size()]) {
+                                                                sun.add(null);
+                                                            }
                                                             sun.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 2) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[mon.size()]) {
+                                                                mon.add(null);
+                                                            }
                                                             mon.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 3) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[tue.size()]) {
+                                                                tue.add(null);
+                                                            }
                                                             tue.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 4) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[wen.size()]) {
+                                                                wen.add(null);
+                                                            }
                                                             wen.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 5) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[thu.size()]) {
+                                                                thu.add(null);
+                                                            }
                                                             thu.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 6) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[fri.size()]) {
+                                                                fri.add(null);
+                                                            }
                                                             fri.add(thisWeek.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 7) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[sat.size()]) {
+                                                                sat.add(null);
+                                                            }
                                                             sat.add(thisWeek.get(i));
                                                         }
                                                     }
@@ -970,10 +993,10 @@
                                                     if(sun.size() > max) max = sun.size();
     %>\n\
 <tbody class="<%=j==0 ? "" : "hidden"%>" id="body-<%=week+j%>">\n\
-<%for(int i = 0; i < (5 < max ? max : 5); i++) {                                                   
+<%for(int i = 0; i < (7 < max ? max : 7); i++) {                                                   
 %>\n\
 <tr>\n\
-<%if(mon.size() > i) {
+<%if(mon.size() > i && mon.get(i) != null) {
     Slot s = mon.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -982,12 +1005,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(tue.size() > i) {
+<%if(tue.size() > i && tue.get(i) != null) {
     Slot s = tue.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -996,12 +1019,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(wen.size() > i) {
+<%if(wen.size() > i && wen.get(i) != null) {
     Slot s = wen.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -1010,12 +1033,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(thu.size() > i) {
+<%if(thu.size() > i && thu.get(i) != null) {
     Slot s = thu.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -1024,12 +1047,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(fri.size() > i) {
+<%if(fri.size() > i && fri.get(i) != null) {
     Slot s = fri.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -1038,12 +1061,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(sat.size() > i) {
+<%if(sat.size() > i && sat.get(i) != null) {
     Slot s = sat.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -1052,12 +1075,12 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
-<%if(sun.size() > i) {
+<%if(sun.size() > i && sun.get(i) != null) {
     Slot s = sun.get(i);
     Calendar c = Calendar.getInstance();
     c.setTime(s.getSlotTime());
@@ -1066,7 +1089,7 @@
     to.add(Calendar.MINUTE, (int)(60*s.getHour()));
     currWidth += 1.5;
 %>\n\
-<td data-action="selectDay" class="day" title="<%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%> - <%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>">\n\
+<td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
 <label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
@@ -1089,7 +1112,7 @@
         int sid = Integer.parseInt(request.getParameter("sid"));
         if(sid == currCV.getSkills().get(i).getId()) {
     %>checked<%}} catch(Exception e) {}
-}%> name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Thuê</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
+}%> name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Tạo Request</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                     let date = new Date();
                                     let dateonly = date.toLocaleString().split(",")[0].split("/");
     modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
@@ -1181,6 +1204,11 @@
                 alert("Vui lòng đăng nhập trước khi thuê");
                 <%}%>
             }
+            <%} else {%>
+            document.getElementsByClassName('btn-my-style red')[0].onclick = function (e) {
+                e.preventDefault();
+            }
+            <%}%>
         </script>
         <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
            display: flex!important;

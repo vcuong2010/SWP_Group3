@@ -592,9 +592,169 @@
                     <div class="col-md-12" style="display: flex; justify-content: center;">
                         <form method='post'>
                             <h2 style="font-family: inherit;font-weight: 500;line-height: 1.1;color: inherit;"> Activities for
-                                <span id="ctl00_mainContent_lblStudent"><%=u.getUsername()%>'s (<%=u.getFullname()%>)</span> schedule <%=u.getRole().equalsIgnoreCase("mentor") ? "<button class=\"btn btn-success\" onclick=\"newSlot()\" style=\"margin-left: 1.25vw\">New Slot</button>" : ""%></h2>
+                                <span id="ctl00_mainContent_lblStudent"><%=u.getUsername()%>'s (<%=u.getFullname()%>)</span> schedule <%=(u.getRole().equalsIgnoreCase("mentor") && MentorDAO.acceptedCv(u.getId())) ? "<button class=\"btn btn-success\" onclick=\"newSlot()\" style=\"margin-left: 1.25vw\">New Slot</button>" : ""%></h2>
                                 <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
                             <script>
+                                Date.prototype.addDays = function (days) {
+                                    var date = new Date(this.valueOf());
+                                    date.setDate(date.getDate() + days);
+                                    return date;
+                                }
+                                function edit(id) {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        setTimeout(async () => {
+                                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                            var response = await fetch("api/schedule?sid=" + id);
+                                            var data = await response.json();
+                                            let slotDate = new Date(Date.parse(data["SlotTime"]));
+                                            let SlotDateonly = slotDate.toLocaleString().split(",")[0].split("/");
+                                            var slotTime = SlotDateonly[2] + "-" + (parseInt(SlotDateonly[0]) < 10 ? "0" + SlotDateonly[0] : SlotDateonly[0]) + "-" + (parseInt(SlotDateonly[1]) < 10 ? "0" + SlotDateonly[1] : SlotDateonly[1]);
+                                            var slotHour = slotDate.toTimeString().split(":")[0] + ":"+slotDate.toTimeString().split(":")[1];
+                                            var slot = 0;
+                                            if(slotHour === "05:00") {
+                                                slot = 0;
+                                            }
+                                            if(slotHour === "07:30") {
+                                                slot = 1;
+                                            }
+                                            if(slotHour === "10:00") {
+                                                slot = 2;
+                                            }
+                                            if(slotHour === "12:50") {
+                                                slot = 3;
+                                            }
+                                            if(slotHour === "15:20") {
+                                                slot = 4;
+                                            }
+                                            if(slotHour === "17:50") {
+                                                slot = 5;
+                                            }
+                                            if(slotHour === "20:30") {
+                                                slot = 6;
+                                            }
+                                            let modal = document.createElement('div');
+                                            modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<div class="modal-dialog">\n\
+  <div class="modal-content" role="document">\n\
+    <div class="modal-header">\n\
+      <button type="button" class="close">\n\
+        <span aria-hidden="true">×</span>\n\
+        <span class="sr-only">Close</span>\n\
+      </button>\n\
+      <h4 class="modal-title">\n\
+        <span>Update Slot</span>\n\
+      </h4>\n\
+    </div>\n\
+    <form method="post">\n\
+      <div class="modal-body">\n\
+        <table style="width: 100%;">\n\
+          <tbody>\n\
+              <input type="hidden" name="type" value="update">\n\
+              <input type="hidden" name="id" value="' + id + '">\n\
+            <tr>\n\
+              <td>\n\
+                <span>Meet Link</span>:\n\
+              </td>\n\
+              <td>\n\
+                <input placeholder="Nhập link meet" required name="link" maxlength="255" type="text" class="form-control" value="'+data["link"]+'"/>\n\
+              </td>\n\
+            </tr>\n\
+            <tr>\n\
+              <td>\n\
+                <span>Ngày dạy slot</span>:\n\
+              </td>\n\
+              <td>\n\
+                <input placeholder="Chọn ngày dạy" required name="start" type="date" class="form-control" value="'+slotTime+'"/>\n\
+              </td>\n\
+            </tr>\n\
+            <tr>\n\
+              <td>\n\
+                <span>Chọn slot dạy học</span>:\n\
+              </td>\n\
+              <td>\n\
+                <select name="slot" onchange="changeSlot(this)"><option value="0" '+(slot === 0 ? "selected" : "")+'>Slot 0 (05:00 - 07:20) </option><option value="1" '+(slot === 1 ? "selected" : "")+'>Slot 1 (07:30 - 09:50) </option><option value="2" '+(slot === 2 ? "selected" : "")+'>Slot 2 (10:00 - 12:20) </option><option value="3" '+(slot === 3 ? "selected" : "")+'>Slot 3 (12:50 - 15:10) </option><option value="4" '+(slot === 4 ? "selected" : "")+'>Slot 4 (15:20 - 17:40) </option><option value="5" '+(slot === 5 ? "selected" : "")+'>Slot 5 (17:50 - 20:10) </option><option value="6" '+(slot === 6 ? "selected" : "")+'>Slot 6 (20:30 - 22:50) </option></select>\n\
+                <input class="hidden" type="time" name="time" value="'+slotHour+'">\n\
+              </td>\n\
+            </tr>\n\
+                <input placeholder="Nhập số giờ dạy" required name="hour" type="hidden" class="form-control" value="'+data["hour"]+'"/>\n\
+          </tbody>\n\
+        </table>\n\
+      </div>\n\
+      <div class="modal-footer">\n\
+        <button type="submit" onclick="validate(this, event)" class="btn btn-success">\n\
+          <span>Cập Nhật</span>\n\
+        </button>\n\
+        <button type="button" class="btn ' + (data["menteeId"] === 0 ? "btn-default" : "btn-danger") + '">\n\
+          <span>' + (data["menteeId"] === 0 ? "Đóng" : "Xóa") + '</span>\n\
+        </button>\n\
+      </div>\n\
+    </form>\n\
+  </div>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                            let date = new Date();
+                                            let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                            modal.querySelector("input[type=date]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
+                                            document.body.appendChild(modal.firstChild);
+                                            let btn = document.body.lastChild.getElementsByTagName('button');
+                                            btn[0].onclick = function () {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+
+                                            }
+                                            if (data["menteeId"] === 0) {
+                                                btn[2].onclick = function () {
+                                                    document.body.lastChild.children[0].classList.remove("in");
+                                                    document.body.lastChild.children[1].classList.remove("in");
+                                                    setTimeout(function () {
+                                                        document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                        document.body.removeChild(document.body.lastChild);
+                                                        window.onclick = null;
+                                                    }, 100);
+
+                                                }
+                                            } else {
+                                                btn[2].onclick = function () {
+                                                    window.location.href = "schedule?type=delete&id="+id;
+                                                }
+                                            }
+                                            setTimeout(function () {
+                                                document.body.lastChild.children[1].classList.add("in");
+                                                document.body.lastChild.children[0].classList.add("in");
+                                                window.onclick = function (e) {
+                                                    if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                        document.body.lastChild.children[0].classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                    }
+                                                };
+                                            }, 1);
+                                        }, 0);
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 100px; display:flex';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }
+                                }
                                 function changeType(input) {
                                     let modal = input.parentNode.parentNode.parentNode;
                                     if (input.options[input.selectedIndex].value === 'byWeek') {
@@ -629,7 +789,7 @@
                                     event.preventDefault();
                                     let link = document.querySelector("input[name=link]");
                                     let type = document.getElementById("schedule");
-                                    if (type.options[type.selectedIndex].value === "byWeek") {
+                                    if (type !== null && type.options[type.selectedIndex].value === "byWeek") {
                                         let checkbox = document.querySelectorAll("input[type=checkbox]");
                                         let count = 0;
                                         for (let i = 0; i < checkbox.length; i++) {
@@ -654,6 +814,30 @@
                                         }
                                     }
                                 }
+                                function changeSlot(select) {
+                                    var time = document.querySelector("input[type=time]");
+                                    if(select.value === '0') {
+                                        time.value = "05:00";
+                                    }
+                                    if(select.value === '1') {
+                                        time.value = "07:30";
+                                    }
+                                    if(select.value === '2') {
+                                        time.value = "10:00";
+                                    }
+                                    if(select.value === '3') {
+                                        time.value = "12:50";
+                                    }
+                                    if(select.value === '4') {
+                                        time.value = "15:20";
+                                    }
+                                    if(select.value === '5') {
+                                        time.value = "17:50";
+                                    }
+                                    if(select.value === '6') {
+                                        time.value = "20:30";
+                                    }
+                                }
                                 function newSlot() {
                                     event.preventDefault();
                                     if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
@@ -675,6 +859,8 @@
       </h4>\n\
     </div>\n\
     <form method="post">\n\
+      <input class="hidden" placeholder="Chọn giờ bắt đầu" required name="start" type="datetime-local" class="form-control"/>\n\
+      <input placeholder="Nhập số giờ dạy" required name="hour" type="hidden" value="1.33333333" class="form-control"/>\n\
       <div class="modal-body">\n\
         <table style="width: 100%;">\n\
           <tbody>\n\
@@ -687,7 +873,7 @@
                 <input placeholder="Nhập link meet" required name="link" maxlength="255" type="text" class="form-control"/>\n\
               </td>\n\
             </tr>\n\
-            <tr>\n\
+            <tr class="unhidden">\n\
               <td>\n\
                 <span>Lịch học</span>:\n\
               </td>\n\
@@ -697,18 +883,10 @@
             </tr>\n\
             <tr>\n\
               <td>\n\
-                <span>Thời gian bắt đầu slot học</span>:\n\
+                <span>Chọn slot dạy học</span>:\n\
               </td>\n\
               <td>\n\
-                <input placeholder="Chọn giờ bắt đầu" required name="start" type="datetime-local" class="form-control"/>\n\
-              </td>\n\
-            </tr>\n\
-            <tr>\n\
-              <td>\n\
-                <span>Số giờ dạy</span>:\n\
-              </td>\n\
-              <td>\n\
-                <input placeholder="Nhập số giờ dạy" required name="hour" step="0.01" min="0.1" type="number" class="form-control"/>\n\
+                <select name="slot" onchange="changeSlot(this)"><option value="0">Slot 0 (05:00 - 07:20) </option><option value="1">Slot 1 (07:30 - 09:50) </option><option value="2">Slot 2 (10:00 - 12:20) </option><option value="3">Slot 3 (12:50 - 15:10) </option><option value="4">Slot 4 (15:20 - 17:40) </option><option value="5">Slot 5 (17:50 - 20:10) </option><option value="6">Slot 6 (20:30 - 22:50) </option></select>\n\
               </td>\n\
             </tr>\n\
             <tr class="hidden">\n\
@@ -751,6 +929,7 @@
 </div>\n\
 </div>';
                                         let date = new Date();
+                                        date = date.addDays(7);
                                         let dateonly = date.toLocaleString().split(",")[0].split("/");
                                         modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
@@ -758,25 +937,28 @@
                                         var toDate = document.querySelector("input[name=toDay]");
                                         fromDate.min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
                                         toDate.min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
-                                        fromDate.onchange = function(e) {
-                                            if(toDate.value) {
-                                                if(fromDate.value >= toDate.value) {
+                                        fromDate.onchange = function (e) {
+                                            if (toDate.value) {
+                                                if (fromDate.value >= toDate.value) {
                                                     alert("Ngày bắt đầu phải trước ngày kết thúc");
                                                     fromDate.value = null;
                                                 }
                                             }
                                         }
-                                        toDate.onchange = function(e) {
-                                            if(fromDate.value) {
-                                                if(fromDate.value >= toDate.value) {
+                                        toDate.onchange = function (e) {
+                                            if (fromDate.value) {
+                                                if (fromDate.value >= toDate.value) {
                                                     alert("Ngày bắt đầu phải trước ngày kết thúc");
                                                     toDate.value = null;
                                                 }
                                             }
                                         }
                                         let hidden = document.querySelectorAll("tr[class=hidden]");
+                                        let unhidden = document.querySelectorAll("tr[class=unhidden]");
+                                        unhidden[0].classList = "hidden";
                                         let datetime = document.querySelector("input[type=datetime-local]");
                                         datetime.setAttribute("type", "time");
+                                        datetime.value = "05:00";
                                         document.getElementsByName("fromDay")[0].setAttribute("required", "true");
                                         document.getElementsByName("toDay")[0].setAttribute("required", "true");
                                         for (let i = 0; i < hidden.length; i++) {
@@ -853,28 +1035,50 @@
                                                     ArrayList<Slot> fri = new ArrayList();
                                                     ArrayList<Slot> sat = new ArrayList();
                                                     ArrayList<Slot> sun = new ArrayList();
+                                                    int[] hod = new int[] { 5, 7, 10, 12, 15, 17, 20 };
                                                     for(int i = 0; i < arr.size(); i++) {
                                                         Calendar c = Calendar.getInstance();
                                                         c.setTime(arr.get(i).getSlotTime());
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 1) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[sun.size()]) {
+                                                                sun.add(null);
+                                                            }
                                                             sun.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 2) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[mon.size()]) {
+                                                                mon.add(null);
+                                                            }
                                                             mon.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 3) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[tue.size()]) {
+                                                                tue.add(null);
+                                                            }
                                                             tue.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 4) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[wen.size()]) {
+                                                                wen.add(null);
+                                                            }
                                                             wen.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 5) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[thu.size()]) {
+                                                                thu.add(null);
+                                                            }
                                                             thu.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 6) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[fri.size()]) {
+                                                                fri.add(null);
+                                                            }
                                                             fri.add(arr.get(i));
                                                         }
                                                         if(c.get(Calendar.DAY_OF_WEEK) == 7) {
+                                                            while(c.get(Calendar.HOUR_OF_DAY) != hod[sat.size()]) {
+                                                                sat.add(null);
+                                                            }
                                                             sat.add(arr.get(i));
                                                         }
                                                     }
@@ -1089,20 +1293,20 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <%for(int i = 0; i < (10 < max ? max : 10); i++) {%>
+                                                        <%for(int i = 0; i < (7 < max ? max : 7); i++) {%>
                                                         <tr>
                                                             <td>Slot <%=i%> </td>
                                                             <td>
-                                                                <%if(mon.size() > i) {
+                                                                <%if(mon.size() > i && mon.get(i) != null) {
                                                                     Slot s = mon.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1113,7 +1317,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1121,16 +1325,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(tue.size() > i) {
+                                                                <%if(tue.size() > i && tue.get(i) != null) {
                                                                     Slot s = tue.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1141,7 +1345,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1149,16 +1353,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(wen.size() > i) {
+                                                                <%if(wen.size() > i && wen.get(i) != null) {
                                                                     Slot s = wen.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1169,7 +1373,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1177,16 +1381,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(thu.size() > i) {
+                                                                <%if(thu.size() > i && thu.get(i) != null) {
                                                                     Slot s = thu.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>) 
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1197,7 +1401,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1205,16 +1409,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(fri.size() > i) {
+                                                                <%if(fri.size() > i && fri.get(i) != null) {
                                                                     Slot s = fri.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>) 
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1225,7 +1429,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1233,16 +1437,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(sat.size() > i) {
+                                                                <%if(sat.size() > i && sat.get(i) != null) {
                                                                     Slot s = sat.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1253,7 +1457,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
@@ -1261,16 +1465,16 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                 <%}%>
                                                             </td>
                                                             <td>
-                                                                <%if(sun.size() > i) {
+                                                                <%if(sun.size() > i && sun.get(i) != null) {
                                                                     Slot s = sun.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href=""><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
-                                                                    <a class="label label-default" href="<%=s.getLink()%>" target="_blank">Meet URL</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : s.getLink()%>" target="_blank">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
                                                                         <%  java.util.Date today = new java.util.Date();
-                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) && today.after(s.getSlotTime())) {%>
+                                                                            if(s.getSkill() != null && !((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done") || s.getStatus().toLowerCase().contains("not paid")) && today.after(s.getSlotTime())) {%>
                                                                         <a class="label label-success" target="_blank" onclick="confirmation(this, event)" href="schedule?type=confirm&id=<%=s.getId()%>">-Confirm </a>
                                                                         <%}%>
                                                                     </span><br>
@@ -1281,7 +1485,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                         to.setTime(s.getSlotTime());
                                                                         to.add(Calendar.MINUTE, (int)(60*s.getHour()));
                                                                     %>
-                                                                    <span class="label label-success">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
+                                                                    <span class="label label-<%=s.getStatus().toLowerCase().contains("done") ? "default" : "success"%>">(<%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0" + c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%>-<%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%>)</span>
                                                                     <br>
                                                                 </p>
                                                                 <%} else {%>
