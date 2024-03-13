@@ -170,34 +170,28 @@ public class MentorController extends HttpServlet {
                     String title = request.getParameter("title");
                     String FollowReason = request.getParameter("reason");
                     FollowDAO.sendRequest(id, title, FollowReason, u.getId());
-                    request.setAttribute("status", "Yêu cầu follow thành công!");
+                    request.getSession().setAttribute("status", "Yêu cầu follow thành công!");
                 } else if(request.getParameter("type").equalsIgnoreCase("unfollow")) {
                     FollowDAO.unFollow(id, u.getId());
                 } else if(request.getParameter("type").equalsIgnoreCase("cancel follow")) {
                     FollowDAO.cancelFollowRequest(id, u.getId());
                 }
+                response.sendRedirect("mentor?id="+id);
+                return;
             } else {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm");
                 Timestamp tm = Timestamp.from(formatter.parse(deadline).toInstant());
                 boolean check = RequestDAO.createRequest(skills, tm, subject, reason, u.getId(), id, slots);
                 if (check) {
-                    request.setAttribute("status", "Gửi request thành công!");
+                    request.getSession().setAttribute("status", "Gửi request thành công!");
                 }
+                response.sendRedirect("mentor?id="+id);
+                return;
             }
-            java.util.Date today = new java.util.Date();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(today);
-            int year = calendar.get(Calendar.YEAR);
-            int week = ScheduleDAO.weekOfYear(today);
-            request.setAttribute("year", year);
-            request.setAttribute("week", week);
-            request.setAttribute("Rates", RateDAO.getRates(id));
-            request.setAttribute("firstOfWeek", ScheduleDAO.FirstDateOfWeek(year, week));
-            request.setAttribute("FreeSlot", ScheduleDAO.getFreeSlots(new java.util.Date(), id));
         } catch (Exception e) {
-            request.setAttribute("status", "Gửi request thất bại!");
+            request.getSession().setAttribute("status", "Gửi request thất bại!");
         }
-        request.getRequestDispatcher("mentor.jsp").forward(request, response);
+        response.sendRedirect("mentor?id="+sid);
     }
 
     /**

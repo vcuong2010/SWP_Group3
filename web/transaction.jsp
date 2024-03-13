@@ -1,52 +1,76 @@
 <%-- 
-    Document   : HomePage
-    Created on : Oct 5, 2022, 9:46:55 AM
-    Author     : DELL
+    Document   : profile
+    Created on : Jan 17, 2024, 1:13:45 PM
+    Author     : TGDD
 --%>
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
-<!DOCTYPE html>
-<html lang="en">
-
+<%@page import="model.Skill, java.util.ArrayList, model.User, java.text.SimpleDateFormat, model.Mentor, model.Mentee, model.MenteeStatistic, model.MentorStatistic, model.Bank, model.Transaction" %>
+<!doctype html>
+<html lang="en" translate="no">
     <head>
-        <meta charset="utf-8">
-        <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-        <title>List of authorization</title>
-        <meta content="" name="description">
-        <meta content="" name="keywords">
-
-        <!-- Favicons -->
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/favicon.png" rel="icon">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-        <!-- Google Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-        <!-- Vendor CSS Files -->
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/animate.css/animate.min.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-
-        <!-- Template Main CSS File -->
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/0.cbdbec7b.chunk.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/4.2ddfb1d3.chunk.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/8.97b85fe3.chunk.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/15.7bac9b00.chunk.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/main.3e229f12.chunk.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/css/style.css" rel="stylesheet">
-        <link href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/font-awesome/css/all.css" rel="stylesheet">
-
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-60013507-9"></script>
+        <meta charset="utf-8"/>
+        <meta http-equiv="Pragma" content="no-cache"/>
+        <meta http-equiv="Expires" content="-1"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no,maximum-scale=1"/>
+        <meta name="theme-color" content="#000000"/>
+        <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+        <meta name="description" content="Tham gia cộng đồng game thủ lớn nhất Việt Nam."/>
+        <meta name="keywords" content="Tham gia cộng đồng game thủ lớn nhất Việt Nam."/>
+        <meta name="google-site-verification" content="KYBoGz-bgnBnLpEUr3USGpSo1rVAvTS9LH44oCeunFw"/>
+        <meta name="google" value="notranslate">
+        <meta name="robots" content="INDEX,FOLLOW">
+        <meta content="index,follow" name="googlebot">
+        <meta name="copyright" content=" PlayerDuo 2022">
+        <meta name="keywords" content="Playerduo, player duo, play dua, thuê gái chơi game">
+        <meta name="description" content="PlayerDuo Cộng đồng game thủ lớn nhất Việt Nam, Cùng chơi với những game thủ chuyên nghiệp, hot streamer, hot girl và những người nổi tiếng.">
+        <title>Statistic of requests</title>
+        <meta content="index,follow" name="googlebot">
+        <meta name="copyright" content=" PlayerDuo 2022">
+        <meta name="robots" content="INDEX,FOLLOW">
+        <meta property="og:type" content="article"/>
+        <meta property="og:title" content="Game Community"/>
+        <meta property="og:description" content="Tham gia cộng đồng game thủ lớn nhất Việt Nam."/>
+        <meta property="og:image" content="https://playerduo-data.sgp1.cdn.digitaloceanspaces.com/production/images/thumbs.png"/>
+        <meta property="og:video" content=""/>
+        <title>Profile</title>
+        <meta name="msapplication-TileColor" content="#ffffff"/>
+        <meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png"/>
+        <meta name="theme-color" content="#ffffff"/>
+        <link href="assets/img/favicon.png" rel="icon">
+        <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+        <link href="font-awesome/css/all.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,600,600i,700,700i&amp;subset=vietnamese" rel="stylesheet">
+        <script defer="defer" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script defer="defer" src="https://apis.google.com/js/api.js"></script>
+        <script src="https://www.google.com/recaptcha/api.js"></script>
+        <title>Profile</title>
+        <link href="css/8.97b85fe3.chunk.css" rel="stylesheet">
+        <link href="css/main.3e229f12.chunk.css" rel="stylesheet">
         <style type="text/css">
             .react-skeleton-load {
                 line-height: 1;
                 display: inline-block;
                 overflow: hidden;
                 position: relative;
+            }
+            .hint-text {
+                float: left;
+                margin-top: 10px;
+                font-size: 13px;
+            }
+            .pagination {
+                float: right;
+                margin: 0 0 5px;
+            }
+
+            .pagination {
+                display: -ms-flexbox;
+                display: flex;
+                padding-left: 0;
+                list-style: none;
+                border-radius: 0.25rem;
             }
 
             .react-skeleton-load.animated::before {
@@ -400,467 +424,106 @@
                 background: none;
             }
         </style>
-        <style type="text/css">
-            .styles-module_carousel-base__3keqD {
-                width: 100%;
-                box-sizing: border-box;
-                display: flex;
-                outline: none;
-                position: relative;
-            }
-
-            .styles-module_item-provider__YgMwz {
-                overflow: hidden;
-                width: 100%;
-                cursor: pointer;
-            }
-
-            .styles-module_item-container__a8zaY img {
-                -webkit-user-select: none;
-                user-select: none;
-                -webkit-user-drag: none;
-            }
-
-            .styles-module_item-tracker__3bypy {
-                height: 100%;
-                display: flex;
-            }
-
-            .styles-module_carousel-arrow__26sRw {
-                z-index: 1;
-            }
-        </style>
-        <style type="text/css">
-            .styles-module_carousel-navigation__1g_vs {
-                display: flex;
-                position: absolute;
-                bottom: 0;
-            }
-        </style>
-        <style type="text/css">
-            .styles-module_sliderBase__swkx1 {
-                width: 100%;
-                position: relative;
-            }
-
-            .styles-module_slider__o0fqa {
-                display: flex;
-                overflow-x: auto;
-                scrollbar-width: none; /* Firefox 64 */
-                -ms-overflow-style: none; /* Internet Explorer 11 */
-            }
-
-            .styles-module_slider__o0fqa::-webkit-scrollbar {
-                /** WebKit */
-                display: none;
-            }
-
-            .styles-module_slider__o0fqa > * {
-                flex: 0 0 auto;
-            }
-
-            .styles-module_sliding__3T6T6 > * {
-                pointer-events: none;
-            }
-            .table-title {
-                padding-bottom: 15px;
-                background: #435d7d;
-                color: #fff;
-                padding: 16px 30px;
-                min-width: 100%;
-                margin: -20px -25px 10px;
-                border-radius: 3px 3px 0 0;
-            }
-            *, ::after, ::before {
-                box-sizing: border-box;
-            }
-            .table-responsive {
-                margin: 30px 0;
-            }
-
-            .table-responsive {
-                display: block;
-                width: 100%;
-                -webkit-overflow-scrolling: touch;
-            }
-            .table-wrapper {
-                background: #fff;
-                padding: 20px 25px;
-                border-radius: 3px;
-                min-width: 1000px;
-                box-shadow: 0 1px 1px rgba(0,0,0,.05);
-            }
-            .row {
-                display: -ms-flexbox;
-                display: flex;
-                -ms-flex-wrap: wrap;
-                flex-wrap: wrap;
-                margin-right: -15px;
-                margin-left: -15px;
-            }
-            th {
-                display: table-cell;
-                vertical-align: inherit;
-                font-weight: bold;
-                text-align: -internal-center;
-            }
-            .table {
-                width: 100%;
-                margin-bottom: 1rem;
-                color: #212529;
-            }
-            table {
-                border-collapse: collapse;
-            }
-            user agent stylesheet
-            table {
-                border-collapse: separate;
-                text-indent: initial;
-                border-spacing: 2px;
-            }
-            .col, .col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9, .col-auto, .col-lg, .col-lg-1, .col-lg-10, .col-lg-11, .col-lg-12, .col-lg-2, .col-lg-3, .col-lg-4, .col-lg-5, .col-lg-6, .col-lg-7, .col-lg-8, .col-lg-9, .col-lg-auto, .col-md, .col-md-1, .col-md-10, .col-md-11, .col-md-12, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-auto, .col-sm, .col-sm-1, .col-sm-10, .col-sm-11, .col-sm-12, .col-sm-2, .col-sm-3, .col-sm-4, .col-sm-5, .col-sm-6, .col-sm-7, .col-sm-8, .col-sm-9, .col-sm-auto, .col-xl, .col-xl-1, .col-xl-10, .col-xl-11, .col-xl-12, .col-xl-2, .col-xl-3, .col-xl-4, .col-xl-5, .col-xl-6, .col-xl-7, .col-xl-8, .col-xl-9, .col-xl-auto {
-                position: relative;
-                padding-right: 15px;
-                padding-left: 15px;
-            }
-            .container-fluid, .container-lg, .container-md, .container-sm, .container-xl {
-                width: 100%;
-                padding-right: 15px;
-                padding-left: 15px;
-                margin-right: auto;
-                margin-left: auto;
-            }
-            .material-icons {
-                font-family: 'Material Icons';
-                font-weight: normal;
-                font-style: normal;
-                font-size: 24px;
-                line-height: 1;
-                letter-spacing: normal;
-                text-transform: none;
-                display: inline-block;
-                white-space: nowrap;
-                word-wrap: normal;
-                direction: ltr;
-                -webkit-font-feature-settings: 'liga';
-                -webkit-font-smoothing: antialiased;
-            }
-            table.table td:last-child i {
-                opacity: 0.9;
-                margin: 0 5px;
-            }
-            .hint-text {
-                float: left;
-                margin-top: 10px;
-                font-size: 13px;
-            }
-            .pagination {
-                float: right;
-                margin: 0 0 5px;
-            }
-
-            .pagination {
-                display: -ms-flexbox;
-                display: flex;
-                padding-left: 0;
-                list-style: none;
-                border-radius: 0.25rem;
-            }
-            table.table td a.delete {
-                color: #F44336;
-            }
-            table.table td a.edit {
-                color: #FFC107;
-            }
-        </style>
-        <link rel="stylesheet" type="text/css" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/css/9.cb7de3a7.chunk.css">
-        <!-- =======================================================
-        * Template Name: Mentor - v4.9.0
-        * Template URL: https://bootstrapmade.com/mentor-free-education-bootstrap-theme/
-        * Author: BootstrapMade.com
-        * License: https://bootstrapmade.com/license/
-        ======================================================== -->
-
+        <link rel="stylesheet" type="text/css" href="css/9.cb7de3a7.chunk.css">
     </head>
-
-    <body id="root" style="padding-top: 66px;">
-        <!-- ======= Header ======= -->
-        <%  
-            User u = (User)session.getAttribute("User");
-            HashMap<String, String> arr = (HashMap)request.getAttribute("maps");
-            ArrayList<Role> roles = (ArrayList)request.getAttribute("roles");
-            int p = (int) Math.ceil((double)arr.size() / 10);
+    <body class="fixed-header" style="padding-top: 66px;">
+        <div id="root">
+            <%@include file="header.jsp" %>
+            <%
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             %>
-        <header class="menu__header fix-menu" id="header-menu">
-            <div class="navbar-header">
-                <a href="#" class="logo">
-                    <img alt="logo playerduo" src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/images/logo.png" style="border-radius: 50%;">
-                </a>
+            <div class="hidden">
+                <audio src="https://playerduo.net/static/media/notification-sound.805a8904.mp3"></audio>
+                <audio src="https://playerduo.net/static/media/notification-group-sound.4c7ac55b.mp3"></audio>
+                <audio src="https://playerduo.net/static/media/unconvinced.1de6c75d.mp3"></audio>
             </div>
-            <div class="navbar">
-                <ul class="nav navbar-nav navbar-right">
-                    <li class="item-icon item-avatar dropdown">
-                        <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
-                            <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
-                        </a>
-                        <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
-                            <li role="presentation" class="page-user">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
-                                    <div class="text-logo">
-                                        <h5><%=u.getUsername()%> </h5>
-                                    </div>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Manager Setting"%></span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
-                                    <i class="fas fa-power-off"></i>
-                                    <span>Đăng xuất</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-            <div class="navbar-mobile hidden">
-                <ul class="navbar-nav">
-                    <li class="item-icon notificate dropdown">
-                        <a id="basic-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
-                            <div class="item-title">
-                                <i class="fal fa-bell"></i>
-                            </div>
-                        </a>
-                        <ul role="menu" class="dropdown-menu" aria-labelledby="basic-nav-dropdown">
-                            <div class="content">
-                                <div class="tab-notif-common">
-                                    <h5>
-                                        <span>Thông báo</span>
-                                    </h5>
-                                    <div class="tab-action">
-                                        <p class="active">
-                                            <span>Chính</span>
-                                        </p>
-                                        <p class="">
-                                            <span>Khác</span>
-                                        </p>
-                                        <p class="">
-                                            <span>Theo dõi</span>
-                                        </p>
-                                        <p class="">
-                                            <span>Tương tác</span>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div class="infinite-scroll-component " style="height: 400px; overflow: auto;">
-                                        <div class="text-center" style="color: rgb(51, 51, 51);">
-                                            <span>Đợi chút xíu ...</span>
+            <div class="notifications-wrapper"></div>
+            <div class="wrapper">
+                <div class="setting__main row">
+                    <div class="setting__main--menu col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                        <div class="menu">
+                            <div class="menu__setting  panel-group">
+                                <div class="menu__setting--main panel panel-default">
+                                    <div class="panel-heading">
+                                        <div class="panel-title">
+                                            <a aria-expanded="true" class="" role="button" href="#">TÀI KHOẢN <i class="fas fa-chevron-down"></i>
+                                            </a>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </ul>
-                    </li>
-                    <li class="item-icon item-avatar dropdown">
-                        <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">
-                            <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
-                        </a>
-                        <ul role="menu" class="dropdown-menu" aria-labelledby="header-nav-dropdown">
-                            <li role="presentation" class="page-user">
-                                <a role="menuitem" tabindex="-1" href="#">
-                                    <img src="https://files.playerduo.net/production/images/avatar31.png" class="avt-img" style="max-height:45px; max-width: 45px" alt="PD">
-                                    <div class="text-logo">
-                                        <h5><%=u.getUsername()%> </h5>
-                                    </div>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=u.getRole().equalsIgnoreCase("admin") ? "admin/request" : ""%>"><i class="fas fa-users"></i> <span><%=u.getRole().equalsIgnoreCase("admin") ? "Admin Setting" : "Schedule"%></span>
-                                </a>
-                            </li>
-                            <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/logout">
-                                    <i class="fas fa-power-off"></i>
-                                    <span>Đăng xuất</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-                <a class="btn-bars">
-                    <i class="fal fa-bars"></i>
-                </a>
-                <div class="flex-side hidden">
-                    <div class="overlay"></div>
-                    <div class="content">
-                        <div class="box-search">
-                            <nav class="Navbar__Item">
-                                <div class="Navbar__Link">
-                                    <div class="Group-search visible ">
-                                        <span class="search input-group">
-                                            <input placeholder="Mentor/Skill ..." type="text" class="form-control" value="">
-                                            <span class="input-group-addon">
-                                                <button type="button" class="btn btn-default">
-                                                    <i class="fal fa-search" aria-hidden="true"></i>
-                                                </button>
-                                            </span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </nav>
-                            <a class="btn-close">
-                                <i class="fal fa-times fa-2x"></i>
-                            </a>
-                        </div>
-                        <ul class="list-page">
-                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/">
-                                <li class="item-icon active">
-                                    <a class="group-user">
-                                        <i class="fal fa-home-alt"></i>
-                                        <span>Trang chủ</span>
-                                    </a>
-                                </li>
-                            </a>
-                            <a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/request">
-                                <li class="item-icon ">
-                                    <a class="group-user">
-                                        <i class="fal fa-list"></i> Stories </a>
-                                </li>
-                            </a>
-                            <li class="item-icon">
-                                <a class="group-user">
-                                    <i class="fal fa-trophy-alt"></i>
-                                    <span>Bảng xếp hạng</span>
-                                </a>
-                            </li>
-                        </ul>
-                        <div class="list-mode">
-                            <div class="item">
-                                <p class="title">
-                                    <span>Chế độ</span>
-                                </p>
-                                <a class="func mode">
-                                    <i class="fas fa-moon op"></i>
-                                    <i class="fas fa-sun false"></i>
-                                </a>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Cộng đồng</span>
-                                </p>
-                                <div class="func group">
-                                    <a href="https://www.facebook.com/groups/playerduovn" target="_blank" rel="noopener noreferrer">
-                                        <i class="fal fa-globe"></i>
-                                    </a>
-                                    <a href="https://www.facebook.com/playerduo" target="_blank" rel="noopener noreferrer">
-                                        <i class="fab fa-facebook-f"></i>
-                                    </a>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Ngôn ngữ</span>
-                                </p>
-                                <a class="func lang">
-                                    <img src="https://files.playerduo.net/production/static-files/flag/1.png" class="flag op" alt="PD">
-                                    <img src="https://files.playerduo.net/production/static-files/flag/2.png" class="flag false" alt="PD">
-                                </a>
-                            </div>
-                            <div class="item">
-                                <p class="title">
-                                    <span>Tải App</span>
-                                </p>
-                                <div class="func app">
-                                    <a href="https://testflight.apple.com/join/r6H9YvY4" target="_blank" rel="noopener noreferrer" download="">PlayerChat</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
-        <!-- End Header -->
-        <script>
-            let avt = document.getElementById('header-nav-dropdown');
-            avt.onclick = function () {
-                if (avt.parentNode.classList.contains("open")) {
-                    avt.parentNode.classList.remove("open");
-                } else {
-                    avt.parentNode.classList.add("open");
-                }
-            };
-
-        </script>
-        <!-- ======= Hero Section ======= -->
-        <script>
-            var max = <%=p%>;
-            var p = 1;
-        </script>
-        <div class="wrapper">
-            <div class="setting__main row">
-                <div class="setting__main--menu col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <div class="menu">
-                        <div class="menu__setting  panel-group">
-                            <div class="menu__setting--main panel panel-default">
-                                <div class="panel-heading">
-                                    <div class="panel-title">
-                                        <a aria-expanded="true" class="" role="button" href="#">TÀI KHOẢN <i class="fas fa-chevron-down"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                                <div class="panel-collapse collapse in" style="">
-                                    <div class="panel-body">
-                                        <div class="panel-group">
-                                            <div class="menu__setting--sub panel panel-default">
-                                                <div class="panel-heading">
-                                                    <div class="active title-sub  panel-title">
-                                                        <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%><i class="fas fa-chevron-down"></i>
-                                                        </a>
+                                    <div class="panel-collapse collapse in" style="">
+                                        <div class="panel-body">
+                                            <div class="panel-group">
+                                                <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="panel-title">
+                                                            <i class="fas fa-user-tie"></i> Thông tin cá nhân
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="panel-collapse collapse in">
-                                                    <div class="panel-body">
-                                                        <div class="panel-group">
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Skills</div>
+                                                <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class=" title-sub  panel-title">
+                                                            <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                                <i class="fas fa-cog"></i> Cài đặt <i class="fas fa-chevron-down"></i>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-collapse collapse">
+                                                        <div class="panel-body">
+                                                            <div class="panel-group">
+                                                                <div class="menu__setting--last panel panel-default">
+                                                                    <div class="panel-heading">
+                                                                        <div class="panel-title">Email</div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="menu__setting--last panel panel-default">
+                                                                    <div class="panel-heading">
+                                                                        <div class="panel-title">Tài khoản và mật khẩu</div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Mentors</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Requests</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title active">Authorization</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Mentee Statistic</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">Report</div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="menu__setting--last panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <div class="panel-title">CV Confirmation</div>
-                                                                </div>
-                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div><%if(u.getRole().equalsIgnoreCase("mentor")) {%> <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="  panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thông Tin CV
+                                                        </div>
+                                                    </div>
+                                                </div><div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="  panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thống Kê Request
+                                                        </div>
+                                                    </div>
+                                                </div><%} else {%><div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="panel-title">
+                                                            <i class="fas fa-user-lock"></i> Thống Kê Request
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <%}%>
+                                                <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="title-sub active panel-title">
+                                                            <a aria-expanded="false" class="collapsed" role="button" href="#">
+                                                                <i class="fas fa-history"></i> Lịch sử giao dịch 
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class="  panel-title">
+                                                            <i class="fas fa-credit-card"></i> Thanh toán 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="menu__setting--sub panel panel-default">
+                                                    <div class="panel-heading">
+                                                        <div class=" panel-title">
+                                                            <i class="fas fa-wallet"></i> Ví 
                                                         </div>
                                                     </div>
                                                 </div>
@@ -869,91 +532,44 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="btn-drawer-setting visible-xs">
-                            <i class="fas fa-chevron-right"></i>
+                            <div class="btn-drawer-setting visible-xs">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
-                    <div class="aside">
-                        <h3 class="col-sm-8">List of authorization</h3>
+                    <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                        <div class="aside">
+                        <h3>Your Transaction</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Path</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Authorite Role</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Kiểu</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Số tiền</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Nội dung</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Thời gian</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Trạng thái</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%  int i = 0;
-                                            for(String path : arr.keySet()) {%>
+                                        <%  ArrayList<Transaction> arr = (ArrayList)request.getAttribute("transactions");
+                                            int p = (int) Math.ceil((double)arr.size() / 10);
+                                            for(int i = 0; i < arr.size(); i++) {%>
                                         <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
                                                 <%=i+1%>
                                             </td>
-                                            <td><%=path%></td>
-                                            <td><%=arr.get(path)%></td>
+                                            <td style="font-weight: bold; <%=arr.get(i).getType().equalsIgnoreCase("+") ? "color: green;" : "color: red;"%>"><%=arr.get(i).getType()%></td>
+                                            <td><%=arr.get(i).getBalance()%></td>
                                             <td>
-                                                <a href="" id="" onclick="update<%=i+1%>(event)" class="edit" data-toggle="modal">
-                                            <i class="fas fa-edit" data-toggle="tooltip" title="update"></i>
-                                        </a>
-                                            <script>
-                                                function update<%=i+1%>(event) {
-                                                    event.preventDefault();
-                            let title = document.title;
-                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                            let modal = document.createElement('div');
-                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Update Authorization</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Path:</td><td><%=path%></td></tr><tr><td><span>Authorite Role</span>:</td><td><%for(int j = 0; j < roles.size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="role" value="<%=roles.get(j).getName()%>" id="<%=roles.get(j).getId()%>" <%=arr.get(path.toLowerCase()).contains(roles.get(j).getName().toLowerCase()) ? "checked" : ""%>><label for="<%=roles.get(j).getId()%>" style="margin-left: 5px"><%=roles.get(j).getName()%></label></div><%}%><div class="col-sm-6"><input type="checkbox" name="role" value="all user" id="all" <%=arr.get(path.toLowerCase()).contains("all user") ? "checked" : ""%>><label for="all" style="margin-left: 5px">All User</label></div><div class="col-sm-6"><input type="checkbox" name="role" value="guest" id="guest" <%=arr.get(path.toLowerCase()).contains("guest") ? "checked" : ""%>><label for="guest" style="margin-left: 5px">Guest</label></div><input type="hidden" name="id" value="<%=path%>"></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Update</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
-                            document.body.appendChild(modal.firstChild);
-                    setTimeout(function () {
-                        document.body.lastChild.children[1].classList.add("in");
-                        document.body.lastChild.firstChild.classList.add("in");
-                        document.getElementsByClassName('close')[0].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        window.onclick = function (e) {
-                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                            }
-                        };
-                        document.title = "Update Authorization";
-                    }, 1);
-                        }
-                                            </script>
+                                                <%=arr.get(i).getContent()%>
                                             </td>
+                                            <td><%=arr.get(i).getTime()%></td>
+                                            <td style="<%=arr.get(i).getStatus().equalsIgnoreCase("success") ? "color: green;" : "color: red;"%>"><%=arr.get(i).getStatus()%></td>
                                         </tr> 
-                                        <%i++;
-                                            }
-                                        %>
+                                        <%}%>
                                     </tbody>
                                 </table>
                                 <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
@@ -962,9 +578,9 @@
                                     <ul class="pagination">
                                         <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
                                             <%
-                                                for(int j = 0; j < p; j++) {
+                                                for(int i = 0; i < p; i++) {
                                             %>
-                                        <li class="page-item <%=(j==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=j+1%>' class="page-link"><%=j+1%></a></li>
+                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
                                             <%}%>
                                         <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                         <script>
@@ -1063,42 +679,44 @@
                                 </div>
                             </div>
                         </div>
-                    </div></div>
-
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <script>
-            let cog2 = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
-            let collapse2 = cog2.parentNode.parentNode.parentNode.parentNode.children[1];
+
+            let cog = document.getElementsByClassName('fas fa-cog')[0].parentNode.children[1];
+            let collapse = cog.parentNode.parentNode.parentNode.parentNode.children[1];
             document.getElementsByClassName('fas fa-cog')[0].parentNode.onclick = function () {
-                if (cog2.classList.contains("fa-chevron-right")) {
-                    cog2.classList.add("fa-chevron-down");
-                    cog2.classList.remove("fa-chevron-right");
-                    collapse2.classList.remove("collapse");
-                    collapse2.classList.add("collapsing");
+                if (cog.classList.contains("fa-chevron-right")) {
+                    cog.classList.add("fa-chevron-down");
+                    cog.classList.remove("fa-chevron-right");
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 252px;";
+                        collapse.style = "height: 72px;";
                     }, 1);
                     setTimeout(function () {
-                        collapse2.classList.remove("collapsing");
-                        collapse2.classList.add("collapse");
-                        collapse2.style = "";
-                        collapse2.classList.add("in");
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "";
+                        collapse.classList.add("in");
                     }, 300);
                 } else {
-                    cog2.classList.remove("fa-chevron-down");
-                    cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 252px;";
-                    collapse2.classList.remove("collapse");
-                    collapse2.classList.add("collapsing");
+                    cog.classList.remove("fa-chevron-down");
+                    cog.classList.add("fa-chevron-right");
+                    collapse.style = "height: 72px;";
+                    collapse.classList.remove("collapse");
+                    collapse.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 0px;";
+                        collapse.style = "height: 0px;";
                     }, 1);
                     setTimeout(function () {
-                        collapse2.classList.remove("collapsing");
-                        collapse2.classList.add("collapse");
-                        collapse2.style = "height: 0px;";
-                        collapse2.classList.remove("in");
+                        collapse.classList.remove("collapsing");
+                        collapse.classList.add("collapse");
+                        collapse.style = "height: 0px;";
+                        collapse.classList.remove("in");
                     }, 300);
                 }
             }
@@ -1110,56 +728,46 @@
                     return false;
                 }
             }
+
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
-                window.location.href = "skill";
+                window.location.href = "email";
             };
             document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
-                window.location.href = "mentor";
+                window.location.href = "setting";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[2].onclick = function () {
-                window.location.href = "request";
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[0].onclick = function () {
+                window.location.href = "profile";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[3].onclick = function () {
-                window.location.href = "authorization";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
-                window.location.href = "mentee";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
-                window.location.href = "report";
-            };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
+            <%if(u.getRole().equalsIgnoreCase("mentor")) {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "cv";
             };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "transaction";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[6].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
+                window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "transaction";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "bank";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
+                window.location.href = "wallet";
+            };
+            <%}%>
         </script>
-        <div id="preloader"></div>
-
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
-           display: flex!important;
-           justify-content: center!important;
-           align-items: center!important;
-           box-sizing: border-box;
-           text-align: var(--bs-body-text-align);
-           -webkit-text-size-adjust: 100%;
-           -webkit-tap-highlight-color: transparent;
-           "><i class="bi bi-arrow-up-short"></i></a>
-
-        <!-- Vendor JS Files -->
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/aos/aos.js"></script>
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/swiper/swiper-bundle.min.js"></script>
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/php-email-form/validate.js"></script>
-
-        <!-- Template Main JS File -->
-        <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
-        <%if(request.getAttribute("message") != null) {%>
-        <script>
-            setTimeout(function() {
-                alert("<%=(String)request.getAttribute("message")%>");
-            }, 100);
-        </script>
-        <%}%>
     </body>
-
 </html>

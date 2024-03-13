@@ -112,6 +112,10 @@ public class RegisterController extends HttpServlet {
                     };
                     thread.start();
                     request.getSession().setAttribute("User", u);
+                    if(u.getRole().equalsIgnoreCase("mentor")) {
+                        response.sendRedirect("cv");
+                        return;
+                    }
                     response.sendRedirect("index");
                     return;
                 } else {

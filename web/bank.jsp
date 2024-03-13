@@ -472,7 +472,7 @@
                                                     </div>
                                                 </div><div class="menu__setting--sub panel panel-default">
                                                     <div class="panel-heading">
-                                                        <div class="active  panel-title">
+                                                        <div class="  panel-title">
                                                             <i class="fas fa-user-lock"></i> Thống Kê Request
                                                         </div>
                                                     </div>
@@ -621,6 +621,9 @@
             document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
                 window.location.href = "statistic";
             };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "transaction";
+            };
             document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
                 window.location.href = "bank";
             };
@@ -630,6 +633,9 @@
             <%} else {%>
             document.getElementsByClassName('menu__setting--sub panel panel-default')[2].onclick = function () {
                 window.location.href = "statistic";
+            };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
+                window.location.href = "transaction";
             };
             document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
                 window.location.href = "bank";

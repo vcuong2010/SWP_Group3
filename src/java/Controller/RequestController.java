@@ -9,6 +9,7 @@ import DAO.CvDAO;
 import DAO.MentorDAO;
 import DAO.RateDAO;
 import DAO.RequestDAO;
+import DAO.ScheduleDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -52,7 +53,7 @@ public class RequestController extends HttpServlet {
         String type = request.getParameter("type");
         if (type != null) {
             switch (type) {
-                case "delete": {
+                case "cancel": {
                     if (u.getRole().equalsIgnoreCase("mentee")) {
                         if (request.getParameterValues("id") != null && request.getParameterValues("id").length < 2) {
                             String sid = request.getParameter("id");
@@ -90,6 +91,21 @@ public class RequestController extends HttpServlet {
                                 try {
                                     int id = Integer.parseInt(sid);
                                     RequestDAO.acceptRequest(id, u.getId());
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                    }
+                    break;
+                }
+                case "complete": {
+                    if (u.getRole().equalsIgnoreCase("mentor")) {
+                            String sid = request.getParameter("id");
+                                try {
+                                    int id = Integer.parseInt(sid);
+                                    if(ScheduleDAO.getPercentByRequest(id) == 100) {
+                                        int cash = RequestDAO.completeRequest(id, u.getId());
+                                        //u.setWallet(u.getWallet() + cash);
+                                    }
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }

@@ -1007,7 +1007,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(tue.size() > i && tue.get(i) != null) {
@@ -1021,7 +1021,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(wen.size() > i && wen.get(i) != null) {
@@ -1035,7 +1035,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(thu.size() > i && thu.get(i) != null) {
@@ -1049,7 +1049,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(fri.size() > i && fri.get(i) != null) {
@@ -1063,7 +1063,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(sat.size() > i && sat.get(i) != null) {
@@ -1077,7 +1077,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 <%if(sun.size() > i && sun.get(i) != null) {
@@ -1091,7 +1091,7 @@
 %>\n\
 <td data-action="selectDay" class="day" title="Slot <%=i%>">\n\
 <input type="checkbox" name="slot" value="<%=s.getId()%>" id="checkbox-<%=s.getId()%>" >\n\
-<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR) < 10 ? "0"+c.get(Calendar.HOUR) : c.get(Calendar.HOUR)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR) < 10 ? "0"+to.get(Calendar.HOUR) : to.get(Calendar.HOUR)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
+<label for="checkbox-<%=s.getId()%>"><%=c.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+c.get(Calendar.HOUR_OF_DAY) : c.get(Calendar.HOUR_OF_DAY)%>:<%=c.get(Calendar.MINUTE) < 10 ? "0"+c.get(Calendar.MINUTE) : c.get(Calendar.MINUTE)%><br><%=to.get(Calendar.HOUR_OF_DAY) < 10 ? "0"+to.get(Calendar.HOUR_OF_DAY) : to.get(Calendar.HOUR_OF_DAY)%>:<%=to.get(Calendar.MINUTE) < 10 ? "0"+to.get(Calendar.MINUTE) : to.get(Calendar.MINUTE)%></label>\n\
 <% } else {%><td data-action="selectDay" class="day"> -<%}%>\n\
 </td>\n\
 </tr>\n\

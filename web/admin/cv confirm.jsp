@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Report, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus, DAO.CvDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of authorization</title>
+        <title>CV Confirmation</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -586,11 +586,10 @@
     <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
-            User u = (User)session.getAttribute("User");
-            HashMap<String, String> arr = (HashMap)request.getAttribute("maps");
-            ArrayList<Role> roles = (ArrayList)request.getAttribute("roles");
+            ArrayList<CV> arr = (ArrayList)request.getAttribute("CVs");
             int p = (int) Math.ceil((double)arr.size() / 10);
-            %>
+            User u = (User)session.getAttribute("User");
+        %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
                 <a href="#" class="logo">
@@ -819,13 +818,14 @@
                                                 <div class="panel-heading">
                                                     <div class="active title-sub  panel-title">
                                                         <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%><i class="fas fa-chevron-down"></i>
+                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%> <i class="fas fa-chevron-down"></i>
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <div class="panel-collapse collapse in">
                                                     <div class="panel-body">
                                                         <div class="panel-group">
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Skills</div>
@@ -836,14 +836,16 @@
                                                                     <div class="panel-title">Mentors</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Requests</div>
                                                                 </div>
                                                             </div>
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Authorization</div>
+                                                                    <div class="panel-title">Authorization</div>
                                                                 </div>
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
@@ -851,6 +853,7 @@
                                                                     <div class="panel-title">Mentee Statistic</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Report</div>
@@ -858,7 +861,7 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">CV Confirmation</div>
+                                                                    <div class="panel-title active">CV Confirmation</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -877,83 +880,32 @@
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
-                        <h3 class="col-sm-8">List of authorization</h3>
+                        <h3>List of CV</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Path</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Authorite Role</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Mentor</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Giá Thuê 1 Slot</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Skills</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <%  int i = 0;
-                                            for(String path : arr.keySet()) {%>
+                                        <%for(int i = 0; i < arr.size(); i++) {%>
+                                        <%String mentor = CvDAO.getMentorByCvID(arr.get(i).getId());%>
                                         <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
                                                 <%=i+1%>
                                             </td>
-                                            <td><%=path%></td>
-                                            <td><%=arr.get(path)%></td>
-                                            <td>
-                                                <a href="" id="" onclick="update<%=i+1%>(event)" class="edit" data-toggle="modal">
-                                            <i class="fas fa-edit" data-toggle="tooltip" title="update"></i>
-                                        </a>
-                                            <script>
-                                                function update<%=i+1%>(event) {
-                                                    event.preventDefault();
-                            let title = document.title;
-                            document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                            let modal = document.createElement('div');
-                            modal.innerHTML = '<div role="dialog" aria-hidden="true"><div class="fade modal-backdrop"></div><div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;"><div class="modal-dialog"><div class="modal-content" role="document"><div class="modal-header"><button type="button" class="close"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button><h4 class="modal-title"><span>Update Authorization</span></h4></div><form method="post"><div class="modal-body"><table style="width: 100%;"><tbody><tr><td>Path:</td><td><%=path%></td></tr><tr><td><span>Authorite Role</span>:</td><td><%for(int j = 0; j < roles.size(); j++) {%><div class="col-sm-6"><input type="checkbox" name="role" value="<%=roles.get(j).getName()%>" id="<%=roles.get(j).getId()%>" <%=arr.get(path.toLowerCase()).contains(roles.get(j).getName().toLowerCase()) ? "checked" : ""%>><label for="<%=roles.get(j).getId()%>" style="margin-left: 5px"><%=roles.get(j).getName()%></label></div><%}%><div class="col-sm-6"><input type="checkbox" name="role" value="all user" id="all" <%=arr.get(path.toLowerCase()).contains("all user") ? "checked" : ""%>><label for="all" style="margin-left: 5px">All User</label></div><div class="col-sm-6"><input type="checkbox" name="role" value="guest" id="guest" <%=arr.get(path.toLowerCase()).contains("guest") ? "checked" : ""%>><label for="guest" style="margin-left: 5px">Guest</label></div><input type="hidden" name="id" value="<%=path%>"></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Update</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
-                            document.body.appendChild(modal.firstChild);
-                    setTimeout(function () {
-                        document.body.lastChild.children[1].classList.add("in");
-                        document.body.lastChild.firstChild.classList.add("in");
-                        document.getElementsByClassName('close')[0].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                        };
-                        window.onclick = function (e) {
-                            if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
-                                document.body.lastChild.firstChild.classList.remove("in");
-                                document.body.lastChild.children[1].classList.remove("in");
-                                setTimeout(function () {
-                                    document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
-                                    document.body.removeChild(document.body.lastChild);
-                                    window.onclick = null;
-                                }, 100);
-                                document.title = title;
-                            }
-                        };
-                        document.title = "Update Authorization";
-                    }, 1);
-                        }
-                                            </script>
-                                            </td>
+                                            <td><a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/mentor?id=<%=mentor.split(";")[0]%>"><%=mentor.split(";")[1]%></a></td>
+                                            <td><%=arr.get(i).getCashPerSlot()%></td>
+                                            <td><%=arr.get(i).getSkillString()%></td>
+                                            <td><a href="cv?type=confirm&id=<%=arr.get(i).getId()%>"><i class="fas fa-check" data-toggle="tooltip" title="confirm"></i></a><a href="cv?type=reject&id=<%=arr.get(i).getId()%>" style="color: red;"><i class="fas fa-ban" data-toggle="tooltip" title="reject"></i></a></td>
                                         </tr> 
-                                        <%i++;
-                                            }
-                                        %>
+                                        <%}%>
                                     </tbody>
                                 </table>
                                 <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
@@ -962,12 +914,17 @@
                                     <ul class="pagination">
                                         <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
                                             <%
-                                                for(int j = 0; j < p; j++) {
+                                                for(int i = 0; i < p; i++) {
                                             %>
-                                        <li class="page-item <%=(j==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=j+1%>' class="page-link"><%=j+1%></a></li>
+                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
                                             <%}%>
                                         <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                         <script>
+                                            <%if(request.getAttribute("alert") != null) {%>
+                                                setTimeout(function() {
+                                                    alert("<%=(String)request.getAttribute("alert")%>");
+                                                }, 500);
+                                            <%}%>
                                             function paging(input, event) {
                                                 event.preventDefault();
                                                 let str = JSON.stringify(input.href).replace("<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")+request.getContextPath()+"/admin/"%>", "").replaceAll('"', '');
@@ -1077,7 +1034,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 252px;";
+                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "252" : "72"%>px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1088,7 +1045,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 252px;";
+                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "252" : "72"%>px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1110,6 +1067,7 @@
                     return false;
                 }
             }
+            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "skill";
             };
@@ -1125,24 +1083,27 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
                 window.location.href = "mentee";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
                 window.location.href = "report";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[6].onclick = function () {
                 window.location.href = "cv";
             };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "request";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "report";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[2].onclick = function () {
+                window.location.href = "cv";
+            };
+            <%}%>
         </script>
         <div id="preloader"></div>
 
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
-           display: flex!important;
-           justify-content: center!important;
-           align-items: center!important;
-           box-sizing: border-box;
-           text-align: var(--bs-body-text-align);
-           -webkit-text-size-adjust: 100%;
-           -webkit-tap-highlight-color: transparent;
-           "><i class="bi bi-arrow-up-short"></i></a>
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="display: flex!important;justify-content: center!important;align-items: center!important;box-sizing: border-box;text-align: var(--bs-body-text-align);-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: transparent;"><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -1153,13 +1114,7 @@
 
         <!-- Template Main JS File -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
-        <%if(request.getAttribute("message") != null) {%>
-        <script>
-            setTimeout(function() {
-                alert("<%=(String)request.getAttribute("message")%>");
-            }, 100);
-        </script>
-        <%}%>
+
     </body>
 
 </html>

@@ -678,6 +678,9 @@
             document.getElementsByClassName('menu__setting--sub panel panel-default')[3].onclick = function () {
                 window.location.href = "statistic";
             };
+            document.getElementsByClassName('menu__setting--sub panel panel-default')[4].onclick = function () {
+                window.location.href = "transaction";
+            };
             document.getElementsByClassName('menu__setting--sub panel panel-default')[5].onclick = function () {
                 window.location.href = "bank";
             };

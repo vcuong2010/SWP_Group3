@@ -23,7 +23,90 @@ import model.Slot;
  * @author TGDD
  */
 public class ScheduleDAO {
+    
+    public static int getPercentByRequest(int id) {
+        int percent = 0;
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT Count([SlotID]) as Total, (SELECT Count([SlotID]) FROM [Slot] WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?) AND [Status] = N'Done') as Done FROM [RequestSlot] WHERE [RequestID] = ?");
+            ps.setInt(1, id);
+            ps.setInt(2, id);
+            ResultSet rs = ps.executeQuery();
+            rs.next();
+            percent = (int)((rs.getInt("Total") > 0 ? ( (double)rs.getInt("Done") / (double)rs.getInt("Total") ) : 0) * 100);
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return percent;
+    }
+    
+    public static void updateSlot(int id, String link, float hour, Timestamp start) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("UPDATE [Slot] SET [Link] = ?, [Time] = ?, [startAt] = ? WHERE [SlotID] = ?");
+            ps.setString(1, link);
+            ps.setFloat(2, hour);
+            ps.setTimestamp(3, start);
+            ps.setInt(4, id);
+            ps.executeUpdate();
+            dbo.commit();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        dbo.close();
+    }
+    
+    public static boolean deleteSlot(int id) throws Exception {
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Request] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [RequestStatus] = N'Accept'");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                dbo.close();
+                return false;
+            } else {
+                ps = dbo.prepareStatement("DELETE FROM [RequestSlot] WHERE [SlotID] = ?");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                ps = dbo.prepareStatement("DELETE FROM [Slot] WHERE [SlotID] = ?");
+                ps.setInt(1, id);
+                ps.executeUpdate();
+                dbo.commit();
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        dbo.close();
+        return true;
+    }
 
+    public static Slot getSlotById(int id) throws Exception {
+        Slot s = null;
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT [SlotID]\n"
+                    + "      ,[Time]\n"
+                    + "      ,[startAt]\n"
+                    + "      ,[Link]\n"
+                    + "      ,[ScheduleID]\n"
+                    + "      ,[SkillID]\n"
+                    + "      ,[MenteeID], [Status],\n"
+                    + " (SELECT [fullname] FROM [User] WHERE [UserID] = (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID])) as Mentor, (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID]) as MentorID FROM [Slot] WHERE [SlotID] = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                s = new Slot(rs.getInt("SlotID"), rs.getTimestamp("startAt"), rs.getFloat("Time"), rs.getString("Link"), rs.getString("Mentor"), rs.getInt("MentorID"));
+                s.setStatus(rs.getString("Status"));
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        dbo.close();
+        return s;
+    }
+    
     public static int weekCount(ArrayList<Slot> array) {
         Collections.sort(array, new Comparator<Slot>() {
             @Override
@@ -73,22 +156,22 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
-                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [Status] != N'Reject' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
-                        ps.setInt(1, sid);
-                        ResultSet rs2 = ps.executeQuery();
-                        rs2.next();
-                        if(rs2.getInt("NotDone") == 0) {
-                            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
-                            ps.setInt(1, sid);
-                            ps.executeUpdate();
-                            ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] + (SELECT [Balance] FROM [Payment] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [Status] != N'Done') WHERE [UserID] = (SELECT [UserID] FROM [Request] WHERE [SlotID] = ?)");
-                            ps.setInt(1, sid);
-                            ps.setInt(2, sid);
-                            ps.executeUpdate();
-                            ps = dbo.prepareStatement("UPDATE [Payment] SET [Status] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?)");
-                            ps.setInt(1, sid);
-                            ps.executeUpdate();
-                        }
+//                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [Status] != N'Reject' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
+//                        ps.setInt(1, sid);
+//                        ResultSet rs2 = ps.executeQuery();
+//                        rs2.next();
+//                        if(rs2.getInt("NotDone") == 0) {
+//                            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
+//                            ps.setInt(1, sid);
+//                            ps.executeUpdate();
+//                            ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] + (SELECT [Balance] FROM [Payment] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [Status] != N'Done') WHERE [UserID] = (SELECT [UserID] FROM [Request] WHERE [SlotID] = ?)");
+//                            ps.setInt(1, sid);
+//                            ps.setInt(2, sid);
+//                            ps.executeUpdate();
+//                            ps = dbo.prepareStatement("UPDATE [Payment] SET [Status] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?)");
+//                            ps.setInt(1, sid);
+//                            ps.executeUpdate();
+//                        }
                     } else {
                         dbo.close();
                         return false;
@@ -99,22 +182,6 @@ public class ScheduleDAO {
                         ps.setInt(1, sid);
                         ps.setInt(2, uid);
                         ps.executeUpdate();
-                        ps = dbo.prepareStatement("SELECT Count([SlotID]) as [NotDone] FROM [Slot] WHERE [Status] != N'Done' AND [Status] != N'Reject' AND [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?))");
-                        ps.setInt(1, sid);
-                        ResultSet rs2 = ps.executeQuery();
-                        rs2.next();
-                        if(rs2.getInt("NotDone") == 0) {
-                            ps = dbo.prepareStatement("UPDATE [Request] SET [RequestStatus] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE SlotID = ?)");
-                            ps.setInt(1, sid);
-                            ps.executeUpdate();
-                            ps = dbo.prepareStatement("UPDATE [User] SET [wallet] = [wallet] + (SELECT [Balance] FROM [Payment] WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?) AND [Status] != N'Done') WHERE [UserID] = (SELECT [UserID] FROM [Request] WHERE [SlotID] = ?)");
-                            ps.setInt(1, sid);
-                            ps.setInt(2, sid);
-                            ps.executeUpdate();
-                            ps = dbo.prepareStatement("UPDATE [Payment] SET [Status] = N'Done' WHERE [RequestID] = (SELECT [RequestID] FROM [RequestSlot] WHERE [SlotID] = ?)");
-                            ps.setInt(1, sid);
-                            ps.executeUpdate();
-                        }
                     } else {
                         dbo.close();
                         return false;

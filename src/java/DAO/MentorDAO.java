@@ -20,6 +20,24 @@ import model.MentorStatistic;
  */
 public class MentorDAO {
     
+    public static boolean acceptedCv(int id) {
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [MentorStatus] = N'Accepted' AND [UserID] = ?");
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()) {
+                dbo.close();
+                return true;
+            }
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+        
+    }
+    
     public static int getSlotCash(int id) {
         int cash = 0;
         Connection dbo = DatabaseUtil.getConn();
@@ -109,7 +127,7 @@ public class MentorDAO {
         Connection dbo = DatabaseUtil.getConn();
         HashMap<Mentor, MentorDetail> arr = new HashMap();
         try {
-            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [UserID] in (SELECT [MentorID] FROM [MentorSkills] WHERE [SkillID] = ?) AND (SELECT [activeStatus] FROM [User] WHERE [UserID] = [Mentor].[UserID]) = 1");
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [Mentor] WHERE [UserID] in (SELECT [MentorID] FROM [MentorSkills] WHERE [SkillID] = ?) AND (SELECT [activeStatus] FROM [User] WHERE [UserID] = [Mentor].[UserID]) = 1 AND (SELECT Count(*) as FreeSlot FROM [Slot] WHERE (Select MentorID FROM Schedule WHERE [Slot].ScheduleID = Schedule.ScheduleID) = [Mentor].[UserID] AND SkillID IS NULL) > 0 AND [MentorStatus] = N'Accepted'");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
@@ -230,7 +248,7 @@ public class MentorDAO {
             if(filter > 0) {
                 sql += " AND ";
             }
-            sql += "([Mentor].[MentorStatus] "+ (ready.equalsIgnoreCase("true") ? "= N'active'" : "!= N'active'" ) +")";
+            sql += "([Mentor].[MentorStatus] "+ (ready.equalsIgnoreCase("true") ? "= N'Accepted'" : "!= N'Accepted'" ) +")";
             filter++;
         }
         if(skill != null) {

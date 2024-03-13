@@ -40,6 +40,17 @@ public class CV {
     public ArrayList<Skill> getSkills() {
         return skills;
     }
+    
+    public String getSkillString() {
+        String ret = "";
+        for (int i = 0; i < skills.size(); i++) {
+            ret += skills.get(i).getName();
+            if(i != skills.size() - 1) {
+                ret += ", ";
+            }
+        }
+        return ret;
+    }
 
     public int getId() {
         return id;

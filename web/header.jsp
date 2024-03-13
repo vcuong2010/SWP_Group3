@@ -47,7 +47,7 @@
                     </li>
                     <li class="item-icon group-fb">
                         <a class="group-user" style="display: block">
-                            <i class="fal fa-trophy-alt"></i>
+                            <i class="fal fa-comment"></i>
                         </a>
                     </li>
                 </ul>
@@ -106,7 +106,7 @@
                             </a>
                             <li class="item-icon">
                                 <a class="group-user">
-                                    <i class="fal fa-trophy-alt"></i>
+                                    <i class="fal fa-comment"></i>
                                     <span>Bảng xếp hạng</span>
                                 </a>
                             </li>
@@ -200,7 +200,7 @@
                     </li>
                     <li class="item-icon group-fb">
                         <a class="group-user" style="display: block">
-                            <i class="fal fa-trophy-alt"></i>
+                            <i class="fal fa-comment"></i>
                         </a>
                     </li>
                 </ul>
@@ -250,7 +250,7 @@
                                     <span>Tạo/Sửa CV</span>
                                 </a>
                             </li><% } %> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="transaction">
                                     <i class="fas fa-clock"></i>
                                     <span>Lịch sử giao dịch</span>
                                 </a>
@@ -390,6 +390,12 @@
                                     alert("<%=(String)request.getAttribute("alert")%>");
                                 }, 1000);
                                 <%}%>
+                                <%if(session.getAttribute("alert") != null) {%>
+                                setTimeout(function() {
+                                    alert("<%=(String)session.getAttribute("alert")%>");
+                                }, 1000);
+                                <%  session.removeAttribute("alert");
+                                    }%>
                                 </script>
                             </div>
                         </ul>
@@ -476,7 +482,7 @@
                                     <span>Tạo/Sửa CV</span>
                                 </a>
                             </li><% } %> <li role="presentation" class="menu-item">
-                                <a role="menuitem" tabindex="-1" href="#">
+                                <a role="menuitem" tabindex="-1" href="transaction">
                                     <i class="fas fa-clock"></i>
                                     <span>Lịch sử giao dịch</span>
                                 </a>

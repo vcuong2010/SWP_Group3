@@ -5,6 +5,7 @@
 package Controller.Api;
 
 import DAO.ScheduleDAO;
+import com.google.gson.Gson;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -37,9 +38,25 @@ public class ScheduleController extends HttpServlet {
         PrintWriter r = response.getWriter();
         String sid = request.getParameter("id");
         if (sid == null) {
-            response.setContentType("text/plain;charset=UTF-8");
-            r.println("You need to provide id");
-            response.setStatus(502);
+            sid = request.getParameter("sid");
+            if(sid == null) {
+                response.setContentType("text/plain;charset=UTF-8");
+                r.println("You need to provide id");
+                response.setStatus(502);
+            } else {
+                try {
+                    response.setStatus(200);
+                    int id = Integer.parseInt(sid);
+                    Slot s = ScheduleDAO.getSlotById(id);
+                    Gson gson = new Gson();
+                    String json = gson.toJson(s);
+                    r.println(json);
+                } catch(Exception e) {
+                    response.setContentType("text/plain;charset=UTF-8");
+                    r.println(e.getMessage());
+                    response.setStatus(502);
+                }
+            }
         } else {
             try {
                 if (request.getParameter("free") != null) {
