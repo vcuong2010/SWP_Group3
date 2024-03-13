@@ -20,6 +20,10 @@
         <servlet-name>AdminCvController</servlet-name>
         <servlet-class>Controller.admin.AdminCvController</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>AdminTransactionController</servlet-name>
+        <servlet-class>Controller.admin.AdminTransactionController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>RequestController</servlet-name>
         <url-pattern>/request</url-pattern>
@@ -47,6 +51,10 @@
     <servlet-mapping>
         <servlet-name>AdminCvController</servlet-name>
         <url-pattern>/admin/cv</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminTransactionController</servlet-name>
+        <url-pattern>/admin/transaction</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
