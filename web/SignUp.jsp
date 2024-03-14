@@ -104,7 +104,7 @@
                             </div>
                             <br>
                             <div style="text-align: center;padding: 30px;" class="form-submit">
-                                <input style="margin-bottom: 30px" type="submit" value="Sign Up" class="submit" id="submit"/>
+                                <input style="margin-bottom: 30px" type="submit" value="Sign Up" onclick="validate(this, event)" class="submit" id="submit"/>
                                 <label>${alert}</label>
                                 
                             </div>
@@ -114,6 +114,16 @@
                                         Are you <a href="forgot">Forgot Password?</a>
                                     </div>
                         </form>
+                                <script>
+                                    function validate(input, event) {
+                                        event.preventDefault();
+                                        if(document.getElementById("dob").value >= new Date()) {
+                                            alert("Không được chọn ngày sinh sau ngày hiện tại");
+                                        } else {
+                                            input.form.submit();
+                                        }
+                                    }
+                                </script>
                     </div>
                 </div>
             </div>
