@@ -120,6 +120,7 @@ public class CVSettingController extends HttpServlet {
                 try {
                     int CashPS = Integer.parseInt(CashPerSlot);
                     CvDAO.updateCV(m.getCvID(), Profession, Service, CashPS);
+                    
                 } catch(Exception e) {
                     e.printStackTrace();
                 }
