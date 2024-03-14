@@ -17,11 +17,13 @@ import model.Skill;
  */
 public class SkillDAO {
     
-    public static boolean createSkill(String name, boolean active) throws Exception {
+    public static boolean createSkill(String name, boolean active, String avatar, String description) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
-        PreparedStatement ps = dbo.prepareStatement("INSERT INTO Skills (SkillName, enable) VALUES (?, ?)");
+        PreparedStatement ps = dbo.prepareStatement("INSERT INTO Skills (SkillName, enable, [Imageskill], [Skilldescription]) VALUES (?, ?, ?, ?)");
         ps.setString(1, name);
         ps.setInt(2, active ? 1 : 0);
+        ps.setString(3, avatar);
+        ps.setString(4, description);
         int k = ps.executeUpdate();
         dbo.commit();
         dbo.close();
@@ -41,12 +43,18 @@ public class SkillDAO {
         return rel;
     }
     
-    public static boolean UpdateSkill(int id, String name, boolean active) throws Exception {
+    public static boolean UpdateSkill(int id, String name, boolean active, String avatar, String description) throws Exception {
         Connection dbo = DatabaseUtil.getConn();
-        PreparedStatement ps = dbo.prepareStatement("UPDATE Skills SET SkillName = ?, enable = ? WHERE SkillID = ?");
+        PreparedStatement ps = dbo.prepareStatement("UPDATE Skills SET SkillName = ?, enable = ?, [Skilldescription] = ?" + (avatar != null ? ", [Imageskill] = ?" : "") +" WHERE SkillID = ?");
         ps.setString(1, name);
         ps.setInt(2, active ? 1 : 0);
-        ps.setInt(3, id);
+        ps.setString(3, description);
+        if(avatar != null) {
+            ps.setString(4, avatar);
+            ps.setInt(5, id);
+        } else {
+            ps.setInt(4, id);
+        }
         int k = ps.executeUpdate();
         dbo.commit();
         dbo.close();

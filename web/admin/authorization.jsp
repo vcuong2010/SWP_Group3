@@ -928,7 +928,7 @@
                                 }, 100);
                                 document.title = title;
                         };
-                        document.getElementsByClassName('btn btn-default')[2].onclick = function (e) {
+                        document.getElementsByClassName('btn btn-default')[1].onclick = function (e) {
                                 document.body.lastChild.firstChild.classList.remove("in");
                                 document.body.lastChild.children[1].classList.remove("in");
                                 setTimeout(function () {

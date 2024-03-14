@@ -99,6 +99,7 @@ public class ScheduleDAO {
             if(rs.next()) {
                 s = new Slot(rs.getInt("SlotID"), rs.getTimestamp("startAt"), rs.getFloat("Time"), rs.getString("Link"), rs.getString("Mentor"), rs.getInt("MentorID"));
                 s.setStatus(rs.getString("Status"));
+                s.setMenteeId(rs.getInt("MenteeID"));
             }
         } catch(Exception e) {
             e.printStackTrace();

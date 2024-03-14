@@ -167,7 +167,6 @@ public class ProfileController extends HttpServlet {
                 String realpath = request.getServletContext().getRealPath("/avatar").replace("\\build\\web\\avatar", "\\web\\avatar");
                 File outputfile = new File(path+"/"+u.getUsername()+"_"+u.getId()+".png");
                 ImageIO.write(img, "png", outputfile);
-                System.out.println(realpath);
                 File realoutputfile = new File(realpath+"/"+u.getUsername()+"_"+u.getId()+".png");
                 ImageIO.write(img, "png", realoutputfile);
                 try {
