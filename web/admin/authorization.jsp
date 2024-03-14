@@ -861,6 +861,11 @@
                                                                     <div class="panel-title">CV Confirmation</div>
                                                                 </div>
                                                             </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Transaction Management</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1125,11 +1130,14 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
                 window.location.href = "mentee";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
                 window.location.href = "report";
             };
-            document.getElementsByClassName('menu__setting--last panel panel-default')[5].onclick = function () {
+            document.getElementsByClassName('menu__setting--last panel panel-default')[6].onclick = function () {
                 window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
+                window.location.href = "transaction";
             };
         </script>
         <div id="preloader"></div>

@@ -25,7 +25,7 @@
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="keywords" content="Playerduo, player duo, play dua, thuê gái chơi game">
         <meta name="description" content="PlayerDuo Cộng đồng game thủ lớn nhất Việt Nam, Cùng chơi với những game thủ chuyên nghiệp, hot streamer, hot girl và những người nổi tiếng.">
-        <title>Statistic of requests</title>
+        <title>Transaction</title>
         <meta content="index,follow" name="googlebot">
         <meta name="copyright" content=" PlayerDuo 2022">
         <meta name="robots" content="INDEX,FOLLOW">
@@ -34,7 +34,6 @@
         <meta property="og:description" content="Tham gia cộng đồng game thủ lớn nhất Việt Nam."/>
         <meta property="og:image" content="https://playerduo-data.sgp1.cdn.digitaloceanspaces.com/production/images/thumbs.png"/>
         <meta property="og:video" content=""/>
-        <title>Profile</title>
         <meta name="msapplication-TileColor" content="#ffffff"/>
         <meta name="msapplication-TileImage" content="/favicons/ms-icon-144x144.png"/>
         <meta name="theme-color" content="#ffffff"/>
@@ -45,7 +44,6 @@
         <script defer="defer" src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
         <script defer="defer" src="https://apis.google.com/js/api.js"></script>
         <script src="https://www.google.com/recaptcha/api.js"></script>
-        <title>Profile</title>
         <link href="css/8.97b85fe3.chunk.css" rel="stylesheet">
         <link href="css/main.3e229f12.chunk.css" rel="stylesheet">
         <style type="text/css">

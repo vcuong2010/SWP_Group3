@@ -255,7 +255,7 @@ public class MentorDAO {
             if(filter > 0) {
                 sql += " AND ";
             }
-            sql += "(SELECT [SkillID] FROM [MentorSkills] WHERE [MentorID] = [Mentor].[UserID]) = " + skill;
+            sql += skill + " in (SELECT [SkillID] FROM [MentorSkills] WHERE [MentorID] = [Mentor].[UserID])";
         }
         Connection dbo = DatabaseUtil.getConn();
         PreparedStatement ps = dbo.prepareStatement(sql);

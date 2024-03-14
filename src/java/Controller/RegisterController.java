@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.sql.Date;
 import java.util.Random;
+import model.Mentor;
 
 /**
  *
@@ -113,6 +114,8 @@ public class RegisterController extends HttpServlet {
                     thread.start();
                     request.getSession().setAttribute("User", u);
                     if(u.getRole().equalsIgnoreCase("mentor")) {
+                        Mentor r = (Mentor) UserDAO.getRole(u.getId(), u.getRole());
+                        request.getSession().setAttribute("Mentor", r);
                         response.sendRedirect("cv");
                         return;
                     }

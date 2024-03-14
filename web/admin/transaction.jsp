@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.MenteeStatistic, model.User, model.Mentor, model.Mentee, java.util.Collections, java.util.Comparator, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, java.util.HashMap, model.Role" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Report, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus, model.payment" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of authorization</title>
+        <title>Transaction Management</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -586,24 +586,10 @@
     <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
-            User u = (User)session.getAttribute("User");
-            ArrayList<MenteeStatistic> arr = (ArrayList)request.getAttribute("mstatistic");
-            ArrayList<MenteeStatistic> AZ = (ArrayList)arr.clone();
-            ArrayList<MenteeStatistic> ZA = (ArrayList)arr.clone();
-            Collections.sort(AZ, new Comparator<MenteeStatistic>() {
-                @Override
-                public int compare(MenteeStatistic o1, MenteeStatistic o2) {
-                    return o1.getName().compareTo(o2.getName()) == 0 ? o1.getFullname().compareTo(o2.getFullname()) : o1.getName().compareTo(o2.getName());
-                }
-            });
-            Collections.sort(ZA, new Comparator<MenteeStatistic>() {
-                @Override
-                public int compare(MenteeStatistic o1, MenteeStatistic o2) {
-                    return o2.getName().compareTo(o1.getName()) == 0 ? o2.getFullname().compareTo(o1.getFullname()) : o2.getName().compareTo(o1.getName());
-                }
-            });
+            ArrayList<payment> arr = (ArrayList)request.getAttribute("payments");
             int p = (int) Math.ceil((double)arr.size() / 10);
-            %>
+            User u = (User)session.getAttribute("User");
+        %>
         <header class="menu__header fix-menu" id="header-menu">
             <div class="navbar-header">
                 <a href="#" class="logo">
@@ -832,13 +818,14 @@
                                                 <div class="panel-heading">
                                                     <div class="active title-sub  panel-title">
                                                         <a aria-expanded="false" class="collapsed" role="button" href="#">
-                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%><i class="fas fa-chevron-down"></i>
+                                                            <i class="fas fa-cog"></i> Cài đặt <%=u.getRole().equalsIgnoreCase("admin") ? "Admin" : "Manager"%> <i class="fas fa-chevron-down"></i>
                                                         </a>
                                                     </div>
                                                 </div>
                                                 <div class="panel-collapse collapse in">
                                                     <div class="panel-body">
                                                         <div class="panel-group">
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Skills</div>
@@ -849,11 +836,13 @@
                                                                     <div class="panel-title">Mentors</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Requests</div>
                                                                 </div>
                                                             </div>
+                                                            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Authorization</div>
@@ -861,9 +850,10 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Mentee Statistic</div>
+                                                                    <div class="panel-title">Mentee Statistic</div>
                                                                 </div>
                                                             </div>
+                                                            <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <div class="panel-title">Report</div>
@@ -876,7 +866,7 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">Transaction Management</div>
+                                                                    <div class="panel-title active">Transaction Management</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -893,77 +883,43 @@
                         </div>
                     </div>
                 </div>
-                                                        <script>
-                    function sort(input) {
-                        let body = document.getElementById("tbody");
-                        if(input.options[input.selectedIndex].value === 'asc') {
-                            body.innerHTML = '<% for(int i = 0; i < AZ.size(); i++) {%>\n\
-                                                <td><%=i+1%></td>\n\
-                                                <td><%=AZ.get(i).getName()%></td>\n\
-                                            <td><%=AZ.get(i).getFullname()%></td>\n\
-                                            <td><%=AZ.get(i).getTotalHours()%></td>\n\
-                                            <td><%=AZ.get(i).getTotalRequest()%></td>\n\
-                                            <td><%=AZ.get(i).getAcceptedRequest()%></td>\n\
-                                            <td><%=AZ.get(i).getRejectedRequest()%></td>\n\
-                                            <td><%=AZ.get(i).getTotalSkill()%></td>\n\
-                                        </tr> \n\
-                                                <%}%>';
-                        } else {
-                            body.innerHTML = '<% for(int i = 0; i < ZA.size(); i++) {%>\n\
-                                                <td><%=i+1%></td>\n\
-                                                <td><%=ZA.get(i).getName()%></td>\n\
-                                            <td><%=ZA.get(i).getFullname()%></td>\n\
-                                            <td><%=ZA.get(i).getTotalHours()%></td>\n\
-                                            <td><%=ZA.get(i).getTotalRequest()%></td>\n\
-                                            <td><%=ZA.get(i).getAcceptedRequest()%></td>\n\
-                                            <td><%=ZA.get(i).getRejectedRequest()%></td>\n\
-                                            <td><%=ZA.get(i).getTotalSkill()%></td>\n\
-                                        </tr> \n\
-                                                <%}%>';
-                        }
-                    }
-                                                        </script>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
-                        <form method="post">
-                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
-                            <input id="filter" type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
-                            <select onchange="sort(this)" style="width: 180px;min-height: 20px;"><option disabled selected>Order By Name</option><option value="desc">từ Z-A</option><option value="asc">từ A-Z</option></select>
-                        </form>
-                        <h3 class="col-sm-8">All Mentee Statistic</h3>
+                        <h3>List of transaction</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Username</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Hours</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Request</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Accepted Request</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Rejected Request</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Total Skill</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Mentee</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Mentor</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Số tiền đã chuyển</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Thời gian chuyển tiền</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Request ID</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Trạng Thái</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody id="tbody">
-                                        <% 
-                                            for(int i = 0; i < arr.size(); i++) {%>
+                                    <tbody>
+                                        <%for(int i = 0; i < arr.size(); i++) {%>
                                         <tr id='<%=i+1%>' <%=(i >= 10 ? "class=\"hidden\"" : "")%>>
                                             <td>
                                                 <%=i+1%>
                                             </td>
-                                            <td><%=arr.get(i).getName()%></td>
-                                            <td><%=arr.get(i).getFullname()%></td>
-                                            <td><%=arr.get(i).getTotalHours()%></td>
-                                            <td><%=arr.get(i).getTotalRequest()%></td>
-                                            <td><%=arr.get(i).getAcceptedRequest()%></td>
-                                            <td><%=arr.get(i).getRejectedRequest()%></td>
-                                            <td><%=arr.get(i).getTotalSkill()%></td>
+                                            <td><%=arr.get(i).getMentee()%></td>
+                                            <td><a href="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/mentor?id=<%=arr.get(i).getRid()%>"><%=arr.get(i).getMentor()%></a></td>
+                                            <td>
+                                                <%=arr.get(i).getBalance()%>
+                                            </td>
+                                            <td>
+                                                <%=arr.get(i).getTime()%>
+                                            </td>
+                                            <td><%=arr.get(i).getRequestID()%></td>
+                                            <td><%=arr.get(i).getStatus().equalsIgnoreCase("sent") && arr.get(i).isRequestDone() ? "Đã hoàn thành khóa học" : (arr.get(i).getStatus().equalsIgnoreCase("sent") ? "Đã chuyển" : "Đã nhận")%></td>
+                                            <td><%if (arr.get(i).getStatus().equalsIgnoreCase("sent") && arr.get(i).isRequestDone()) {%><a href="transaction?type=confirm&id=<%=arr.get(i).getId()%>"><i class="fas fa-check" data-toggle="tooltip" title="Xác nhận chuyển tiền"></i><%}%></td>
                                         </tr> 
-                                        <%
-                                            }
-                                        %>
+                                        <%}%>
                                     </tbody>
                                 </table>
                                 <% if(arr.size() == 0) {%><div class="text-center mt-20 col-md-12"><span>Không có dữ liệu</span></div><%}%>
@@ -972,9 +928,9 @@
                                     <ul class="pagination">
                                         <li class="page-item disabled"><a onclick='paging(this, event)' href="" id='Previous'>Previous</a></li>
                                             <%
-                                                for(int j = 0; j < p; j++) {
+                                                for(int i = 0; i < p; i++) {
                                             %>
-                                        <li class="page-item <%=(j==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=j+1%>' class="page-link"><%=j+1%></a></li>
+                                        <li class="page-item <%=(i==0) ? "active" : ""%>"><a onclick='paging(this, event)' href='<%=i+1%>' class="page-link"><%=i+1%></a></li>
                                             <%}%>
                                         <li class="page-item <%=(p > 1) ? "" : "disabled"%>"><a id='Next' onclick='paging(this, event)' href="" class="page-link">Next</a></li>
                                         <script>
@@ -1087,7 +1043,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 288px;";
+                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "288" : "144"%>px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1098,7 +1054,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 288px;";
+                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "288" : "144"%>px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1120,6 +1076,7 @@
                     return false;
                 }
             }
+            <%if(u.getRole().equalsIgnoreCase("admin")) {%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "skill";
             };
@@ -1144,18 +1101,29 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
                 window.location.href = "transaction";
             };
+            <%} else {%>
+            document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
+                window.location.href = "request";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[1].onclick = function () {
+                window.location.href = "report";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[2].onclick = function () {
+                window.location.href = "cv";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[3].onclick = function () {
+                window.location.href = "transaction";
+            };
+            <%}%>
+                                            <%if(request.getAttribute("alert") != null) {%>
+                                                setTimeout(function() {
+                                                    alert("<%=(String)request.getAttribute("alert")%>");
+                                                }, 500);
+                                            <%}%>
         </script>
         <div id="preloader"></div>
 
-        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="
-           display: flex!important;
-           justify-content: center!important;
-           align-items: center!important;
-           box-sizing: border-box;
-           text-align: var(--bs-body-text-align);
-           -webkit-text-size-adjust: 100%;
-           -webkit-tap-highlight-color: transparent;
-           "><i class="bi bi-arrow-up-short"></i></a>
+        <a href="#" class="back-to-top d-flex align-items-center justify-content-center" style="display: flex!important;justify-content: center!important;align-items: center!important;box-sizing: border-box;text-align: var(--bs-body-text-align);-webkit-text-size-adjust: 100%;-webkit-tap-highlight-color: transparent;"><i class="bi bi-arrow-up-short"></i></a>
 
         <!-- Vendor JS Files -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/vendor/purecounter/purecounter_vanilla.js"></script>
@@ -1166,13 +1134,7 @@
 
         <!-- Template Main JS File -->
         <script src="<%=request.getRequestURL().toString().replace(request.getRequestURI(), "")%><%=request.getContextPath()%>/assets/js/main.js"></script>
-        <%if(request.getAttribute("message") != null) {%>
-        <script>
-            setTimeout(function() {
-                alert("<%=(String)request.getAttribute("message")%>");
-            }, 100);
-        </script>
-        <%}%>
+
     </body>
 
 </html>
