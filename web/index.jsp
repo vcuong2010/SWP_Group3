@@ -462,6 +462,12 @@
             .styles-module_sliding__3T6T6 > * {
                 pointer-events: none;
             }
+            .item.active {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
         </style>
 
         <!-- =======================================================
@@ -484,23 +490,20 @@
                 <div class="carousel-inner">
                     <div class="item">
                         <a href="" target="_blank" rel="noopener noreferrer">
-                            <img src="assets/img/hero-bg.jpg" class="img-responsive" alt="banner">
+                            <img src="images/hi.jpg" class="img-responsive" alt="banner">
                         </a>
                     </div>
                     <div class="item active">
-                        <a href="" target="_blank" rel="noopener noreferrer">
-                            <img src="assets/img/hero-bg.jpg" class="img-responsive" alt="banner">
-                        </a>
+                        <div style="display: flex; flex-direction: row;">
+                            <a href="" target="_blank" rel="noopener noreferrer">
+                                <img src="images/hi.jpg" class="img-responsive" alt="banner">
+                            </a>
+                            <a href="" target="_blank" rel="noopener noreferrer">
+                                <img src="images/hi.jpg" class="img-responsive" alt="banner">
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <a class="carousel-control left" role="button" href="#">
-                    <span class="glyphicon glyphicon-chevron-left"></span>
-                    <span class="sr-only">Previous</span>
-                </a>
-                <a class="carousel-control right" role="button" href="#">
-                    <span class="glyphicon glyphicon-chevron-right"></span>
-                    <span class="sr-only">Next</span>
-                </a>
             </div>
             <!-- End Hero -->
 
@@ -535,8 +538,8 @@
                             var gender = document.getElementsByClassName('form-control gender')[0];
                             var skill = document.getElementsByClassName('form-control skill')[0];
                             var city = document.getElementsByClassName('form-control city')[0];
-                            ready.onclick = function() {
-                                if(this.classList.contains("false")) {
+                            ready.onclick = function () {
+                                if (this.classList.contains("false")) {
                                     this.classList.remove("false");
                                     this.classList.add("check");
                                 } else {
@@ -544,38 +547,38 @@
                                     this.classList.add("false");
                                 }
                             }
-                            document.getElementsByClassName('form-control btn-filter btn btn-default')[0].onclick = function() {
+                            document.getElementsByClassName('form-control btn-filter btn btn-default')[0].onclick = function () {
                                 var rd = !ready.classList.contains("false");
                                 var name = document.getElementsByClassName('form-control name')[0].value;
                                 var loc = "index?";
                                 var filter = 0;
-                                if(city.value) {
+                                if (city.value) {
                                     loc += "city=" + city.value;
                                     filter++;
                                 }
-                                if(name) {
-                                    if(filter > 0) {
+                                if (name) {
+                                    if (filter > 0) {
                                         loc += "&";
                                     }
                                     loc += "name=" + name;
                                     filter++;
                                 }
-                                if(rd) {
-                                    if(filter > 0) {
+                                if (rd) {
+                                    if (filter > 0) {
                                         loc += "&";
                                     }
                                     loc += "ready=" + rd;
                                     filter++;
                                 }
-                                if(skill.selectedIndex !== 0) {
-                                    if(filter > 0) {
+                                if (skill.selectedIndex !== 0) {
+                                    if (filter > 0) {
                                         loc += "&";
                                     }
                                     loc += "skill=" + skill.options[skill.selectedIndex].value;
                                     filter++;
                                 }
-                                if(gender.selectedIndex !== 0) {
-                                    if(filter > 0) {
+                                if (gender.selectedIndex !== 0) {
+                                    if (filter > 0) {
                                         loc += "&";
                                     }
                                     loc += "gender=" + gender.options[gender.selectedIndex].value;
