@@ -170,7 +170,7 @@ public class CvDAO {
             PreparedStatement ps = dbo.prepareStatement("UPDATE [CV] SET [ProfessionIntroduction] = ?, [ServiceDescription] = ?, [CashPerSlot] = ? WHERE [CvID] = ?");
             ps.setString(1, ProfessionIntroduction);
             ps.setString(2, ServiceDescription);
-            ps.setInt(4, CashPerSlot);
+            ps.setInt(3, CashPerSlot);
             ps.setInt(4, CvID);
             ps.executeUpdate();
             dbo.commit();

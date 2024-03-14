@@ -896,12 +896,6 @@
                         <script>
                             document.getElementById("filter").onclick = function() {
                                 event.preventDefault();
-                                if(document.getElementById("start").value != null && document.getElementById("end").value != null) {
-                                    if(document.getElementById("start").value > document.getElementById("end").value) {
-                                        alert("start date must be before end date!");
-                                        return;
-                                    }
-                                };
                                 this.onclick = null;
                                 this.click();
                             }

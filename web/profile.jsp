@@ -572,7 +572,7 @@
                                     <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
                                     <hr>
                                     <% } %>
-                                    <form class="from-userinfo" action="profile" method="POST">
+                                    <form class="from-userinfo" action="profile" method="POST" enctype="multipart/form-data">
                                         <div class="fieldGroup ">
                                             <p class="control-label">Họ và tên</p>
                                             <input type="text" name="fullname" placeholder="" maxlength="5000" autocomplete="false" value="<%=u.getFullname()%>">
