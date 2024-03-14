@@ -501,7 +501,8 @@
                     <span class="glyphicon glyphicon-chevron-right"></span>
                     <span class="sr-only">Next</span>
                 </a>
-            </div><!-- End Hero -->
+            </div>
+            <!-- End Hero -->
 
             <main id="main">
 
