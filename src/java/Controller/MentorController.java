@@ -170,7 +170,7 @@ public class MentorController extends HttpServlet {
                     String title = request.getParameter("title");
                     String FollowReason = request.getParameter("reason");
                     FollowDAO.sendRequest(id, title, FollowReason, u.getId());
-                    request.getSession().setAttribute("status", "Yêu cầu follow thành công!");
+                    request.getSession().setAttribute("alert", "Yêu cầu follow thành công!");
                 } else if(request.getParameter("type").equalsIgnoreCase("unfollow")) {
                     FollowDAO.unFollow(id, u.getId());
                 } else if(request.getParameter("type").equalsIgnoreCase("cancel follow")) {
@@ -183,13 +183,13 @@ public class MentorController extends HttpServlet {
                 Timestamp tm = Timestamp.from(formatter.parse(deadline).toInstant());
                 boolean check = RequestDAO.createRequest(skills, tm, subject, reason, u.getId(), id, slots);
                 if (check) {
-                    request.getSession().setAttribute("status", "Gửi request thành công!");
+                    request.getSession().setAttribute("alert", "Gửi request thành công!");
                 }
                 response.sendRedirect("mentor?id="+id);
                 return;
             }
         } catch (Exception e) {
-            request.getSession().setAttribute("status", "Gửi request thất bại!");
+            request.getSession().setAttribute("alert", "Gửi request thất bại!");
         }
         response.sendRedirect("mentor?id="+sid);
     }

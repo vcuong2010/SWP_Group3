@@ -931,7 +931,7 @@
                                         let date = new Date();
                                         date = date.addDays(7);
                                         let dateonly = date.toLocaleString().split(",")[0].split("/");
-                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
+                                        modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
                                         var fromDate = document.querySelector("input[name=fromDay]");
                                         var toDate = document.querySelector("input[name=toDay]");
