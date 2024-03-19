@@ -879,6 +879,11 @@
                                                                     <div class="panel-title">Transaction Management</div>
                                                                 </div>
                                                             </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Withdraw Management</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1087,7 +1092,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: 288px;";
+                        collapse2.style = "height: 324px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1098,7 +1103,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: 288px;";
+                    collapse2.style = "height: 324px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1143,6 +1148,9 @@
             };
             document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
                 window.location.href = "transaction";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[8].onclick = function () {
+                window.location.href = "withdraw";
             };
         </script>
         <div id="preloader"></div>

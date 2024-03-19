@@ -5,7 +5,7 @@
 --%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Report, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus" %>
+<%@page import="model.Skill, java.util.ArrayList, model.User, model.Mentor, model.Report, model.Mentee, model.Request, java.sql.Timestamp, DAO.MentorDAO, DAO.CvDAO, model.CV, DAO.SkillDAO, java.text.SimpleDateFormat, model.RequestStatus, model.payment, model.Withdraw" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +13,7 @@
         <meta charset="utf-8">
         <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-        <title>List of reports</title>
+        <title>Transaction Management</title>
         <meta content="" name="description">
         <meta content="" name="keywords">
 
@@ -586,7 +586,7 @@
     <body id="root" style="padding-top: 66px;">
         <!-- ======= Header ======= -->
         <%  
-            ArrayList<Report> arr = (ArrayList)request.getAttribute("reports");
+            ArrayList<Withdraw> arr = (ArrayList)request.getAttribute("withdraw");
             int p = (int) Math.ceil((double)arr.size() / 10);
             User u = (User)session.getAttribute("User");
         %>
@@ -856,7 +856,7 @@
                                                             <%}%>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title active">Report</div>
+                                                                    <div class="panel-title">Report</div>
                                                                 </div>
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
@@ -871,7 +871,7 @@
                                                             </div>
                                                             <div class="menu__setting--last panel panel-default">
                                                                 <div class="panel-heading">
-                                                                    <div class="panel-title">Withdraw Management</div>
+                                                                    <div class="panel-title active">Withdraw Management</div>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -890,31 +890,19 @@
                 </div>
                 <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">
                     <div class="aside">
-                        <form method="post">
-                            <input type="text" placeholder="Search" name="search" style="width: 44%; min-height: 20px">
-                            <select name="status" style="padding: 0px; width: 10%; min-height: 20px"><option selected="" disabled="">Status</option>
-                                    <option value="Solved">Solved</option>
-                                    <option value="Pending">Pending</option>
-                            </select>
-                            <input id="filter"  type="submit" value="Search" style="margin-left: 10px; width: 10%; min-height: 20px;">
-                        </form>
-                        <script>
-                            document.getElementById("filter").onclick = function() {
-                                event.preventDefault();
-                                this.onclick = null;
-                                this.click();
-                            }
-                        </script>
-                        <h3>List of report</h3>
+                        <h3>List of transaction</h3>
                         <div class="transaction-table">
                             <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-condensed table-hover">
                                     <thead>
                                         <tr>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>STT</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Người report</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Thời gian report</th>
-                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Nội dung</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Fullname</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Account</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Ngân Hàng</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Tên Tài Khoản</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Số Tài Khoản</th>
+                                            <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Số Tiền</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Status</th>
                                             <th style='font-family: "Open Sans", sans-serif; font-weight: bold; color: black'>Action</th>
                                         </tr>
@@ -926,12 +914,17 @@
                                                 <%=i+1%>
                                             </td>
                                             <td><%=arr.get(i).getFullname()%></td>
-                                            <td><%=arr.get(i).getSendTime()%></td>
+                                            <td><%=arr.get(i).getAccount()%></td>
                                             <td>
-                                                <%=arr.get(i).getContent()%>
+                                                <%=arr.get(i).getBankName()%>
                                             </td>
-                                            <td><%=arr.get(i).getStatus()%></td>
-                                            <td><%if(!arr.get(i).getStatus().equalsIgnoreCase("Solved")) {%><a href="report?type=solved&id=<%=arr.get(i).getId()%>"><i class="fas fa-check" data-toggle="tooltip" title="Solved"></i><%}%></a></td>
+                                            <td>
+                                                <%=arr.get(i).getBankAccountName()%>
+                                            </td>
+                                            <td><%=arr.get(i).getBankNo()%></td>
+                                            <td><%=arr.get(i).getBalance()%>đ</td>
+                                            <td style="color: <%=arr.get(i).getStatus().equalsIgnoreCase("Pending") ? "red" : "green"%>"><%=arr.get(i).getStatus()%></td>
+                                            <td><%if(arr.get(i).getStatus().equalsIgnoreCase("Pending")) {%><a href="withdraw?id=<%=arr.get(i).getId()%>"><i class="fas fa-check" data-toggle="tooltip" title="Xác nhận đã chuyển tiền"></i></a><%}%></td>
                                         </tr> 
                                         <%}%>
                                     </tbody>
@@ -1135,6 +1128,17 @@
                 window.location.href = "withdraw";
             };
             <%}%>
+                                            <%if(request.getAttribute("alert") != null) {%>
+                                                setTimeout(function() {
+                                                    alert("<%=(String)request.getAttribute("alert")%>");
+                                                }, 500);
+                                            <%}%>
+                                            <%if(session.getAttribute("alert") != null) {%>
+                                                setTimeout(function() {
+                                                    alert("<%=(String)session.getAttribute("alert")%>");
+                                                }, 500);
+                                            <%  session.removeAttribute("alert");
+                                                }%>
         </script>
         <div id="preloader"></div>
 

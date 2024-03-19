@@ -14,6 +14,7 @@ public class Mentor {
     int follow;
     float rate;
     int ratingTime;
+    String account;
 
     public Mentor(String status, String Achivement, String Description, int id, int CvID, String fullname, String Avatar) {
         this.Avatar = Avatar;
@@ -23,6 +24,22 @@ public class Mentor {
         this.Description = Description;
         this.id = id;
         this.CvID = CvID;
+    }
+    
+    public Mentor() {
+        
+    }
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public float getRate() {

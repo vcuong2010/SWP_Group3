@@ -869,6 +869,11 @@
                                                                     <div class="panel-title">Transaction Management</div>
                                                                 </div>
                                                             </div>
+                                                            <div class="menu__setting--last panel panel-default">
+                                                                <div class="panel-heading">
+                                                                    <div class="panel-title">Withdraw Management</div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1130,7 +1135,7 @@
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
-                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "288" : "144"%>px;";
+                        collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "324" : "180"%>px;";
                     }, 1);
                     setTimeout(function () {
                         collapse2.classList.remove("collapsing");
@@ -1141,7 +1146,7 @@
                 } else {
                     cog2.classList.remove("fa-chevron-down");
                     cog2.classList.add("fa-chevron-right");
-                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "288" : "144"%>px;";
+                    collapse2.style = "height: <%=u.getRole().equalsIgnoreCase("admin") ? "324" : "180"%>px;";
                     collapse2.classList.remove("collapse");
                     collapse2.classList.add("collapsing");
                     setTimeout(function () {
@@ -1188,6 +1193,9 @@
             document.getElementsByClassName('menu__setting--last panel panel-default')[7].onclick = function () {
                 window.location.href = "transaction";
             };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[8].onclick = function () {
+                window.location.href = "withdraw";
+            };
             <%} else {%>
             document.getElementsByClassName('menu__setting--last panel panel-default')[0].onclick = function () {
                 window.location.href = "request";
@@ -1200,6 +1208,9 @@
             };
             document.getElementsByClassName('menu__setting--last panel panel-default')[3].onclick = function () {
                 window.location.href = "transaction";
+            };
+            document.getElementsByClassName('menu__setting--last panel panel-default')[4].onclick = function () {
+                window.location.href = "withdraw";
             };
             <%}%>
         </script>

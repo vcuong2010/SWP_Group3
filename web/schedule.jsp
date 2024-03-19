@@ -688,8 +688,8 @@
         <button type="submit" onclick="validate(this, event)" class="btn btn-success">\n\
           <span>Cập Nhật</span>\n\
         </button>\n\
-        <button type="button" class="btn ' + (data["menteeId"] === 0 ? "btn-default" : "btn-danger") + '">\n\
-          <span>' + (data["menteeId"] === 0 ? "Đóng" : "Xóa") + '</span>\n\
+        <button type="button" class="btn ' + (parseInt(data["menteeId"]) === 0 ? "btn-danger" : "btn-default") + '">\n\
+          <span>' + (parseInt(data["menteeId"]) === 0 ? "Xóa" : "Đóng") + '</span>\n\
         </button>\n\
       </div>\n\
     </form>\n\
@@ -712,7 +712,7 @@
                                                 }, 100);
 
                                             }
-                                            if (data["menteeId"] === 0) {
+                                            if (parseInt(data["menteeId"]) !== 0) {
                                                 btn[2].onclick = function () {
                                                     document.body.lastChild.children[0].classList.remove("in");
                                                     document.body.lastChild.children[1].classList.remove("in");
@@ -1329,7 +1329,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = tue.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
@@ -1357,7 +1357,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = wen.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
@@ -1385,7 +1385,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = thu.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>) 
@@ -1413,7 +1413,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = fri.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>) 
@@ -1441,7 +1441,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = sat.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)
@@ -1469,7 +1469,7 @@ Xác nhận đã hoàn thành Slot học này?\n\
                                                                     Slot s = sun.get(i);
                                                                 %>
                                                                 <p>
-                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor")) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
+                                                                    <a href="#" <%if(u.getRole().equalsIgnoreCase("mentor") && (s.getStatus().toLowerCase().contains("not confirm") || s.getStatus().toLowerCase().contains("not paid"))) {%>onclick="edit(<%=s.getId()%>)" <%}%>><%=s.getSkill() == null ? "Free" : s.getSkill()%>-</a>
                                                                     <a class="label label-default" href="<%=(u.getRole().equalsIgnoreCase("mentee") && s.getStatus().toLowerCase().contains("not paid")) ? "#" : (((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "#" : s.getLink())%>">Meet URL</a>
                                                                     <span>
                                                                         <br>( <font color="<%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "green" : "red"%>"><%=((u.getRole().equalsIgnoreCase("mentor") ? s.getStatus().toLowerCase().contains("mentor confirm") : s.getStatus().toLowerCase().contains("mentee confirm")) || s.getStatus().toLowerCase().contains("done")) ? "Done" : "Not Yet"%></font>)

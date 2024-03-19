@@ -46,7 +46,7 @@
                         </a>
                     </li>
                     <li class="item-icon group-fb">
-                        <a class="group-user" style="display: block">
+                        <a class="group-user" style="display: block" href="chat">
                             <i class="fal fa-comment"></i>
                         </a>
                     </li>
@@ -199,7 +199,7 @@
                         </a>
                     </li>
                     <li class="item-icon group-fb">
-                        <a class="group-user" style="display: block">
+                        <a class="group-user" style="display: block" href="chat">
                             <i class="fal fa-comment"></i>
                         </a>
                     </li>

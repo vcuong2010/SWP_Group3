@@ -104,7 +104,7 @@
                             </div>
                             <br>
                             <div style="text-align: center;padding: 30px;" class="form-submit">
-                                <input style="margin-bottom: 30px" type="submit" value="Sign Up" onclick="validate(this, event)" class="submit" id="submit"/>
+                                <input style="margin-bottom: 30px" type="submit" value="Sign Up" class="submit" id="submit"/>
                                 <label>${alert}</label>
                                 
                             </div>
@@ -115,14 +115,11 @@
                                     </div>
                         </form>
                                 <script>
-                                    function validate(input, event) {
-                                        event.preventDefault();
-                                        if(document.getElementById("dob").value >= new Date()) {
-                                            alert("Không được chọn ngày sinh sau ngày hiện tại");
-                                        } else {
-                                            input.form.submit();
-                                        }
-                                    }
+                                    var date = new Date();
+                                    date.setFullYear(date.getFullYear() - 10);
+                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                    var slotTime = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
+                                    document.getElementById("dob").max = slotTime;
                                 </script>
                     </div>
                 </div>

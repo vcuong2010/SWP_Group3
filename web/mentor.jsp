@@ -521,7 +521,7 @@
                             </div>
                             <div class="text-center">
                                 <button class="btn-my-style red">Tạo Request</button>
-                                <button class="btn-my-style white">
+                                <button class="btn-my-style white" onclick="window.location.href='chat?id=<%=currMentor.getId()%>'">
                                     <i class="fas fa-comment-alt"></i>Chat </button>
                                     <%if(u != null && u.getRole().equalsIgnoreCase("mentee")) {%>
                                     <button class="btn-my-style white" onclick="Follow()">
@@ -1115,7 +1115,7 @@
 }%> name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Tạo Request</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                     let date = new Date();
                                     let dateonly = date.toLocaleString().split(",")[0].split("/");
-    modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1]) +"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
+    modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0]) +"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
                     document.body.appendChild(modal.firstChild);
                                     if(17 < <%=maxWidth%>) {
                                        document.getElementById("datepicker").style.width = <%=maxWidth%>+"em";

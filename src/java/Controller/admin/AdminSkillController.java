@@ -9,17 +9,27 @@ import DAO.SkillDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import model.Skill;
+import jakarta.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import javax.imageio.ImageIO;
 import model.User;
 
 /**
  *
  * @author TGDD
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 100
+)
 public class AdminSkillController extends HttpServlet {
 
     /**
@@ -37,7 +47,8 @@ public class AdminSkillController extends HttpServlet {
             if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
         if (request.getParameter("toggleid") != null && request.getParameter("toggle") != null) {
             try {
                 int id = Integer.parseInt(request.getParameter("toggleid"));
@@ -85,14 +96,25 @@ public class AdminSkillController extends HttpServlet {
             if (!AuthorizationService.gI().Authorization(request, response)) {
                 return;
             }
-        } catch(Exception e) {}
+        } catch (Exception e) {
+        }
         if (request.getParameter("id") == null) {
             if (request.getParameter("name") != null && !request.getParameter("name").isEmpty()) {
                 String name = request.getParameter("name");
                 String status = request.getParameter("status");
+                Part avatar = request.getPart("avatar");
+                String description = request.getParameter("description");
+                BufferedImage img = ImageIO.read(avatar.getInputStream());
+                String path = request.getServletContext().getRealPath("/skill");
+                String realpath = request.getServletContext().getRealPath("/avatar").replace("\\build\\web\\avatar", "\\web\\avatar");
+                File outputfile = new File(path + "/" + name + "_skill.png");
+                ImageIO.write(img, "png", outputfile);
+                File realoutputfile = new File(realpath + "/" + name + "_skill.png");
+                ImageIO.write(img, "png", realoutputfile);
                 try {
-                    SkillDAO.createSkill(name, status.equalsIgnoreCase("active"));
+                    SkillDAO.createSkill(name, status.equalsIgnoreCase("active"), "skill/" + name + "_skill.png", description);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -100,10 +122,24 @@ public class AdminSkillController extends HttpServlet {
                 String sid = request.getParameter("id");
                 String name = request.getParameter("name");
                 String status = request.getParameter("status");
+                Part avatar = request.getPart("avatar");
+                String description = request.getParameter("description");
+                String avt = null;
+                if (avatar != null) {
+                    BufferedImage img = ImageIO.read(avatar.getInputStream());
+                    String path = request.getServletContext().getRealPath("/skill");
+                    String realpath = request.getServletContext().getRealPath("/avatar").replace("\\build\\web\\avatar", "\\web\\avatar");
+                    File outputfile = new File(path + "/" + name + "_skill.png");
+                    ImageIO.write(img, "png", outputfile);
+                    File realoutputfile = new File(realpath + "/" + name + "_skill.png");
+                    ImageIO.write(img, "png", realoutputfile);
+                    avt = "skill/" + name + "_skill.png";
+                }
                 try {
                     int id = Integer.parseInt(sid);
-                    SkillDAO.UpdateSkill(id, name, status.equalsIgnoreCase("active"));
+                    SkillDAO.UpdateSkill(id, name, status.equalsIgnoreCase("active"), avt, description);
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         }

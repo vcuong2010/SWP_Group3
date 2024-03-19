@@ -4,6 +4,7 @@
  */
 package Controller;
 
+import DAO.FollowDAO;
 import Service.AuthorizationService;
 import DAO.UserDAO;
 import java.io.IOException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import model.Mentee;
 import model.Mentor;
@@ -54,9 +56,13 @@ public class ProfileController extends HttpServlet {
         if (!UserDAO.isMentor(u)) {
             Mentee r = (Mentee) UserDAO.getRole(u.getId(), u.getRole());
             request.getSession().setAttribute("Mentee", r);
+            request.setAttribute("following", FollowDAO.getFollowing(u.getId()));
+            request.setAttribute("follower", new ArrayList());
         } else {
             Mentor r = (Mentor) UserDAO.getRole(u.getId(), u.getRole());
             request.getSession().setAttribute("Mentor", r);
+            request.setAttribute("follower", FollowDAO.getFollower(u.getId()));
+            request.setAttribute("following", new ArrayList());
         }
         request.getRequestDispatcher("profile.jsp").forward(request, response);
     }
@@ -167,7 +173,6 @@ public class ProfileController extends HttpServlet {
                 String realpath = request.getServletContext().getRealPath("/avatar").replace("\\build\\web\\avatar", "\\web\\avatar");
                 File outputfile = new File(path+"/"+u.getUsername()+"_"+u.getId()+".png");
                 ImageIO.write(img, "png", outputfile);
-                System.out.println(realpath);
                 File realoutputfile = new File(realpath+"/"+u.getUsername()+"_"+u.getId()+".png");
                 ImageIO.write(img, "png", realoutputfile);
                 try {

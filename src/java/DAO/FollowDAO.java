@@ -11,6 +11,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import model.FollowRequest;
+import model.Mentee;
+import model.Mentor;
 import model.User;
 
 /**
@@ -18,6 +20,49 @@ import model.User;
  * @author TGDD
  */
 public class FollowDAO {
+    
+    public static ArrayList<Mentor> getFollowing(int uid) {
+        ArrayList<Mentor> arr = new ArrayList();
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] in (SELECT [MentorID] FROM [Follow] WHERE [MenteeID] = ?)");
+            ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Mentor m = new Mentor();
+                m.setAvatar(rs.getString("Avatar"));
+                m.setFullname(rs.getString("fullname"));
+                m.setId(rs.getInt("UserID"));
+                m.setAccount(rs.getString("username"));
+                arr.add(m);
+            }
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return arr;
+    }
+    public static ArrayList<Mentee> getFollower(int uid) {
+        ArrayList<Mentee> arr = new ArrayList();
+        Connection dbo = DatabaseUtil.getConn();
+        try {
+            PreparedStatement ps = dbo.prepareStatement("SELECT * FROM [User] WHERE [UserID] in (SELECT [MenteeID] FROM [Follow] WHERE [MentorID] = ?)");
+            ps.setInt(1, uid);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Mentee m = new Mentee();
+                m.setAvatar(rs.getString("Avatar"));
+                m.setFullname(rs.getString("fullname"));
+                m.setId(rs.getInt("UserID"));
+                m.setAccount(rs.getString("username"));
+                arr.add(m);
+            }
+            dbo.close();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return arr;
+    }
     
     public static int following(int uid) {
         int following = 0;

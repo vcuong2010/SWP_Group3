@@ -11,10 +11,38 @@ package model;
 public class Mentee {
     String Status;
     int id;
+    String fullname;
+    String avatar, account;
 
     public Mentee(String status, int id) {
         this.Status = status;
         this.id = id;
+    }
+    
+    public Mentee() {}
+
+    public String getAccount() {
+        return account;
+    }
+
+    public void setAccount(String account) {
+        this.account = account;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 
     public String getStatus() {

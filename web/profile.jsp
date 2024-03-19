@@ -565,12 +565,220 @@
                                         </div>
                                     </div>
                                     <%if(u.getRole().equalsIgnoreCase("mentee")) {%>
-                                    <p class="control-label">Following: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.following(u.getId())%> Mentors</span></p>
+                                    <p class="control-label">Following: <a href="#"><span style="color: black;font-weight: bold;text-transform: none;" onclick="following(event)"><%=FollowDAO.following(u.getId())%> Mentors</span></a></p>
                                     <hr>
+                                    <script>
+                                        function following(event) {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        
+                                            document.body.style = 'overflow: hidden; padding-right: 17px; padding-top: 66px;';
+                                            //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                            let modal = document.createElement('div');
+                                            <%
+                                                ArrayList<Mentor> following = (ArrayList)request.getAttribute("following");
+                                            %>
+                                            modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<div class="modal-dialog">\n\
+  <div class="modal-content" role="document">\n\
+    <div class="modal-header">\n\
+      <button type="button" class="close">\n\
+        <span aria-hidden="true">×</span>\n\
+        <span class="sr-only">Close</span>\n\
+      </button>\n\
+      <h4 class="modal-title">\n\
+        <span>Following</span>\n\
+      </h4>\n\
+    </div>\n\
+      <div class="modal-body">\n\
+        <table class="table table-striped table-bordered table-condensed table-hover" style="border: 1px solid #ddd;">\n\
+          <thead>\n\
+            <tr><th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Avatar</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Fullname</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Account</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Chat</th></tr>\n\
+          </thead>\n\
+          <tbody>\n\
+            <%for(int i =0 ;i < following.size(); i++) {%>\n\
+                <tr><td><img src="<%=following.get(i).getAvatar()%>" style="width: 50px; height: 50px"></td><td><a href="mentor?id=<%=following.get(i).getId()%>"><%=following.get(i).getFullname()%></a></td><td><a href="mentor?id=<%=following.get(i).getId()%>"><%=following.get(i).getAccount()%></a></td><td><button class="btn btn-danger" id="<%=following.get(i).getId()%>">Chat</button></td></tr>\n\
+            <%}%>\n\
+          </tbody>\n\
+        </table>\n\
+      </div>\n\
+      <div class="modal-footer">\n\
+        <button type="submit" class="btn btn-default">\n\
+          <span>Đóng</span>\n\
+        </button>\n\
+      </div>\n\
+  </div>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                            document.body.appendChild(modal.firstChild);
+                                            let btn = document.body.lastChild.getElementsByTagName('button');
+                                            btn[0].onclick = function () {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'padding-top: 66px;';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+
+                                            }
+                                            for (var i = 1; i < btn.length - 1; i++) {
+                                            btn[i].onclick = function () {
+                                                window.location.href = "chat?id="+this.id;
+
+                                            }
+                                            }
+                                            btn[btn.length - 1].onclick = function () {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'padding-top: 66px;';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+
+                                            }
+                                            setTimeout(function () {
+                                                document.body.lastChild.children[1].classList.add("in");
+                                                document.body.lastChild.children[0].classList.add("in");
+                                                window.onclick = function (e) {
+                                                    if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                        document.body.lastChild.children[0].classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'padding-top: 66px;';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                    }
+                                                };
+                                            }, 1);
+                                        
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'padding-top: 66px;';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }}
+                                    </script>
                                     <% } else if(u.getRole().equalsIgnoreCase("mentor")) {%>
-                                    <p class="control-label">Follower: <span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.follower(u.getId())%> Mentees</span></p>
+                                    <p class="control-label">Follower: <a href="#"><span style="color: black;font-weight: bold;text-transform: none;" onclick="follower(event)"><%=FollowDAO.follower(u.getId())%> Mentees</span></a></p>
                                     <p class="control-label">Follow Request: <a href="follow" title="View details"><span style="color: black;font-weight: bold;text-transform: none;"><%=FollowDAO.followRequest(u.getId())%> Requests</span></a></p>
                                     <hr>
+                                    <script>
+                                        function follower(event) {
+                                    event.preventDefault();
+                                    if (!JSON.stringify(document.body.style).includes("overflow: hidden;")) {
+                                        
+                                            document.body.style = 'overflow: hidden; padding-right: 17px; padding-top: 66px;';
+                                            //document.body.style = 'background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                            let modal = document.createElement('div');
+                                            <%
+                                                ArrayList<Mentee> follower = (ArrayList)request.getAttribute("follower");
+                                            %>
+                                            modal.innerHTML = '<div role="dialog" aria-hidden="true">\n\
+<div class="fade modal-backdrop"></div>\n\
+<div role="dialog" tabindex="-1" class="fade modal-donate modal" style="display: block;">\n\
+<div class="modal-dialog">\n\
+  <div class="modal-content" role="document">\n\
+    <div class="modal-header">\n\
+      <button type="button" class="close">\n\
+        <span aria-hidden="true">×</span>\n\
+        <span class="sr-only">Close</span>\n\
+      </button>\n\
+      <h4 class="modal-title">\n\
+        <span>Follower</span>\n\
+      </h4>\n\
+    </div>\n\
+      <div class="modal-body">\n\
+        <table class="table table-striped table-bordered table-condensed table-hover" style="border: 1px solid #ddd;">\n\
+          <thead>\n\
+            <tr><th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Avatar</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Fullname</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Account</th>\n\
+            <th style="font-family: &quot;Open Sans&quot;, sans-serif; font-weight: bold; color: black; border: 1px solid #ddd;">Chat</th></tr>\n\
+          </thead>\n\
+          <tbody>\n\
+            <%for(int i =0 ;i < follower.size(); i++) {%>\n\
+                <tr><td><img src="<%=follower.get(i).getAvatar()%>" style="width: 50px; height: 50px"></td><td><%=follower.get(i).getFullname()%></td><td><%=follower.get(i).getAccount()%></td><td><button class="btn btn-danger" id="<%=follower.get(i).getId()%>">Chat</button></td></tr>\n\
+            <%}%>\n\
+          </tbody>\n\
+        </table>\n\
+      </div>\n\
+      <div class="modal-footer">\n\
+        <button type="submit" class="btn btn-default">\n\
+          <span>Đóng</span>\n\
+        </button>\n\
+      </div>\n\
+  </div>\n\
+</div>\n\
+</div>\n\
+</div>';
+                                            document.body.appendChild(modal.firstChild);
+                                            let btn = document.body.lastChild.getElementsByTagName('button');
+                                            btn[0].onclick = function () {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'padding-top: 66px;';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+
+                                            }
+                                            for (var i = 1; i < btn.length - 1; i++) {
+                                            btn[i].onclick = function () {
+                                                window.location.href = "chat?id="+this.id;
+
+                                            }
+                                            }
+                                            btn[btn.length - 1].onclick = function () {
+                                                document.body.lastChild.children[0].classList.remove("in");
+                                                document.body.lastChild.children[1].classList.remove("in");
+                                                setTimeout(function () {
+                                                    document.body.style = 'padding-top: 66px;';
+                                                    document.body.removeChild(document.body.lastChild);
+                                                    window.onclick = null;
+                                                }, 100);
+
+                                            }
+                                            setTimeout(function () {
+                                                document.body.lastChild.children[1].classList.add("in");
+                                                document.body.lastChild.children[0].classList.add("in");
+                                                window.onclick = function (e) {
+                                                    if (!document.getElementsByClassName('modal-content')[0].contains(e.target)) {
+                                                        document.body.lastChild.children[0].classList.remove("in");
+                                                        document.body.lastChild.children[1].classList.remove("in");
+                                                        setTimeout(function () {
+                                                            document.body.style = 'padding-top: 66px;';
+                                                            document.body.removeChild(document.body.lastChild);
+                                                            window.onclick = null;
+                                                        }, 100);
+                                                    }
+                                                };
+                                            }, 1);
+                                        
+                                    } else {
+                                        //document.body.style = 'overflow: hidden; padding-right: 17px; background-color: rgb(233, 235, 238) !important; padding-top: 66px;';
+                                        document.body.lastChild.children[1].classList.remove("in");
+                                        document.body.lastChild.children[0].classList.remove("in");
+                                        setTimeout(function () {
+                                            document.body.style = 'padding-top: 66px;';
+                                            document.body.removeChild(document.body.lastChild);
+                                            window.onclick = null;
+                                        }, 100);
+                                    }}
+                                    </script>
                                     <% } %>
                                     <form class="from-userinfo" action="profile" method="POST" enctype="multipart/form-data">
                                         <div class="fieldGroup ">
