@@ -206,8 +206,18 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="item-icon balance">
-                        <a class="money-user">
+                        <a class="money-user" id="money-main">
                             <i class="far fa-plus"></i> <%=u.getWallet()%>đ </a>
+                            <script>
+                                setInterval(async () => {
+                                    var resp = await fetch("api/wallet");
+                                    var data = await resp.json();
+                                    var m = document.getElementById("money-main");
+                                    if(data["wallet"] !== parseInt(m.innerHTML.toString().replaceAll('<i class="far fa-plus"></i> ', "").replaceAll('đ ', ''))) {
+                                        m.innerHTML = '<i class="far fa-plus"></i> '+data["wallet"]+'đ '
+                                    }
+                                }, 500);
+                            </script>
                     </li>
                     <li class="item-icon item-avatar dropdown">
                         <a id="header-nav-dropdown" role="button" class="dropdown-toggle" aria-haspopup="true" aria-expanded="false" href="#">

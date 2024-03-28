@@ -9,6 +9,10 @@
         <servlet-class>Controller.admin.AdminSkillController</servlet-class>
     </servlet>
     <servlet>
+        <servlet-name>ApiWalletController</servlet-name>
+        <servlet-class>Controller.Api.WalletController</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>ApiScheduleController</servlet-name>
         <servlet-class>Controller.Api.ScheduleController</servlet-class>
     </servlet>
@@ -55,6 +59,10 @@
     <servlet-mapping>
         <servlet-name>AdminTransactionController</servlet-name>
         <url-pattern>/admin/transaction</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ApiWalletController</servlet-name>
+        <url-pattern>/api/wallet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
