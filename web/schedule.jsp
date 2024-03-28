@@ -609,7 +609,7 @@
                                             var response = await fetch("api/schedule?sid=" + id);
                                             var data = await response.json();
                                             let slotDate = new Date(Date.parse(data["SlotTime"]));
-                                            let SlotDateonly = slotDate.toLocaleString().split(",")[0].split("/");
+                                            let SlotDateonly = [slotDate.getMonth()+1, slotDate.getDate(), slotDate.getFullYear()];
                                             var slotTime = SlotDateonly[2] + "-" + (parseInt(SlotDateonly[0]) < 10 ? "0" + SlotDateonly[0] : SlotDateonly[0]) + "-" + (parseInt(SlotDateonly[1]) < 10 ? "0" + SlotDateonly[1] : SlotDateonly[1]);
                                             var slotHour = slotDate.toTimeString().split(":")[0] + ":"+slotDate.toTimeString().split(":")[1];
                                             var slot = 0;
@@ -698,7 +698,7 @@
 </div>\n\
 </div>';
                                             let date = new Date();
-                                            let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                            let dateonly = [date.getMonth()+1, date.getDate(), date.getFullYear()];
                                             modal.querySelector("input[type=date]").min = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
                                             document.body.appendChild(modal.firstChild);
                                             let btn = document.body.lastChild.getElementsByTagName('button');
@@ -930,7 +930,7 @@
 </div>';
                                         let date = new Date();
                                         date = date.addDays(7);
-                                        let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                        let dateonly = [date.getMonth()+1, date.getDate(), date.getFullYear()];
                                         modal.querySelector("input[type=datetime-local]").min = dateonly[2] + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]) + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "T" + date.toTimeString().split(":")[0] + ":" + date.toTimeString().split(":")[1];
                                         document.body.appendChild(modal.firstChild);
                                         var fromDate = document.querySelector("input[name=fromDay]");

@@ -1114,7 +1114,7 @@
     %>checked<%}} catch(Exception e) {}
 }%> name="skill" value="<%=currCV.getSkills().get(i).getId()%>" id="<%=currCV.getSkills().get(i).getId()%>"><label for="<%=currCV.getSkills().get(i).getId()%>" style="margin-left: 5px"><%=currCV.getSkills().get(i).getName()%></label></div><%}%></td></tr></tbody></table></div><div class="modal-footer"><button type="submit" class="btn-fill btn btn-danger"><span>Tạo Request</span></button><button type="button" class="btn btn-default"><span>Đóng</span></button></div></form></div></div></div></div>';
                                     let date = new Date();
-                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                    let dateonly = [date.getMonth()+1, date.getDate(), date.getFullYear()];
     modal.querySelector("input[type=datetime-local]").min = dateonly[2]+"-"+ (parseInt(dateonly[0]) < 10 ? "0"+dateonly[0] : dateonly[0]) +"-"+ (parseInt(dateonly[1]) < 10 ? "0"+dateonly[1] : dateonly[1])+"T"+date.toTimeString().split(":")[0]+":"+date.toTimeString().split(":")[1];
                     document.body.appendChild(modal.firstChild);
                                     if(17 < <%=maxWidth%>) {

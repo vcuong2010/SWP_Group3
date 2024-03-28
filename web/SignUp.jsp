@@ -117,7 +117,7 @@
                                 <script>
                                     var date = new Date();
                                     date.setFullYear(date.getFullYear() - 10);
-                                    let dateonly = date.toLocaleString().split(",")[0].split("/");
+                                    let dateonly = [date.getMonth()+1, date.getDate(), date.getFullYear()];
                                     var slotTime = dateonly[2] + "-" + (parseInt(dateonly[0]) < 10 ? "0" + dateonly[0] : dateonly[0]) + "-" + (parseInt(dateonly[1]) < 10 ? "0" + dateonly[1] : dateonly[1]);
                                     document.getElementById("dob").max = slotTime;
                                 </script>
