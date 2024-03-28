@@ -240,6 +240,7 @@ public class RequestController extends HttpServlet {
                 int slotCash = MentorDAO.getSlotCash(oid);
                 int slots = RequestDAO.getSlots(rid);
                 u.setWallet(u.getWallet() - (slotCash*slots));
+                    request.getSession().setAttribute("User", u);
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect("request");

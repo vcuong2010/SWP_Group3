@@ -178,6 +178,7 @@ public class ProfileController extends HttpServlet {
                 try {
                     UserDAO.updateAvatar(u.getId(), "avatar"+"/"+u.getUsername()+"_"+u.getId()+".png");
                     u.setAvatar("avatar"+"/"+u.getUsername()+"_"+u.getId()+".png");
+                    request.getSession().setAttribute("User", u);
                 } catch (Exception e) {
                 }
                 response.sendRedirect("profile");

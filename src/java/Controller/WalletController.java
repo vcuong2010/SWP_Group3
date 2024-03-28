@@ -104,6 +104,7 @@ public class WalletController extends HttpServlet {
                 TransactionDAO.withdraw(u.getId(), money);
                 request.getSession().setAttribute("alert", "Rút tiền thành công");
                 u.setWallet(u.getWallet() - money);
+                    request.getSession().setAttribute("User", u);
                 response.sendRedirect("wallet");
             } catch(Exception e) {
                 

@@ -784,7 +784,7 @@
                                         </div>
                                         <div class="wrapper-content-rating">
                                             <div class="review-content">
-                                                <a target="_blank" href="/">
+                                                <a target="_blank">
                                                     <p class="name-player-review color-vip-1"><%=rates.get(i).getSenderName()%></p>
                                                 </a>
                                                 <p class="time-player-review">
