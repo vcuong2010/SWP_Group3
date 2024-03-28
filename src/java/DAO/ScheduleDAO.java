@@ -238,10 +238,10 @@ public class ScheduleDAO {
 
     public static ArrayList<Slot> sortByWeek(Calendar first, Calendar last, ArrayList<Slot> array) {
         ArrayList<Slot> copy = (ArrayList) array.clone();
-        first.set(Calendar.HOUR, 0);
+        first.set(Calendar.HOUR_OF_DAY, 0);
         first.set(Calendar.MINUTE, 0);
         first.set(Calendar.SECOND, 0);
-        last.set(Calendar.HOUR, 23);
+        last.set(Calendar.HOUR_OF_DAY, 23);
         last.set(Calendar.MINUTE, 59);
         last.set(Calendar.SECOND, 59);
         for (int i = 0; i < copy.size(); i++) {
@@ -269,7 +269,7 @@ public class ScheduleDAO {
                     + "      ,[Link]\n"
                     + "      ,[ScheduleID]\n"
                     + "      ,[SkillID]\n"
-                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [UserID] = ?) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill] FROM [Slot] WHERE [SkillID] IS NULL AND [startAt] > ? AND [ScheduleID] in (SELECT [ScheduleID] FROM [Schedule] WHERE [MentorID] = ?)");
+                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [UserID] = ?) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill] FROM [Slot] WHERE [SkillID] IS NULL AND [startAt] > ? AND [ScheduleID] in (SELECT [ScheduleID] FROM [Schedule] WHERE [MentorID] = ?) ORDER BY [StartAt]");
             ps.setInt(1, uid);
             ps.setTimestamp(2, Timestamp.from(date.toInstant()));
             ps.setInt(3, uid);
@@ -325,7 +325,7 @@ public class ScheduleDAO {
                     + "      ,[Link]\n"
                     + "      ,[ScheduleID]\n"
                     + "      ,[SkillID]\n"
-                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [User].[UserID] = (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID])) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill], (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID]) as [MentorID] FROM [Slot] WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?)");
+                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [User].[UserID] = (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID])) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill], (SELECT [MentorID] FROM [Schedule] WHERE [ScheduleID] = [Slot].[ScheduleID]) as [MentorID] FROM [Slot] WHERE [SlotID] in (SELECT [SlotID] FROM [RequestSlot] WHERE [RequestID] = ?) ORDER BY [StartAt]");
             ps.setInt(1, rid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -354,7 +354,7 @@ public class ScheduleDAO {
                     + "      ,[Link]\n"
                     + "      ,[ScheduleID]\n"
                     + "      ,[SkillID]\n"
-                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [UserID] = ?) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill] FROM [Slot] WHERE ScheduleID = (SELECT ScheduleID FROM Schedule WHERE [Year] = ? AND [Week] = ? AND [MentorID] = ?)");
+                    + "      ,[MenteeID], [Status], (SELECT [fullname] FROM [User] WHERE [UserID] = ?) as [Mentor], (SELECT [fullname] FROM [User] WHERE [UserID] = [Slot].[MenteeID]) as [Mentee], (SELECT [SkillName] FROM [Skills] WHERE [SkillID] = [Slot].[SkillID]) as [Skill] FROM [Slot] WHERE ScheduleID = (SELECT ScheduleID FROM Schedule WHERE [Year] = ? AND [Week] = ? AND [MentorID] = ?) ORDER BY [StartAt]");
             ps.setInt(1, uid);
             ps.setInt(2, year);
             ps.setInt(3, week);

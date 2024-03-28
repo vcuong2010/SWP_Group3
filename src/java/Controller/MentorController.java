@@ -23,9 +23,11 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Calendar;
 import model.CV;
 import model.Mentor;
+import model.Slot;
 import model.User;
 
 /**
@@ -88,7 +90,8 @@ public class MentorController extends HttpServlet {
             Calendar firstDay = ScheduleDAO.FirstDateOfWeek(year, week);
             request.setAttribute("firstOfWeek", firstDay);
             request.setAttribute("Rates", RateDAO.getRates(id));
-            request.setAttribute("FreeSlot", ScheduleDAO.getFreeSlots(new java.util.Date(), id));
+            ArrayList<Slot> arr = ScheduleDAO.getFreeSlots(new java.util.Date(), id);
+            request.setAttribute("FreeSlot", arr);
         } catch (Exception e) {
             response.sendRedirect("index");
             return;
